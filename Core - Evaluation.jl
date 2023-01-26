@@ -12,7 +12,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#Green's function construction and inversion of the couple-dipole equations. 
 	#The resulting dipoles are stored in state_coeff[:,:], where the first index defines the detuning of the input light and the second the atom
 	#This is the part requiring most of the computational time/memory
-	E_field_in    =  gaussian_beam_plus.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3],  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+	E_field_in    =  gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3],  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 	E_field_in  .*=  conj_dot(dipoles_polarization,field_polarization)
 	state_coeff   =  CD_inversion(r_atoms, n_atoms, dipoles_polarization, E_field_in, laser_detunings)
 	#
@@ -41,7 +41,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#Computes the transmission by projecting onto the target Gaussian beam
 	if target_beam_option == "YES"
 		#Calculates the target Gaussian mode at the atomic positions
-		E_field_target        = gaussian_beam_plus.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3].-z0_target,  w0_target, w0_target, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+		E_field_target        = gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3].-z0_target,  w0_target, w0_target, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 		E_field_target      .*= conj_dot(dipoles_polarization,field_polarization)
 		if normalize_target_option=="YES"
 			E_field_target  .*= (w0/w0_target)*exp(2.0im*pi*z0_target/lambda0)
@@ -55,7 +55,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_target, "t_target")
 		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_target, "r_target")
 	end
-	println("Transmission and reflection computed in     ", time()- time_t_and_r)
+	println("| Transmission and reflection computed in     ", time()- time_t_and_r)
 	#
 	#
 	#COMPUTES THE FIELD AT THE PROBE POSITIONS:
@@ -94,6 +94,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 		CD_output_field_wrap("SPHERE", n_detunings, probeSphere_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
 	end	
 	#
+	println("┕ Performance:")
 end
 #
 #
@@ -113,7 +114,7 @@ function CD_inversion(r_atoms, n_atoms,dipoles_polarization,E_field_in, laser_de
 	CD_green_matrix  =  Array{Complex{TN},2}(undef, n_atoms, n_atoms)
 	time_temp=time()
 	CD_initialize!(CD_green_matrix, r_atoms, dipoles_polarization)
-    println("Green's matrix initialized in               ", time()-time_temp)
+    println("| Green's matrix initialized in               ", time()-time_temp)
 	#
 	time_temp=time()
 	state_coeff = Array{Complex{TN},2}(undef,n_detunings, n_atoms)
@@ -121,7 +122,7 @@ function CD_inversion(r_atoms, n_atoms,dipoles_polarization,E_field_in, laser_de
 	for i in 1:n_detunings
 		state_coeff[i,:]  = (CD_green_matrix-UniformScaling(laser_detunings[i]))\E_field_in
 	end
-	println("SM core evaluation finished in              ", time()-time_temp)
+	println("| SM core evaluation finished in              ", time()-time_temp)
 	return state_coeff
 end
 #
@@ -237,20 +238,18 @@ function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_pr
 	end
 	#
 	#Saving the data
-	r_probe_temp = Array{Float64}(undef, 1, length(r_probe[:,1]), length(r_probe[1,:]) )
-	r_probe_temp[1,:,:] = r_probe[:,:]
-	h5write_append(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  r_probe_temp, "probe_pos_"*name)
+	h5write_append(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  add_dimension(r_probe), "probe_pos_"*name)
 	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"probe_field", E_field_out_probe, "probe_field_"*name)
 	#
 	length(name)>=2 ? space_add=" "^(6-(length(name)-2)) : space_add=" "^6
-	println("Evaluation of the "*name*" probe finished in"*space_add, time()-time_temp)
+	println("| Evaluation of the "*name*" probe finished in"*space_add, time()-time_temp)
 end
 #
 #
 #Function to evaluate the field at the probe points
 function CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff_here, field_polarization, dipoles_polarization)
 	G_matrix_probe =  Array{Complex{TN},2}(undef, tot_probe_points, n_atoms)
-	E_field_in_at_probe = gaussian_beam_plus.(r_probe[:,1], r_probe[:,2], r_probe[:,3], w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+	E_field_in_at_probe = gaussian_beam.(r_probe[:,1], r_probe[:,2], r_probe[:,3], w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 	unit_vec_xyz =([1.0 ; 0.0 ; 0.0],[0.0 ; 1.0 ; 0.0],[0.0 ; 0.0 ; 1.0])
 	E_field_out_probe = Array{Complex{TN},2}(undef, tot_probe_points, 3)
 	for pol_index = 1:3
@@ -286,13 +285,14 @@ function CD_initialize_probe!(CD_green_matrix_probe, r_vecs1, r_vecs2, p1,p2)
 	r_vecs2_z = r_vecs2[:,3].*k0
 	n_tot=na1*na2
 	#
-	#The core part is constructed as a single cycle loop to make the parallelization in threads faster
+	#The core part is constructed as a single cycle loop to make the parallelization in threads faster 
 	#The code is structured not to require the loading of external functions, to boost the parallelization efficiency
+	#Both statement are based on empirical observation
 	Threads.@threads for index in 1:n_tot
 		#Constructing two indices from a single index
 		i = Int(floor(  (index-1)/na2  )) + 1
 		j = Int( index-(i-1)*na2)
-		#Constructing the
+		#Constructing the distance variables
 		z = r_vecs1_z[i]-r_vecs2_z[j]
 		x_i=r_vecs1_x[i]
 		y_i=r_vecs1_y[i]

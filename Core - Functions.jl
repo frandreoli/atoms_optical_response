@@ -165,7 +165,7 @@ function invr(z, w0, lambda)
   z/(z^2 + zr(w0, lambda)^2)
 end
 #
-function gaussian_beam_plus(x_vec_start,y_vec_start, z_vec_start, w0_x, w0_y, k, laser_direction_x, laser_direction_y, laser_direction_z)
+function gaussian_beam(x_vec_start,y_vec_start, z_vec_start, w0_x, w0_y, k, laser_direction_x, laser_direction_y, laser_direction_z)
   laser_direction_vec = [laser_direction_x ; laser_direction_y ; laser_direction_z]
   #Accounting for Gaussian beams travelling in different directions
   if norm(laser_direction_vec.-[0.0;0.0;1.0])>ZERO_THRESHOLD
@@ -298,4 +298,10 @@ function clear_function_all(func)
   for method_to_clear in methods(func)
     Base.delete_method(method_to_clear)
   end
+end
+#
+#Add a dummy dimension to a matrix
+function add_dimension(matrix)
+  matrix_temp = Array{Float64}(undef, 1, length(matrix[:,1]), length(matrix[1,:]) )
+	matrix_temp[1,:,:] = matrix[:,:]
 end

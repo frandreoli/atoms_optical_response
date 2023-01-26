@@ -179,10 +179,12 @@ time_atomic_pos=time()
 length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[name_simulation] 
 if mirror_symmetry_option == "NO" 
     file_name="_nAtoms"*string(n_atoms)
-else
+elseif geometry_settings[1:3]!="DIS"
     positive_points = count((r_atoms[:,1].>0.0).*(r_atoms[:,2].>0.0))
     central_points  = count((abs.(r_atoms[:,1]).<ZERO_THRESHOLD).*(abs.(r_atoms[:,2]).<ZERO_THRESHOLD))
     file_name="_nAtoms"*string(4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points)
+else
+    file_name="_nAtoms"*string(4*n_atoms)
 end
 #
 file_name*="_w0"*string(w0/lambda0)[1:min(length(string(w0/lambda0)),3)]
@@ -216,26 +218,29 @@ file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
 #
 #Starting the evaluation
-println("\nTime: ",now(),"\nStarting evaluation of ", @__FILE__,"\n")
-println("Output file name: ",file_name,"\n\n")
+println("\n\nTime: ",now(),"\nStarting evaluation of ", @__FILE__)
+println("Output file name: ",file_name,"\n")
 final_path_name="Data_Output/"*file_name*"/"
 mkpath(final_path_name)
 mkpath(final_path_name*"/"*results_folder_name)
-pos_save_option=="YES"  ? h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", r_atoms))  : nothing
-println("Atomic positions created in                 ", time_atomic_pos-time_start)
+if pos_save_option=="YES" && geometry_settings[1:3]!="DIS"
+    #Adding a dummy dimension to uniform the data analysis with the atomic_positions for disordered systems
+    h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms)) ; open_option="w") 
+    println("Atomic positions created in                   ", time_atomic_pos-time_start)
+end
 #
 #Saving data files with the settings of the simulation
-h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) )
-h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option))
-h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std))
+h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ; open_option="w")
+h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option); open_option="w")
+h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 #
 #Saving data files with the settings specific of the atomic metalens
 if geometry_settings == "METALENS" 
     n_phase_disks_to_save = length(collect(0.0:disks_width:r_lens))-1
-    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks_to_save", n_phase_disks_to_save), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) )
-    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
-    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) )
-    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array) )
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks_to_save", n_phase_disks_to_save), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo); open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array) ; open_option="w")
 end
 #
 #
@@ -268,9 +273,11 @@ end
     if geometry_settings[1:3]=="DIS"
         #TBA!!!
     end
-    n_repetitions>1 ? println("\nStarting the repetition ", index_repetition,"/",n_repetitions) : nothing
-    CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
+    @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    #
+    index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance: ") : nothing
 end
 #
-println("\nEvaluation successfully completed. \nEvaluation time:                            ", time()-time_start,"\n")
+println("\nEvaluation successfully completed. \nTotal evaluation time:                        ", time()-time_start,"\n")
 

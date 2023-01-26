@@ -19,7 +19,7 @@
 #
 #
 #CODE SETTINGS:
-#If YES then the code saves the atomic positions in the file: "pos_atoms.h5"
+#If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
 const pos_save_option           =      ["YES" ; "NO"][1]
 #
 #
@@ -50,12 +50,12 @@ const geometry_settings         =
 const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 #
 #
-#REPETITIONS NUMBER
+#REPETITION NUMBER
 #The code will calculate the atomic response a number of times given by n_repetitions
 #For disordered geometries, each repetition will sample different atomic positions
 #Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
 #of random resonance frequencies for the atoms
-n_repetitions = 2
+n_repetitions = 3
 #
 #
 #
@@ -89,18 +89,18 @@ RAM_GB_max = 450
 #
 #ATOMIC SYSTEM & ENVIRONMENT:
 #Defines the (real) refractive index of the embedding dielectric, lossless material
-const n_bulk                =  1.0 
+const n_bulk               =  1.0 
 #With this definition, all lengths are calculated in units of lambda0*n_bulk, i.e. the wavelength outside the bulk material
 const lambda0              =  1.0/n_bulk 
 #Definition of the wavevector
 const k0                   =  2.0*pi/lambda0
 #Spatial orientation of the atomic dipole-matrix elements
-dipoles_polarization =  [1.0 ; 0.0 ; 0.0] 
+dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
 const gamma_prime          =  0.0 
 #Stndard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
-const inhom_broad_std      =  2.0
+const inhom_broad_std      =  1.0
 #
 #
 #INPUT GAUSSIAN BEAM:
@@ -145,7 +145,7 @@ probeXY_range_y       =   [-1 ; 1].*10*lambda0
 #Settings for the probe points in the YZ plane. 
 #If probeYZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probeYZ_option        =   ["YES" ; "NO"][1]
+probeYZ_option        =   ["YES" ; "NO"][2]
 probeYZ_x             =   0*lambda0
 probeYZ_points_y      =   50
 probeYZ_points_z      =   100
@@ -156,7 +156,7 @@ probeYZ_range_z       =   [-1 ; 1].*20*lambda0
 #Settings for the probe points in the YZ plane. 
 #If probeXZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probeXZ_option        =   ["YES" ; "NO"][1]
+probeXZ_option        =   ["YES" ; "NO"][2]
 probeXZ_y             =   0*lambda0
 probeXZ_points_x      =   50
 probeXZ_points_z      =   100
@@ -167,7 +167,7 @@ probeXZ_range_z       =   [-1 ; 1].*20*lambda0
 #Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
 #If probePlane_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probePlane_option     =   ["YES" ; "NO"][1]
+probePlane_option     =   ["YES" ; "NO"][2]
 probePlane_v3_vec     =   [1.0 ; 1.0 ; 1.0]./sqrt(3)
 probePlane_v3_value   =   0*lambda0
 probePlane_points_v1  =   50
@@ -177,7 +177,7 @@ probePlane_range_v2   =   [-1 ; 1].*10*lambda0
 #
 #
 #Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSphere_option = "NONE" then this probe is not computedd
-probeSphere_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
+probeSphere_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][1]
 probeSphere_radius    =   40*lambda0
 probeSphere_points    =   2000
 #
@@ -257,6 +257,7 @@ end
 #
 #Settings that are relevant only if the geometry is set to ARRAYS
 if geometry_settings == "ARRAYS"
+    #TBA!!!!
 end
 #
 #
