@@ -108,7 +108,7 @@ const inhom_broad_std      =  1.0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
-laser_detunings      =  [0.0 ; 1.0] 
+laser_detunings            =  [0.0] 
 #Beam waist of the input Gaussan beam
 const w0                   =  1.0*lambda0 
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
@@ -234,7 +234,7 @@ if geometry_settings == "METALENS"
     #Focal length f
     const focal_point               =    20*lambda0
     #Total radius of the metalens
-    const r_lens                	=    1.8*lambda0
+    const r_lens                	=    2*1.8*lambda0
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
     const disks_width               =    0.2*lambda0
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
