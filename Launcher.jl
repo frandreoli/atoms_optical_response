@@ -234,7 +234,7 @@ if geometry_settings == "METALENS"
     #Focal length f
     const focal_point               =    20*lambda0
     #Total radius of the metalens
-    const r_lens                	=    1.8*lambda0
+    const r_lens                	=    2*1.8*lambda0
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
     const disks_width               =    0.2*lambda0
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)

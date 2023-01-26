@@ -16,6 +16,8 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	E_field_in  .*=  conj_dot(dipoles_polarization,field_polarization)
 	state_coeff   =  CD_inversion(r_atoms, n_atoms, dipoles_polarization, E_field_in, laser_detunings)
 	#
+	GC.safepoint()
+	#
 	#If mirror_symmetry_option=="YES" then each atoms counts as well for its mirrored positions. The variable atoms_mult accounts for that 
 	if mirror_symmetry_option=="YES"
 		atoms_mult = [2*Int(abs(r_atoms[i,1])>ZERO_THRESHOLD)+2*Int(abs(r_atoms[i,2])>ZERO_THRESHOLD) for i in 1:n_atoms]

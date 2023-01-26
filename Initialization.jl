@@ -12,6 +12,11 @@ BLAS.set_num_threads(nworkers())
 const ZERO_THRESHOLD = 10^(-12)
 const results_folder_name = "Results"
 #
+#Uncomment the following line only if the code seems to be leaking RAM memory
+#It will be forced to print a line any time the unused memory gets emptied
+#These messages will appear in the form "GC: ..."
+#GC.enable_logging(true)
+#
 #
 #
 #
@@ -268,11 +273,16 @@ if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; p
     close(probe_field_h5)
 end
 #
+GC.gc()
+#
 #Main computation
 @time for index_repetition in 1:n_repetitions
     if geometry_settings[1:3]=="DIS"
         #TBA!!!
     end
+    #
+    GC.gc()
+    #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
     println("| Current available memory:                   ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
     @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
