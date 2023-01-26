@@ -50,6 +50,13 @@ const geometry_settings         =
 const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 #
 #
+#REPETITIONS NUMBER
+#The code will calculate the atomic response a number of times given by n_repetitions
+#For disordered geometries, each repetition will sample different atomic positions
+#Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
+#of random resonance frequencies for the atoms
+n_repetitions = 2
+#
 #
 #
 #
@@ -65,7 +72,7 @@ const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 const TN = [Float32 ; Float64][1]
 #Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
 #If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
-const name_simulation = "DEFAULT_NEW"
+const name_simulation = "DEFAULT"
 #Maximum RAM available for the computation (in GB)
 RAM_GB_max = 450
 #
@@ -88,12 +95,12 @@ const lambda0              =  1.0/n_bulk
 #Definition of the wavevector
 const k0                   =  2.0*pi/lambda0
 #Spatial orientation of the atomic dipole-matrix elements
-const dipoles_polarization =  [1.0 ; 0.0 ; 0.0] 
+dipoles_polarization =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
 const gamma_prime          =  0.0 
-#Stndard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies. 
+#Stndard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
-const inhom_broad_std      =  0.0
+const inhom_broad_std      =  2.0
 #
 #
 #INPUT GAUSSIAN BEAM:

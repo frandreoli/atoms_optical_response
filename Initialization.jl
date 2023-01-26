@@ -102,6 +102,19 @@ if geometry_settings == "METALENS"
 end
 #
 #
+#Consistency of the repetition number
+rep_warning = "The number of repetition n_repetitions must be a positive, integer number.\nSetting n_repetitions=1."
+if typeof(n_repetitions)!==Int64
+    @warn rep_warning
+    n_repetitions = 1
+elseif n_repetitions<1
+    @warn rep_warning
+    n_repetitions = 1
+end
+if (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD)&& n_repetitions>1
+    @warn "Neither the atomic positions nor the resonance frequencies are randomly chosen.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
+    n_repetitions = 1
+end
 #
 #
 #
@@ -180,7 +193,7 @@ inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)               
 #
 #Only if a metalens is computed
 if geometry_settings == "METALENS" 
-    file_name*="r"*string(r_lens/lambda0)[1:min(length(string(r_lens/lambda0)),3)]
+    file_name*="_r"*string(r_lens/lambda0)[1:min(length(string(r_lens/lambda0)),3)]
     file_name*="_f"*string(focal_point/lambda0)[1:min(length(string(focal_point/lambda0)),3)]
     file_name*="_widths"*string(disks_width)[1:min(4,length(string(disks_width)))]
     file_name*="_phase"*string(phase_shift)[1:min(5,length(string(phase_shift)))]
@@ -239,7 +252,25 @@ if 1.05*RAM_GB_estimate>RAM_GB_max
 end
 #
 #
+#Initializes the data files, or overwrites them if already existing
+t_and_r_h5 = h5open(final_path_name*"/"*results_folder_name*"/"*"t_and_r.h5", "w")
+close(t_and_r_h5)
+#
+if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePlane_option ])) || probeSphere_option!="NONE"
+    probe_pos_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_positions.h5", "w")
+    close(probe_pos_h5)
+    probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
+    close(probe_field_h5)
+end
+#
 #Main computation
-@time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target )
+@time for index_repetition in 1:n_repetitions
+    if geometry_settings[1:3]=="DIS"
+        #TBA!!!
+    end
+    n_repetitions>1 ? println("\nStarting the repetition ", index_repetition,"/",n_repetitions) : nothing
+    CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+end
+#
 println("\nEvaluation successfully completed. \nEvaluation time:                            ", time()-time_start,"\n")
 

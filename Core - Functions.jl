@@ -238,26 +238,36 @@ function h5write_multiple(file_name,data_array... ; open_option="cw")
   close(file_h5)
 end
 #
-#=
-function h5write_array_append(file_name,data, name_variable="")
+#
+function h5write_append(file_name,data, name_variable="")
   open_option="cw"
   file_h5=h5open(file_name*".h5", open_option)
   if haskey(file_h5, name_variable)
-    old_data = file_h5[name_variable]
+    old_data = read(file_h5[name_variable])
     delete_object(file_h5, name_variable)
-    file_h5[name_variable]=vcat(old_data, data)
+    try
+      file_h5[name_variable]=vcat(old_data, data)
+    catch error_writing
+      close(file_h5)
+      error(error_writing)
+    end
   else
-    file_h5[name_variable]=data
+    try
+      file_h5[name_variable]=data
+    catch error_writing
+      close(file_h5)
+      error(error_writing)
+    end
   end
   close(file_h5)
 end
 #
-function h5write_complex_array_append(file_name,data, name_variable="")
-  for domain_name in ["re" ; "im"]
-    h5write_array_append(file_name,data, name_variable*domain_name) 
+function h5write_complex_append(file_name,data, name_variable="")
+  for domain_f in ((real,"re") , (imag, "im"))
+    h5write_append(file_name,(domain_f[1]).(data), name_variable*domain_f[2]) 
   end
 end
-=#
+#
 #
 #
 #

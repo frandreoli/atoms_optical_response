@@ -5,7 +5,6 @@
 #
 #Main Function
 function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target )
-    println("\nStarting the main part.")
 	#
 	#
 	#INITIALIZATION AND COUPLED-DIPOLE SOLUTION:
@@ -29,18 +28,15 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#
 	#CALCULATES THE TRANSMISSION/REFLECTION INTO INPUT AND TARGET MODES:
 	#
-	#Initializes the data files, or overwrites them if already existing
-	t_and_r_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"t_and_r.h5", "w")
-	close(t_and_r_h5)
-	#
 	#Calculates the projection onto the same Gaussian mode as the input
-	t_in = Array{Complex{TN}}(undef,n_detunings)
-	r_in = Array{Complex{TN}}(undef,n_detunings)
+	time_t_and_r = time()
+	t_in = Array{Complex{TN}}(undef,1,n_detunings)
+	r_in = Array{Complex{TN}}(undef,1,n_detunings)
 	for i in 1:n_detunings
-		(t_in[i], r_in[i]) = CD_t_r_func(E_field_in, w0, 0.0, state_coeff[i,:],atoms_mult, w0)
+		(t_in[1,i], r_in[1,i]) = CD_t_r_func(E_field_in, w0, 0.0, state_coeff[i,:],atoms_mult, w0)
 	end
-	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_in, "t_in")
-	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_in, "r_in")
+	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_in, "t_in")
+	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_in, "r_in")
 	#
 	#Computes the transmission by projecting onto the target Gaussian beam
 	if target_beam_option == "YES"
@@ -51,24 +47,18 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 			E_field_target  .*= (w0/w0_target)*exp(2.0im*pi*z0_target/lambda0)
 		end
 		#Calculates the projection onto the target Gaussian mode
-		t_target = Array{Complex{TN}}(undef,n_detunings)
-		r_target = Array{Complex{TN}}(undef,n_detunings)
+		t_target = Array{Complex{TN}}(undef,1,n_detunings)
+		r_target = Array{Complex{TN}}(undef,1,n_detunings)
 		for i in 1:n_detunings
 			(t_target[i], r_target[i]) = CD_t_r_func(E_field_target, w0_target, z0_target, state_coeff[i,:],atoms_mult, w0)
 		end
-		h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_target, "t_target")
-		h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_target, "r_target")
+		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_target, "t_target")
+		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_target, "r_target")
 	end
+	println("Transmission and reflection computed in     ", time()- time_t_and_r)
 	#
 	#
 	#COMPUTES THE FIELD AT THE PROBE POSITIONS:
-	#
-	if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePlane_option ])) || probeSphere_option!="NONE"
-		probe_pos_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_positions.h5", "w")
-		close(probe_pos_h5)
-		probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
-		close(probe_field_h5)
-	end
 	#
 	#First probe, plane XY
 	if probeXY_option=="YES"
@@ -238,17 +228,19 @@ end
 #Wrapper of the function to evaluate the field at the probe points
 function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
 	time_temp = time()
-	E_field_out_probe = Array{Complex{Float64}}(undef, n_detunings, tot_probe_points, 3)
+	E_field_out_probe = Array{Complex{Float64}}(undef, 1,n_detunings, tot_probe_points, 3)
 	#Computing the field for the 3 polarizations and for each detuning
 	#It stores the final result in the matrix E_field_out_probe, whose first index is th detuning,
 	#the second is the position of the probe, and the third is the field polarization (in the basis x,y,z)
 	for det_index in 1:n_detunings
-		E_field_out_probe[det_index, :,:] = CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff[det_index,:], field_polarization, dipoles_polarization)
+		E_field_out_probe[1,det_index, :,:] = CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff[det_index,:], field_polarization, dipoles_polarization)
 	end
 	#
 	#Saving the data
-	h5write_basic(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  r_probe, "probe_pos_"*name)
-	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"probe_field", E_field_out_probe, "probe_field_"*name)
+	r_probe_temp = Array{Float64}(undef, 1, length(r_probe[:,1]), length(r_probe[1,:]) )
+	r_probe_temp[1,:,:] = r_probe[:,:]
+	h5write_append(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  r_probe_temp, "probe_pos_"*name)
+	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"probe_field", E_field_out_probe, "probe_field_"*name)
 	#
 	length(name)>=2 ? space_add=" "^(6-(length(name)-2)) : space_add=" "^6
 	println("Evaluation of the "*name*" probe finished in"*space_add, time()-time_temp)
