@@ -2,10 +2,10 @@
 ################## PHYSICAL GLOSSARY ########################################################################
 #############################################################################################################
 #=
-- nBulk   = refractive index of the embedding (dielectric, lossless) material (for air and vacuum nBulk = 1)
+- n_bulk   = refractive index of the embedding (dielectric, lossless) material (for air and vacuum n_bulk = 1)
 - Gamma0  = spontaneous (elastic) decay rate of the single atoms in the material. This is set to Gamma0=1, meaning that all the frequencies are expressed in units of Gamma0
 - omega0  = atomic resonance frequency between the groun |g> and the excited state |e>
-- lambda0 = (2*pi*c)/(omega0*nBulk) resonant wavelength in the bulk dielectric material. 
+- lambda0 = (2*pi*c)/(omega0*n_bulk) resonant wavelength in the bulk dielectric material. 
 =#
 #
 #
@@ -65,7 +65,7 @@ const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 const TN = [Float32 ; Float64][1]
 #Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
 #If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
-const name_simulation = "DEFAULT"
+const name_simulation = "DEFAULT_NEW"
 #Maximum RAM available for the computation (in GB)
 RAM_GB_max = 450
 #
@@ -82,9 +82,9 @@ RAM_GB_max = 450
 #
 #ATOMIC SYSTEM & ENVIRONMENT:
 #Defines the (real) refractive index of the embedding dielectric, lossless material
-const nBulk                =  1.0 
-#With this definition, all lengths are calculated in units of lambda0*nBulk, i.e. the wavelength outside the bulk material
-const lambda0              =  1.0/nBulk 
+const n_bulk                =  1.0 
+#With this definition, all lengths are calculated in units of lambda0*n_bulk, i.e. the wavelength outside the bulk material
+const lambda0              =  1.0/n_bulk 
 #Definition of the wavevector
 const k0                   =  2.0*pi/lambda0
 #Spatial orientation of the atomic dipole-matrix elements
@@ -101,7 +101,7 @@ const inhom_broad_std      =  0.0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
-const laser_detunings      =  [0.0] 
+laser_detunings      =  [0.0 ; 1.0] 
 #Beam waist of the input Gaussan beam
 const w0                   =  1.0*lambda0 
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 

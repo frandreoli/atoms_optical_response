@@ -10,6 +10,7 @@ Random.seed!()
 if nworkers()==1 addprocs() end
 BLAS.set_num_threads(nworkers())
 const ZERO_THRESHOLD = 10^(-12)
+const results_folder_name = "Results"
 #
 #
 #
@@ -111,7 +112,7 @@ end
 #############################################################################################################
 #
 #
-const time_start=time()
+time_start=time()
 #
 #Defines the settings and the atomic positions for an atomic metalens
 if geometry_settings == "METALENS"
@@ -148,7 +149,7 @@ end
 if geometry_settings == "ARRAYS"
 end
 #
-const time_atomic_pos=time()
+time_atomic_pos=time()
 #
 #
 #
@@ -163,11 +164,17 @@ const time_atomic_pos=time()
 #
 #Defines the filename, by adding labels identifying the user choices of parameters for the simulation
 length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[name_simulation] 
-mirror_symmetry_option == "NO" ? file_name="_nAtoms"*string(n_atoms) : file_name="_nAtoms"*string(4*n_atoms)
+if mirror_symmetry_option == "NO" 
+    file_name="_nAtoms"*string(n_atoms)
+else
+    positive_points = count((r_atoms[:,1].>0.0).*(r_atoms[:,2].>0.0))
+    central_points  = count((abs.(r_atoms[:,1]).<ZERO_THRESHOLD).*(abs.(r_atoms[:,2]).<ZERO_THRESHOLD))
+    file_name="_nAtoms"*string(4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points)
+end
 #
 file_name*="_w0"*string(w0/lambda0)[1:min(length(string(w0/lambda0)),3)]
 #
-nBulk!=1.0         ?  file_name*="_n"*string(nBulk)[1:min(3,length(string(nBulk)))]               : nothing
+n_bulk!=1.0         ?  file_name*="_n"*string(n_bulk)[1:min(3,length(string(n_bulk)))]               : nothing
 gamma_prime>0      ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
 inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
 #
@@ -200,17 +207,22 @@ println("\nTime: ",now(),"\nStarting evaluation of ", @__FILE__,"\n")
 println("Output file name: ",file_name,"\n\n")
 final_path_name="Data_Output/"*file_name*"/"
 mkpath(final_path_name)
-pos_save_option=="YES"  ? h5write_multiple(final_path_name*"pos_atoms", [("r_atoms", r_atoms)])  : nothing
+mkpath(final_path_name*"/"*results_folder_name)
+pos_save_option=="YES"  ? h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", r_atoms))  : nothing
 println("Atomic positions created in                 ", time_atomic_pos-time_start)
 #
-#
 #Saving data files with the settings of the simulation
+h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) )
+h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option))
+h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std))
+#
+#Saving data files with the settings specific of the atomic metalens
 if geometry_settings == "METALENS" 
     n_phase_disks_to_save = length(collect(0.0:disks_width:r_lens))-1
-    h5write_multiple(final_path_name*"inputs",        [("inputs",        [lambda0 w0 r_lens focal_point n_phase_disks_to_save nBulk gamma_prime inhom_broad_std] ), ("buffer", buffer_smooth), ("disks_width", disks_width)])
-    h5write_multiple(final_path_name*"phase_array",   [("phase_array",   phase_array), ("phase_range_theo", phase_range_theo)                           ])
-    h5write_multiple(final_path_name*"lens_disks_r",  [("lens_disks_r",  lens_disks_r                                                                  )])
-    h5write_multiple(final_path_name*"lattice_array", [("lattice_array", lattice_array                                                                 )])
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks_to_save", n_phase_disks_to_save), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) )
+    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
+    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) )
+    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array) )
 end
 #
 #

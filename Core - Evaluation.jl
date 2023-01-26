@@ -29,14 +29,18 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#
 	#CALCULATES THE TRANSMISSION/REFLECTION INTO INPUT AND TARGET MODES:
 	#
+	#Initializes the data files, or overwrites them if already existing
+	t_and_r_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"t_and_r.h5", "w")
+	close(t_and_r_h5)
+	#
 	#Calculates the projection onto the same Gaussian mode as the input
 	t_in = Array{Complex{TN}}(undef,n_detunings)
 	r_in = Array{Complex{TN}}(undef,n_detunings)
 	for i in 1:n_detunings
 		(t_in[i], r_in[i]) = CD_t_r_func(E_field_in, w0, 0.0, state_coeff[i,:],atoms_mult, w0)
 	end
-	h5write_complex(final_path_name*"t_in", t_in)
-	h5write_complex(final_path_name*"r_in", r_in)
+	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_in, "t_in")
+	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_in, "r_in")
 	#
 	#Computes the transmission by projecting onto the target Gaussian beam
 	if target_beam_option == "YES"
@@ -52,12 +56,19 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 		for i in 1:n_detunings
 			(t_target[i], r_target[i]) = CD_t_r_func(E_field_target, w0_target, z0_target, state_coeff[i,:],atoms_mult, w0)
 		end
-		h5write_complex(final_path_name*"t_target", t_target)
-		h5write_complex(final_path_name*"r_target", r_target)
+		h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_target, "t_target")
+		h5write_complex(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_target, "r_target")
 	end
 	#
 	#
 	#COMPUTES THE FIELD AT THE PROBE POSITIONS:
+	#
+	if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePlane_option ])) || probeSphere_option!="NONE"
+		probe_pos_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_positions.h5", "w")
+		close(probe_pos_h5)
+		probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
+		close(probe_field_h5)
+	end
 	#
 	#First probe, plane XY
 	if probeXY_option=="YES"
@@ -236,8 +247,9 @@ function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_pr
 	end
 	#
 	#Saving the data
-	h5write_multiple(final_path_name*"r_probe_"*name,   [("r_probe", r_probe)])
-	h5write_complex(final_path_name*"field_probe_"*name,   E_field_out_probe)
+	h5write_basic(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  r_probe, "probe_pos_"*name)
+	h5write_complex(final_path_name*"/"*results_folder_name*"/"*"probe_field", E_field_out_probe, "probe_field_"*name)
+	#
 	length(name)>=2 ? space_add=" "^(6-(length(name)-2)) : space_add=" "^6
 	println("Evaluation of the "*name*" probe finished in"*space_add, time()-time_temp)
 end

@@ -200,24 +200,65 @@ end
 #
 #FUNCTIONS TO SAVE DATA FILES IN HDF5 FORMAT:
 #
-#Function to save an array of complex number.
-#In the HDF5 file the variable "real" ("imag") contain an array with the the real ("imaginary") parts
-function h5write_complex(file_name,data)
-  file_h5=h5open(file_name*".h5", "w")
-  file_h5["real"]=real.(data)
-  file_h5["imag"]=imag.(data)
+#Function to save any variable. 
+#"cw" -> Do not overwrite existing data
+#"w"  -> Overwrite existing data 
+function h5write_basic(file_name,data, name_variable="" ; open_option="cw")
+  file_h5=h5open(file_name*".h5", open_option)
+  haskey(file_h5, name_variable) ? delete_object(file_h5, name_variable) : nothing
+  file_h5[name_variable]=data
   close(file_h5)
 end
 #
-#Function to save multiples variables.
-#data_array is an array of tuples whose first element is the name of the variable, while the second is the variable to save
-function h5write_multiple(file_name,data_array)
-  file_h5=h5open(file_name*".h5", "w")
+#Function to save an array of complex number.
+#In the HDF5 file the variable "_re" ("_im") contain an array with the the real (imaginary) parts
+function h5write_complex(file_name,data, name_variable="" ; open_option="cw")
+  length(name_variable)>0 ? add_name=name_variable*"_" : add_name = ""
+  file_h5=h5open(file_name*".h5", open_option)
+  haskey(file_h5, name_variable*"re") ? delete_object(file_h5, name_variable*"re") : nothing
+  haskey(file_h5, name_variable*"im") ? delete_object(file_h5, name_variable*"im") : nothing
+  file_h5[name_variable*"re"]=real.(data)
+  file_h5[name_variable*"im"]=imag.(data)
+  close(file_h5)
+end
+#
+#Function to save multiples new variables into a file. 
+#If the file already exists it preserves the data, otherwise it creates the file
+#If the variable already exist in the file, it overwrites it
+#data_array is an array of tuples whose first element is the name of the variable
+#while the second is the variable to save
+function h5write_multiple(file_name,data_array... ; open_option="cw")
+  file_h5=h5open(file_name*".h5", open_option)
   for index in 1:length(data_array)
-  file_h5[(data_array[index])[1]]=(data_array[index])[2]
+    name_variable = data_array[index][1]
+    variable_data = data_array[index][2]
+    haskey(file_h5, name_variable) ? delete_object(file_h5, name_variable) : nothing
+    file_h5[name_variable]=variable_data
   end
   close(file_h5)
 end
+#
+#=
+function h5write_array_append(file_name,data, name_variable="")
+  open_option="cw"
+  file_h5=h5open(file_name*".h5", open_option)
+  if haskey(file_h5, name_variable)
+    old_data = file_h5[name_variable]
+    delete_object(file_h5, name_variable)
+    file_h5[name_variable]=vcat(old_data, data)
+  else
+    file_h5[name_variable]=data
+  end
+  close(file_h5)
+end
+#
+function h5write_complex_array_append(file_name,data, name_variable="")
+  for domain_name in ["re" ; "im"]
+    h5write_array_append(file_name,data, name_variable*domain_name) 
+  end
+end
+=#
+#
 #
 #
 #
@@ -239,4 +280,12 @@ function RAM_estimation(TN,tot_probe_points, n_atoms, n_detunings)
   size_matrix_probe = sizeTN_complex*n_atoms*tot_probe_points
   size_coeff_array  = n_atoms*n_detunings
   (max(size_matrix_probe, size_matrix_G)+size_matrix_G+size_coeff_array)/(1024^3)
+end
+#
+#Function to clear all methods of a function.
+#The argument must be passed as func=:function_name
+function clear_function_all(func)
+  for method_to_clear in methods(func)
+    Base.delete_method(method_to_clear)
+  end
 end
