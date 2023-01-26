@@ -226,7 +226,7 @@ mkpath(final_path_name*"/"*results_folder_name)
 if pos_save_option=="YES" && geometry_settings[1:3]!="DIS"
     #Adding a dummy dimension to uniform the data analysis with the atomic_positions for disordered systems
     h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms)) ; open_option="w") 
-    println("Atomic positions created in                   ", time_atomic_pos-time_start)
+    println("Atomic positions created in                   ", dig_cut(time_atomic_pos-time_start)," seconds")
 end
 #
 #Saving data files with the settings of the simulation
@@ -274,6 +274,7 @@ end
         #TBA!!!
     end
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
+    println("| Current available memory:                   ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
     @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
     #
     index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance: ") : nothing
@@ -281,3 +282,4 @@ end
 #
 println("\nEvaluation successfully completed. \nTotal evaluation time:                        ", time()-time_start,"\n")
 
+ 

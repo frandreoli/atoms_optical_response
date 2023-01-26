@@ -305,3 +305,7 @@ function add_dimension(matrix)
   matrix_temp = Array{Float64}(undef, 1, length(matrix[:,1]), length(matrix[1,:]) )
 	matrix_temp[1,:,:] = matrix[:,:]
 end
+#
+function dig_cut(x_number, digits=15)
+  string(x_number)[1:digits]
+end
