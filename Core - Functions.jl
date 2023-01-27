@@ -300,14 +300,28 @@ function clear_function_all(func)
   end
 end
 #
-#Add a dummy dimension to a matrix
+#Adding a dummy dimension to a matrix
 function add_dimension(matrix)
   matrix_temp = Array{Float64}(undef, 1, length(matrix[:,1]), length(matrix[1,:]) )
 	matrix_temp[1,:,:] = matrix[:,:]
+  matrix_temp
 end
 #
-function dig_cut(x_number, digits=15)
-  (x->x[1:min(digits, length(x))]).(string(x_number))
+#Cuts the output number to print. 
+#It only works for numbers whose integer part has less than target_digits digits
+function dig_cut(x_number, target_digits=15)
+  string_x_number=string(x_number)
+  x_digits = length(string_x_number)
+  if x_digits>target_digits
+    string_x_number=string_x_number[1:target_digits]
+  elseif x_digits<target_digits
+    if !occursin(".",string_x_number) 
+      string_x_number*="."
+      x_digits+=1
+    end
+    string_x_number*="0"^(target_digits-x_digits)
+  end
+  string_x_number
 end
 #
 #

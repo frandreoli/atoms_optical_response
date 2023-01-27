@@ -12,8 +12,8 @@ BLAS.set_num_threads(nworkers())
 const ZERO_THRESHOLD = 10^(-12)
 const results_folder_name = "Results"
 #
-#Uncomment the following line only if the code seems to be leaking RAM memory
-#It will be forced to print a line any time the unused memory gets emptied
+#Uncomment the following line only if the code seems to be leaking RAM memory.
+#You will force the code to print a line any time the unused memory gets emptied.
 #These messages will appear in the form "GC: ..."
 #GC.enable_logging(true)
 #
@@ -128,7 +128,7 @@ if geometry_settings[1:3]=="DIS"
     @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
     defects_fraction = 0.0
 end
-if !isnumeric(defects_fraction) || defects_fraction<0.0 || defects_fraction>1.0
+if !isa(defects_fraction,Number) || defects_fraction<0.0 || defects_fraction>1.0
     @warn "The fraction of defects (i.e. defects_fraction) must be a positive number, lower than unity.\nSetting defects_fraction=0."
     defects_fraction = 0.0
 end
@@ -151,9 +151,9 @@ time_start=time()
 #
 #Defines the settings and the atomic positions for an atomic metalens
 if geometry_settings == "METALENS"
-    (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_point, disks_width,buffer_smooth)
+    (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_point, disks_width,buffer_smooth,phase_shift)
     #
-    if default_out_beam_option=="YES"
+    if default_target_option=="YES"
         (w0_target, z0_target) = ideal_beam(w0, k0, focal_point)
         normalize_target_option = "YES"
     end
@@ -182,12 +182,13 @@ end
 #
 #Defines the settings and the atomic positions for a series of atomic arrays
 if geometry_settings == "ARRAYS"
+    #TBA!!!!
 end
 #
 time_atomic_pos=time()
 #
 #
-#Punching defects (for ordered geometries, if specified)
+#Punching defects (only for ordered geometries, and if requested)
 if defects_fraction>0.0
     (r_atoms,n_atoms) = defect_punching(r_atoms,n_atoms, defects_fraction)
 end
@@ -213,6 +214,10 @@ elseif geometry_settings[1:3]!="DIS"
     file_name="_nAtoms"*string(4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points)
 else
     file_name="_nAtoms"*string(4*n_atoms)
+end
+#
+if defects_fraction>0.0
+    file_name*="_defects"
 end
 #
 file_name*="_w0"*string(w0/lambda0)[1:min(length(string(w0/lambda0)),3)]
@@ -258,17 +263,25 @@ if pos_save_option=="YES" && geometry_settings[1:3]!="DIS"
 end
 #
 #Saving data files with the settings of the simulation
-h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ; open_option="w")
-h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option); open_option="w")
+h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
+h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option))
+h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
 h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
+h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
+h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions))
+if target_beam_option=="YES"
+    h5write_multiple(final_path_name*"settings", ("w0_target",w0_target),("z0_target",z0_target) )
+    h5write_multiple(final_path_name*"options", ("normalize_target_option", normalize_target_option) )
+end
 #
 #Saving data files with the settings specific of the atomic metalens
 if geometry_settings == "METALENS" 
-    n_phase_disks_to_save = length(collect(0.0:disks_width:r_lens))-1
-    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks_to_save", n_phase_disks_to_save), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
-    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo); open_option="w")
-    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) ; open_option="w")
-    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array) ; open_option="w")
+    n_phase_disks = length(collect(0.0:disks_width:r_lens))-1
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
+    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) , ("phase_shift",phase_shift))
+    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array))
+    h5write_multiple(final_path_name*"options_metalens",  ("z_fixed_option", z_fixed_option) , ("z_fixed_buffer_option",z_fixed_buffer_option),("phase_center_ring_option",phase_center_ring_option),("default_probe_option",default_probe_option),("default_target_option",default_target_option) ; open_option="w")
 end
 #
 #
@@ -299,7 +312,7 @@ end
 GC.gc()
 #
 #Main computation
-@time for index_repetition in 1:n_repetitions
+performance=@timed for index_repetition in 1:n_repetitions
     if geometry_settings[1:3]=="DIS"
         #TBA!!!
     end
@@ -307,12 +320,12 @@ GC.gc()
     GC.gc()
     #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
-    println("| Current available memory:                   ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
+    println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
     @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
     #
-    index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance: ") : nothing
+    index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance of the core code: ") : nothing
 end
+println("- Total core-computation time:                ", dig_cut(performance[2]-performance[4])," seconds" )
+println("- Total garbage-collection time:              ", dig_cut(performance[4])," seconds" )
 #
-println("\nEvaluation successfully completed. \nTotal evaluation time:                        ", time()-time_start,"\n")
-
- 
+println("\nEvaluation successfully completed. \n- Total running time:                         ", dig_cut(time()-time_start)," seconds","\n")

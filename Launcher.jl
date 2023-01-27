@@ -55,7 +55,7 @@ const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 #For disordered geometries, each repetition will sample different atomic positions
 #Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
 #of random resonance frequencies for the atoms
-n_repetitions = 3
+n_repetitions = 1
 #
 #
 #
@@ -100,10 +100,10 @@ dipoles_polarization       =  [1.0 ; 0.0 ; 0.0]
 const gamma_prime          =  0.0 
 #Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
-const inhom_broad_std      =  1.0
-#Possibility of punching holes in the metalens 
-#i.e. removing a fraction holes_fraction of randomly chosen atoms
-holes_fraction = 0.0
+const inhom_broad_std      =  0.0
+#Possibility of punching defects in the metalens 
+#i.e. removing a fraction defects_fraction of randomly chosen atoms
+defects_fraction = 0.0
 #
 #
 #INPUT GAUSSIAN BEAM:
@@ -231,13 +231,13 @@ if geometry_settings == "METALENS"
     #Default: YES - If YES then (w0_target, z0_target) are overwritten by the default option.
     #It consists of an ideal Gaussian beam expected after a perfect lens with the given focal_length 
     #Similarly normalize_target_option are overwritten to YES
-    const default_out_beam_option   =      ["YES" ; "NO"][1]       
+    const default_target_option   =      ["YES" ; "NO"][1]       
     #
     #METALENS PARAMETERS:
     #Focal length f
     const focal_point               =    20*lambda0
     #Total radius of the metalens
-    const r_lens                	=    2*1.8*lambda0
+    const r_lens                	=    1.8*lambda0
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
     const disks_width               =    0.2*lambda0
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)

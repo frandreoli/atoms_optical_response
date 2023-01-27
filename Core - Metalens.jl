@@ -33,7 +33,7 @@ function nearest_choice(array, value)
 end
 #
 #Main function to construct the atomic metalens
-function metalens_creation(r_lens, focal_point, disks_width, buffer_zone)
+function metalens_creation(r_lens, focal_point, disks_width, buffer_zone,phase_shift)
 	#The variable "/PhaseData" in "phase_constants_data.h5" contains a 4xM array.
 	#This stores M vectors with 4 elements each, i.e. xi_x^i, xi_y^i, xi_z(xi_x^i,xi_y^i) and phi(xi_x^i,xi_y^i)
 	#When the algorithm needs a value of phi_j in the j-th ring, it finds the closest match phi_j=phi(xi_x^i,xi_y^i)
