@@ -307,5 +307,23 @@ function add_dimension(matrix)
 end
 #
 function dig_cut(x_number, digits=15)
-  string(x_number)[1:digits]
+  (x->x[1:min(digits, length(x))]).(string(x_number))
+end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## PUNCH HOLES ##############################################################################
+#############################################################################################################
+#
+#
+#Function to punch defects in an atomic array/metalens
+function defect_punching(r_atoms,n_atoms, defects_fraction)
+  n_atoms_new = Int(round(n_atoms*(1-defects_fraction)))
+  r_atoms_new = r_atoms[sort((shuffle(1:length(r_atoms[:,1])))[1:n_atoms_new]),:]
+  (r_atoms_new, n_atoms_new)
 end

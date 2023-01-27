@@ -98,9 +98,12 @@ const k0                   =  2.0*pi/lambda0
 dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
 const gamma_prime          =  0.0 
-#Stndard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
+#Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
 const inhom_broad_std      =  1.0
+#Possibility of punching holes in the metalens 
+#i.e. removing a fraction holes_fraction of randomly chosen atoms
+holes_fraction = 0.0
 #
 #
 #INPUT GAUSSIAN BEAM:

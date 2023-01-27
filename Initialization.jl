@@ -68,9 +68,10 @@ end
 #
 #
 #Consistency of the definition of the standard deviation of inhomogenous broadening
-if inhom_broad_std <0 
-    @warn "The standard deviation in the Gaussian distribution of inhomogeneous bradening cannot be negative. \nReplacing inhom_broad_std with |inhom_broad_std|."
-    inhom_broad_std = abs(inhom_broad_std)
+#If it is not defined as a number (tested with isa()), the code enters the if and soesn't evaluate the second condition
+if !isa(inhom_broad_std,Number) || inhom_broad_std <0 
+    @warn "The standard deviation in the Gaussian distribution of inhomogeneous bradening must be a positive number. \nSetting inhom_broad_std=0.0."
+    inhom_broad_std = 0.0
 end
 #
 #
@@ -90,14 +91,14 @@ end
 if geometry_settings == "METALENS" 
     #
     #Consistency of the buffer zone definition
-    if (buffer_smooth<0.0 || buffer_smooth>1.0)
-        @warn "The buffer zone is ill-defined out of the range 0<=buffer_smooth<=1. Choosing the closest, valid value."
-        buffer_smooth<0.0 ? buffer_smooth=0.0 : nothing
+    if !isa(buffer_smooth,Number) || (buffer_smooth<0.0 || buffer_smooth>1.0)
+        @warn "The buffer zone is ill-defined out of the range 0<=buffer_smooth<=1. Setting buffer_smooth to the closest, valid value."
+        !isa(buffer_smooth,Number) || buffer_smooth<0.0 ? buffer_smooth=0.0 : nothing
         buffer_smooth>1.0 ? buffer_smooth=1.0 : nothing
     end
     #Consistency of the disk width
-    if disks_width>r_lens
-        @warn "The width of each disk cannot be larger than the radius of the metalens. Setting disks_width = r_lens."
+    if !isa(disks_width,Number) || disks_width>r_lens
+        @warn "The width of each disk must be a number smaller than the radius of the metalens. Setting disks_width = r_lens."
         disks_width = r_lens
     end
     if disks_width<=0
@@ -120,6 +121,22 @@ if (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD)&& n_re
     @warn "Neither the atomic positions nor the resonance frequencies are randomly chosen.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
     n_repetitions = 1
 end
+#
+#
+#Consistency of defects_fraction with the rest of options
+if geometry_settings[1:3]=="DIS"
+    @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
+    defects_fraction = 0.0
+end
+if !isnumeric(defects_fraction) || defects_fraction<0.0 || defects_fraction>1.0
+    @warn "The fraction of defects (i.e. defects_fraction) must be a positive number, lower than unity.\nSetting defects_fraction=0."
+    defects_fraction = 0.0
+end
+if mirror_symmetry_option=="YES" && defects_fraction>0.0
+    @warn "The mirror symmetry is active and the fraction of (random) defects is non-null.\nThe positions of the defects will be randomized only in the x>0, y>0 quadrant, while they will be symmetric for x->-x and y->-y."
+end
+#
+#
 #
 #
 #
@@ -168,6 +185,12 @@ if geometry_settings == "ARRAYS"
 end
 #
 time_atomic_pos=time()
+#
+#
+#Punching defects (for ordered geometries, if specified)
+if defects_fraction>0.0
+    (r_atoms,n_atoms) = defect_punching(r_atoms,n_atoms, defects_fraction)
+end
 #
 #
 #
