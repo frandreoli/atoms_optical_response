@@ -263,8 +263,9 @@ function h5write_append(file_name,data, name_variable="")
 end
 #
 function h5write_complex_append(file_name,data, name_variable="")
+  length(name_variable)>0 ? add_name="_" : add_name = ""
   for domain_f in ((real,"re") , (imag, "im"))
-    h5write_append(file_name,(domain_f[1]).(data), name_variable*domain_f[2]) 
+    h5write_append(file_name,(domain_f[1]).(data), name_variable*add_name*domain_f[2]) 
   end
 end
 #

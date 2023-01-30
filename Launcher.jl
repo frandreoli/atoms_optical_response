@@ -148,7 +148,7 @@ probeXY_range_y       =   [-1 ; 1].*10*lambda0
 #Settings for the probe points in the YZ plane. 
 #If probeYZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probeYZ_option        =   ["YES" ; "NO"][2]
+probeYZ_option        =   ["YES" ; "NO"][1]
 probeYZ_x             =   0*lambda0
 probeYZ_points_y      =   50
 probeYZ_points_z      =   100
@@ -159,7 +159,7 @@ probeYZ_range_z       =   [-1 ; 1].*20*lambda0
 #Settings for the probe points in the YZ plane. 
 #If probeXZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probeXZ_option        =   ["YES" ; "NO"][2]
+probeXZ_option        =   ["YES" ; "NO"][1]
 probeXZ_y             =   0*lambda0
 probeXZ_points_x      =   50
 probeXZ_points_z      =   100
@@ -168,9 +168,9 @@ probeXZ_range_z       =   [-1 ; 1].*20*lambda0
 #
 #
 #Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
-#If probePlane_option = "NO" then this probe is not computed
+#If probePLANE_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probePlane_option     =   ["YES" ; "NO"][2]
+probePLANE_option     =   ["YES" ; "NO"][1]
 probePlane_v3_vec     =   [1.0 ; 1.0 ; 1.0]./sqrt(3)
 probePlane_v3_value   =   0*lambda0
 probePlane_points_v1  =   50
@@ -179,8 +179,8 @@ probePlane_range_v1   =   [-1 ; 1].*10*lambda0
 probePlane_range_v2   =   [-1 ; 1].*10*lambda0
 #
 #
-#Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSphere_option = "NONE" then this probe is not computedd
-probeSphere_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][1]
+#Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
+probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
 probeSphere_radius    =   40*lambda0
 probeSphere_points    =   2000
 #

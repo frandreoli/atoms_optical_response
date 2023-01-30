@@ -84,15 +84,15 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	end	
 	#
 	#Fourth probe, custom plane:
-	if probePlane_option=="YES"
+	if probePLANE_option=="YES"
 		tot_probe_points = probePlane_points_v1*probePlane_points_v2
 		r_probe =  f_probe_PLANE(probePlane_v3_vec, probePlane_v3_value, probePlane_points_v1, probePlane_points_v2, probePlane_range_v1, probePlane_range_v2)
 		CD_output_field_wrap("PLANE", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
 	end	
 	#
 	#Fifth probe, sphere:
-	if probeSphere_option!="NONE"
-		r_probe = f_probe_SPHERE(probeSphere_radius,probeSphere_points,probeSphere_option)
+	if probeSPHERE_option!="NONE"
+		r_probe = f_probe_SPHERE(probeSphere_radius,probeSphere_points,probeSPHERE_option)
 		CD_output_field_wrap("SPHERE", n_detunings, probeSphere_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
 	end	
 	#
@@ -233,14 +233,15 @@ function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_pr
 	time_temp = time()
 	E_field_out_probe = Array{Complex{Float64}}(undef, 1,n_detunings, tot_probe_points, 3)
 	#Computing the field for the 3 polarizations and for each detuning
-	#It stores the final result in the matrix E_field_out_probe, whose first index is th detuning,
-	#the second is the position of the probe, and the third is the field polarization (in the basis x,y,z)
+	#It stores the final result in the matrix E_field_out_probe, whose first index is the repetition,
+	#the second is the detuning, the third is the position of the probe, 
+	#and the fourth is the field polarization (in the basis x,y,z)
 	for det_index in 1:n_detunings
 		E_field_out_probe[1,det_index, :,:] = CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff[det_index,:], field_polarization, dipoles_polarization)
 	end
 	#
 	#Saving the data
-	h5write_append(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  add_dimension(r_probe), "probe_pos_"*name)
+	h5write_append(final_path_name*"/"*results_folder_name*"/"*"probe_positions",  r_probe, "probe_pos_"*name)
 	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"probe_field", E_field_out_probe, "probe_field_"*name)
 	#
 	length(name)>=2 ? space_add=" "^(6-(length(name)-2)) : space_add=" "^6

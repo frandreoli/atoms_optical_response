@@ -40,7 +40,7 @@ end
 #
 #
 #Checking the normalization of the direction vectors
-if probePlane_option=="YES" && abs(conj_norm(probePlane_v3_vec)-1.0)>ZERO_THRESHOLD
+if probePLANE_option=="YES" && abs(conj_norm(probePlane_v3_vec)-1.0)>ZERO_THRESHOLD
     probePlane_v3_vec=conj_normalize(probePlane_v3_vec)
     @warn "The normal direction of the custom probe plane, i.e. probePlane_v3_vec, must be normalized to 1.\nNormalizing it to 1."
 end
@@ -264,7 +264,7 @@ end
 #
 #Saving data files with the settings of the simulation
 h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
-h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePlane_option", probePlane_option) , ("probeSphere_option", probeSphere_option))
+h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
 h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
 h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
@@ -290,8 +290,8 @@ tot_probe_points = 0
 probeXY_option=="YES"     ? tot_probe_points+=probeXY_points_x*probeXY_points_y           : nothing
 probeYZ_option=="YES"     ? tot_probe_points+=probeYZ_points_y*probeYZ_points_z           : nothing
 probeXZ_option=="YES"     ? tot_probe_points+=probeXZ_points_x*probeXZ_points_z           : nothing
-probePlane_option=="YES"  ? tot_probe_points+=probePlane_points_v1*probePlane_points_v2   : nothing
-probeSphere_option=="YES" ? tot_probe_points+=probeSphere_points                          : nothing
+probePLANE_option=="YES"  ? tot_probe_points+=probePlane_points_v1*probePlane_points_v2   : nothing
+probeSPHERE_option=="YES" ? tot_probe_points+=probeSphere_points                          : nothing
 RAM_GB_estimate = RAM_estimation(TN,tot_probe_points, n_atoms, length(laser_detunings))
 if 1.05*RAM_GB_estimate>RAM_GB_max 
     error("Too many atoms: ", n_atoms,"\nThe RAM consumption is estimated as: ", RAM_GB_estimate)
@@ -302,7 +302,7 @@ end
 t_and_r_h5 = h5open(final_path_name*"/"*results_folder_name*"/"*"t_and_r.h5", "w")
 close(t_and_r_h5)
 #
-if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePlane_option ])) || probeSphere_option!="NONE"
+if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePLANE_option ])) || probeSPHERE_option!="NONE"
     probe_pos_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_positions.h5", "w")
     close(probe_pos_h5)
     probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
