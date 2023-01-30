@@ -81,7 +81,11 @@ function f_probe_PLANE(v3_vec, v3_value, points_v1, points_v2, range_v1, range_v
 	r_probe=Array{Float64}(undef,points_v1,points_v2,3)
 	for i_v1 in 1:points_v1
 		for i_v2 in 1:points_v2
-			r_probe[i_v1,i_v2,:]=rot_matrix*[v1Range[i_v1] ; v2Range[i_v2] ; v3_value]
+      if v3_vec!=[1.0;0.0;0.0]
+			  r_probe[i_v1,i_v2,:]=rot_matrix*[v1Range[i_v1] ; v2Range[i_v2] ; v3_value]
+      else
+        r_probe[i_v1,i_v2,:]=rot_matrix*[v2Range[i_v2] ; v1Range[i_v1] ; v3_value]
+      end
 		end
 	end
 	return reshape(r_probe,points_v1*points_v2,3)

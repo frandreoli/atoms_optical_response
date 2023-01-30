@@ -268,7 +268,9 @@ h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) ,
 h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
 h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
-h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions))
+h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions),("probePlane_vec",probePlane_v3_vec))
+h5write_multiple(final_path_name*"settings", ("dipoles_polarization",dipoles_polarization))
+#
 if target_beam_option=="YES"
     h5write_multiple(final_path_name*"settings", ("w0_target",w0_target),("z0_target",z0_target) )
     h5write_multiple(final_path_name*"options", ("normalize_target_option", normalize_target_option) )
