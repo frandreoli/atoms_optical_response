@@ -1,5 +1,3 @@
-### atoms_optical_response
-
 # 1) Introduction
 
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
