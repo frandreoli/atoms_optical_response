@@ -30,7 +30,7 @@ Similarly, the total field can be reconstructed at $N\_{\text{probe}}$ probe poi
 
 This code allows to calculate the total field at different probe positions, given many geometric choices of the atomic positions (either ordered or with random distributions). The input field consists of a Gaussian input beam of waist $w\_0$ and focal point $\mathbf{r}=0$, with custom direction and polarization. Moreover, the code calculates the transmission and reflection by projecting the scattered field onto the same Gaussian mode as the input [,[14](Andreoli2021)]. On top of that, the user has the possibility to calculate the projection and reflection onto a different Gaussian mode as well, with custom waist $w\_{\text{target}}$ and custom focal point (but same direction and polarization as the input). At the same time, the computation can be performed for several values of the detuning $\Delta$, and given any (fixed) choice of the dipole orientation $\hat{\mathbf{d}}\_0$. Finally, when simulating lattice geometries, the user can test scenarios where a fixed fractions of defects (i.e. missing atoms at random lattice positions) is present. For any random setting that is enabled, the computation can be repeated multiple times, each sampling different configurations. 
 
-This code has been used to simulate systems of up to $\sim 5\times 10^5$ emitters, roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
+The number of emitters that we were able to simulate with this code is roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
 
 
 
