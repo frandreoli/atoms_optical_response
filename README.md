@@ -1,13 +1,13 @@
 ### atoms_optical_response
 
-# Introduction
+# 1) Introduction
 
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
 The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang.
 
-## Code specifications
+## 1.1) Code specifications
 
 The core code is written in Julia (tested on version Julia 1.8), while the output data are saved in the HDF5 format. 
 A Mathematica notebook is provided to read the data and generate simple plots, with an intuitive, user-friendly interface. This latter is currently available only for the "Metalens" option (see below).
@@ -16,7 +16,7 @@ The simulation is specifically optimized for multi-threaded computation, and the
 
 
 
-## Physical background and motivation
+## 1.2) Physical background and motivation
 
 In this project, we implement a code to simulate the collective behavior of a mesoscopic ensemble of quantum emitters. This task is crucial to predict new phenomena that can occur in actual experiments, where cooperative effects can drastically alter the optical response [[1](Dicke1954)–[16](Asenjo-Garcia2017)]. 
 
@@ -32,33 +32,33 @@ where $\alpha\_0=-3\pi \epsilon\_0 /\[(\Delta + i(1+\Gamma')/2)k\_0^3\]$ is the 
 This code allows to calculate the total field at different probe positions, given many geometric choices of the atomic positions (either ordered or with random distributions). The input field consists of a Gaussian input beam of waist $w\_0$ and focal point $\mathbf{r}=0$, with custom direction and polarization. Moreover, the code calculates the transmission and reflection by projecting the scattered field onto the same Gaussian mode as the input [,[14](Andreoli2021)]. On top of that, the user has the possibility to calculate the projection and reflection onto a different Gaussian mode as well, with custom waist $w\_{\text{target}}$ and custom focal point (but same direction and polarization as the input). At the same time, the computation can be performed for several values of the detuning $\Delta$, and given any (fixed) choice of the dipole orientation $\hat{\mathbf{d}}\_0$. Finally, when simulating lattice geometries, the user can test scenarios where a fixed fractions of defects (i.e. missing atoms at random lattice positions) is present. For any random setting that is enabled, the computation can be repeated multiple times, each sampling different configurations. This code has been used to simulate systems of up to $\sim 5\times 10^5$ emitters, roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
 
 
-## Key code 
+## 1.3) Code insights
 
-# Code guide
-## Initializing the code
+# 2) Code guide
+## 2.1) Initializing the code
 
-### Overall settings
+### 2.1.1) Overall settings
 
-### Specific settings
-
-
-
-#### Disordered geometries settings
-
-#### Array settings
-
-#### Atomic metalens settings
-
-#### Custom geometry settings
-
-
-## Run the simulation
-
-## Data outputs
+### 2.1.2) Specific settings
 
 
 
-# References 
+#### 2.1.2.1) Disordered geometries settings
+
+#### 2.1.2.2) Array settings
+
+#### 2.1.2.3) Atomic metalens settings
+
+#### 2.1.2.4) Custom geometry settings
+
+
+## 2.2) Run the simulation
+
+## 2.3) Data outputs
+
+
+
+# 3) References 
 
 
 
