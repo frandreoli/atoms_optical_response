@@ -49,7 +49,7 @@ We
 
 
 
-When the algorithm inverts the M_jk it needs to allocate it twice, so the total memory consumption is given by ∼(2N+3N_probe )N complex Float. 
+When the algorithm inverts the M_jk it needs to allocate it twice, so the total memory consumption is given by $\sim \max(2N,3N_{\text{probe}} )N$ complex Float. 
 
 Nonetheless, one can properly order the operations, and flush the memory when necessary: in particular, we invert M_jk at the beginning and we promptly clear the memory, only conserving the solutions d_j. Since 〖3N〗_probe≲N, the upper bound of memory allocation becomes 〖2×N〗^2. 
 
