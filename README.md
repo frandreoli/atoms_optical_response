@@ -18,9 +18,8 @@ The simulation is specifically optimized for multi-threaded computation, and the
 
 
 
-```math
-SE = \frac{\sigma}{\sqrt{n}}
-```
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+ 
 
 
 
@@ -46,5 +45,17 @@ SE = \frac{\sigma}{\sqrt{n}}
 # Data outputs
 
 
+
+# References 
+
+
+
+
+---
+output:
+  md_document:
+    variant: markdown_github
+bibliography: bibliography.bib
+---
 
 
