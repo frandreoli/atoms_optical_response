@@ -33,7 +33,33 @@ This code allows to calculate the total field at different probe positions, give
 This code has been used to simulate systems of up to $\sim 5\times 10^5$ emitters, roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
 
 
+
+
+
+
 ## 1.3) Computational insights
+
+The core of our simulations is the inversion of $\mathcal{M}\_{jk}$, implemented with the backslash operator "\". This performs adaptive algorithms based on the structure of random matrix, so that, in the worst-case scenario, the number of elementary operations scales as $\sim N^3$. This process is speeded up through the openBLAS library for linear algebra, which can evaluate the problem in parallel over up to 32 cores. Asymptotically, this task dominates the time complexity of the simulation, overcoming the other sources of time consumption, such as the creation of both $\mathcal{M}\_{jk}$ and $\mathcal{L}\_{jk}$, scaling as $\sim(N+3N_{\text{probe}} )N$. Nonetheless, the asymptotic scaling does not assure that these contributions are negligible in finite computations, due to both large pre-factors and different durations of the elementary operations. We empirically noticed that this is not the case for finite values of $N$, and expecially when this is comparable to $N_{\text{probe}}$. Although we privileged operations performed in a vectorized fashion, this does not straightforwardly apply to the creation of the matrix $\mathcal{M}\_{jk}$, since the diagonal elements would exhibit infinite values corresponding to the dipole self-energy, which must be removed (16). To perform this task efficiently, we designed a (sigle) loop cycle to run in parallel over several threads. To this aim, we designed the loop with only elementary operations avoiding the possible bottleneck of multiple threads recalling the same complicated function.
+
+Similar considerations can be drawn regarding the memory consumption. The main allocations of RAM are associated to the creation of both the complex-diagonal, dense matrix $\mathcal{M}\_{jk}$ and the probe matrices $\mathcal{J}\_{jk}$. By properly arranging the algorithm, we avoid the allocation of unnecessay memory at the same time, flushing the RAM when desirable. For example, we invert $\mathcal{M}\_{jk}$ at the beginning of the core part and we promptly clear the memory, only conserving the solutions $d\_j$. The probe matrix $\mathcal{J}\_{jk}$ is constructed only afterwards, and if more probe geometries are selected each matrix $\mathcal{J}\_{jk}$ is used and flushed before allocating the next one. Empirically, we observed that the backslash operator "\" allocates $\mathcal{M}\_{jk}$ twice, when inverting it (observed in Julia 1.6). 
+
+We
+
+
+
+
+
+When the algorithm inverts the M_jk it needs to allocate it twice, so the total memory consumption is given by ∼(2N+3N_probe )N complex Float. 
+
+Nonetheless, one can properly order the operations, and flush the memory when necessary: in particular, we invert M_jk at the beginning and we promptly clear the memory, only conserving the solutions d_j. Since 〖3N〗_probe≲N, the upper bound of memory allocation becomes 〖2×N〗^2. 
+
+By defining the matrix as Complex{Float32} (64 bit) rather than the custom Complex{Float64} (128 bit). We numerically checked that we were operating with enough precision.
+
+### 1.3.1) Physical simplifications
+To further simplify the computational problem, we give the user the option to take advantage of some common symmetries in the pysical system. In particular, a typical problem consists of studying the cooperative properties of ordered atomic lattices (26–28). Often, such a system can be arranged to be symmetric for $x\to -x$ and $y\to -y$, without much loss of generality in the physical conclusions. This implies that each dipole $d\_j$ is equal to those at the mirrored positions. The actual degrees of freedom are thus given by the number of atoms satisfying $x\_j\geq 0$ and $y\_j\geq 0$ (roughly $\sim N/4$). The coupled-dipole equations can be then simplified by accounting only for these atoms, and considering as if each of them scattered light from the mirrored positions as well. 
+
+
+
 
 # 2) Code guide
 ## 2.1) Initializing the code
