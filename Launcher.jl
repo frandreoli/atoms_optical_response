@@ -19,10 +19,6 @@
 #
 #
 #CODE SETTINGS:
-#If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
-const pos_save_option           =      ["YES" ; "NO"][1]
-#
-#
 #GEOMETRICAL SETTINGS:
 #It defines the geometry of the atomic positions                
 #TBA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -41,6 +37,10 @@ const geometry_settings         =
 #
 #Choose here below the number wanted
 ][1]
+#
+#
+#If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
+const pos_save_option           =      ["YES" ; "NO"][1]
 #
 #
 #SYMMETRY OPTION: 
