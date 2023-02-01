@@ -150,7 +150,7 @@ end
 #
 #
 #Definition of the wavevector (we recall that all lengths are in units of lambda0)
-const k0       =  2.0*pi
+const k0 = 2.0*pi
 #
 #
 time_start=time()
