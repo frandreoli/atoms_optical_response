@@ -116,7 +116,7 @@ Beam waist of the input Gaussian beam. For the paraxial approximation to be full
 Direction of propagation of the input Gaussian beam (unit vector).
 
 - `field_polarization = [1.0 ; 0.0 ; 0.0]`\
-Polarization of he input Gaussian beam (unit vector).
+Polarization of the input Gaussian beam (unit vector).
 
 
 ### 2.1.3 - Probe settings
