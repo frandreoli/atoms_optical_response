@@ -46,7 +46,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 		E_field_target        = gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3].-z0_target,  w0_target, w0_target, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 		E_field_target      .*= conj_dot(dipoles_polarization,field_polarization)
 		if normalize_target_option=="YES"
-			E_field_target  .*= (w0/w0_target)*exp(2.0im*pi*z0_target/lambda0)
+			E_field_target  .*= (w0/w0_target)*exp(2.0im*pi*z0_target)
 		end
 		#Calculates the projection onto the target Gaussian mode
 		t_target = Array{Complex{TN}}(undef,1,n_detunings)
@@ -220,8 +220,8 @@ end
 #Function to evaluate the SM transmission coefficient
 function CD_t_r_func(E_field_target, w0_target, z0_target, state_coeff,atoms_mult, w0_in)
 	E_field_target_conj = conj.(E_field_target)
-	t_alpha_term        = (im*(3/(4*pi^2))*((lambda0^2)/(w0_in^2)))
-	t0                  = (2*pi*w0_in*w0_target)/(pi*(w0_in^2+w0_target^2)+1.0im*z0_target*lambda0)
+	t_alpha_term        = (im*(3/(4*pi^2))*(1.0/(w0_in^2)))
+	t0                  = (2*pi*w0_in*w0_target)/(pi*(w0_in^2+w0_target^2)+1.0im*z0_target)
     t                   = t0 + (t_alpha_term*sum(E_field_target_conj.*state_coeff.*atoms_mult))
 	r                   =      (t_alpha_term*sum(E_field_target.*     state_coeff.*atoms_mult))
     return (t, r)

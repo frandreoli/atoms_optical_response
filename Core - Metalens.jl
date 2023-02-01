@@ -190,9 +190,9 @@ end
 #Core part of the ring creation. 
 #It creates an array with given lattice constants and then selects only the atoms with radius within the chosen ring
 function metalens_creation_core(r_lens, lattice_constants, r_max,r_min)
-    a_x=lattice_constants[1]*lambda0
-    a_y=lattice_constants[2]*lambda0
-    a_z=lattice_constants[3]*lambda0
+    a_x=lattice_constants[1]
+    a_y=lattice_constants[2]
+    a_z=lattice_constants[3]
     naX = Int(floor(2*r_lens/a_x))+1
     naY = Int(floor(2*r_lens/a_y))+1
 	naX%2!=0 ? naX+=1 : nothing

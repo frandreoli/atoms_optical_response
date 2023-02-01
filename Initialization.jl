@@ -11,6 +11,8 @@ if nworkers()==1 addprocs() end
 BLAS.set_num_threads(nworkers())
 const ZERO_THRESHOLD = 10^(-12)
 const results_folder_name = "Results"
+#For large-scale numerics Float32 is preferable compared to the default Float64
+const TN = [Float32 ; Float64][1]
 #
 #Uncomment the following line only if the code seems to be leaking RAM memory.
 #You will force the code to print a line any time the unused memory gets emptied.
@@ -147,6 +149,10 @@ end
 #############################################################################################################
 #
 #
+#Definition of the wavevector (we recall that all lengths are in units of lambda0)
+const k0       =  2.0*pi
+#
+#
 time_start=time()
 #
 #Defines the settings and the atomic positions for an atomic metalens
@@ -167,13 +173,13 @@ if geometry_settings == "METALENS"
         end
         if probeYZ_option == "YES" 
             probe_range_factor = 1.05
-            probeYZ_x = 0.0*lambda0
+            probeYZ_x = 0.0
             probeYZ_range_y = [-1 ; 1].*(r_lens*probe_range_factor)
             probeYZ_range_z = [-1 ; 2].*(3.0*z0_target)
         end
         if probeXZ_option == "YES" 
             probe_range_factor = 1.05
-            probeXZ_y = 0.0*lambda0
+            probeXZ_y = 0.0
             probeXZ_range_x = [-1 ; 1].*(r_lens*probe_range_factor)
             probeXZ_range_z = [-1 ; 2].*(3.0*z0_target)
         end
@@ -220,16 +226,15 @@ if defects_fraction>0.0
     file_name*="_defects"
 end
 #
-file_name*="_w0"*string(w0/lambda0)[1:min(length(string(w0/lambda0)),3)]
+file_name*="_w0"*string(w0)[1:min(length(string(w0)),3)]
 #
-n_bulk!=1.0         ?  file_name*="_n"*string(n_bulk)[1:min(3,length(string(n_bulk)))]               : nothing
 gamma_prime>0      ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
 inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
 #
 #Only if a metalens is computed
 if geometry_settings == "METALENS" 
-    file_name*="_r"*string(r_lens/lambda0)[1:min(length(string(r_lens/lambda0)),3)]
-    file_name*="_f"*string(focal_point/lambda0)[1:min(length(string(focal_point/lambda0)),3)]
+    file_name*="_r"*string(r_lens)[1:min(length(string(r_lens)),3)]
+    file_name*="_f"*string(focal_point)[1:min(length(string(focal_point)),3)]
     file_name*="_widths"*string(disks_width)[1:min(4,length(string(disks_width)))]
     file_name*="_phase"*string(phase_shift)[1:min(5,length(string(phase_shift)))]
     file_name*="_buffer"*string(buffer_smooth)[1:min(4,length(string(buffer_smooth)))]
@@ -266,7 +271,7 @@ end
 h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
 h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
 h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
-h5write_multiple(final_path_name*"settings", ("lambda0", lambda0) , ("n_bulk",n_bulk) , ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
+h5write_multiple(final_path_name*"settings", ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
 h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions),("probePlane_vec",probePlane_v3_vec))
 h5write_multiple(final_path_name*"settings", ("dipoles_polarization",dipoles_polarization))

@@ -5,7 +5,8 @@
 - n_bulk   = refractive index of the embedding (dielectric, lossless) material (for air and vacuum n_bulk = 1)
 - Gamma0  = spontaneous (elastic) decay rate of the single atoms in the material. This is set to Gamma0=1, meaning that all the frequencies are expressed in units of Gamma0
 - omega0  = atomic resonance frequency between the groun |g> and the excited state |e>
-- lambda0 = (2*pi*c)/(omega0*n_bulk) resonant wavelength in the bulk dielectric material. 
+- lambda0 = (2*pi*c)/(omega0*n_bulk) resonant wavelength inside the bulk dielectric material. 
+All lengths are calculated in units of lambda0.
 =#
 #
 #
@@ -43,6 +44,11 @@ const geometry_settings         =
 const pos_save_option           =      ["YES" ; "NO"][1]
 #
 #
+#Possibility of punching defects in the arrays/metalens 
+#i.e. removing a fraction defects_fraction of randomly chosen atoms
+defects_fraction = 0.0
+#
+#
 #SYMMETRY OPTION: 
 #Default: YES - If YES then the code calculates the atomic positions only in the positive (x>0, y>0) quadrant, 
 #and then assumes that the whole physical system (atoms+input light) is symmetric for x->-x and y->-y.
@@ -68,8 +74,6 @@ n_repetitions = 1
 #
 #
 #INITIALIZATION PARAMETERS:
-#For large-scale numerics Float32 is preferable compared to the default Float64
-const TN = [Float32 ; Float64][1]
 #Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
 #If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
 const name_simulation = "DEFAULT"
@@ -88,12 +92,6 @@ RAM_GB_max = 450
 #
 #
 #ATOMIC SYSTEM & ENVIRONMENT:
-#Defines the (real) refractive index of the embedding dielectric, lossless material
-const n_bulk               =  1.0 
-#With this definition, all lengths are calculated in units of lambda0*n_bulk, i.e. the wavelength outside the bulk material
-const lambda0              =  1.0/n_bulk 
-#Definition of the wavevector
-const k0                   =  2.0*pi/lambda0
 #Spatial orientation of the atomic dipole-matrix elements
 dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
@@ -101,9 +99,6 @@ const gamma_prime          =  0.0
 #Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
 const inhom_broad_std      =  0.0
-#Possibility of punching defects in the metalens 
-#i.e. removing a fraction defects_fraction of randomly chosen atoms
-defects_fraction = 0.0
 #
 #
 #INPUT GAUSSIAN BEAM:
@@ -113,7 +108,7 @@ defects_fraction = 0.0
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
 laser_detunings            =  [0.0] 
 #Beam waist of the input Gaussan beam
-const w0                   =  1.0*lambda0 
+const w0                   =  1.0
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
 laser_direction            =  [0.0 ; 0.0 ; 1.0] 
 #Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
@@ -134,37 +129,37 @@ field_polarization         =  [1.0 ; 0.0 ; 0.0]
 #If probeXY_option = "NO" then this probe is not computed
 probeXY_option        =   ["YES" ; "NO"][1]
 #Distance (in the z direction) between the atoms, centered at (x,y,z)=(0,0,0), and the XY probe plane
-probeXY_z             =   20*lambda0
+probeXY_z             =   20
 #Number of different probe coordinates in the x direction 
 probeXY_points_x      =   50
 #Number of different probe coordinates in the y direction 
 probeXY_points_y      =   50
 #Size of the probe rectangle in the x direction, in the form [min_x ; max_x]
-probeXY_range_x       =   [-1 ; 1].*10*lambda0
+probeXY_range_x       =   [-1 ; 1].*10
 #Size of the probe rectangle in the y direction, in the form [min_y ; max_y]
-probeXY_range_y       =   [-1 ; 1].*10*lambda0
+probeXY_range_y       =   [-1 ; 1].*10
 #
 #
 #Settings for the probe points in the YZ plane. 
 #If probeYZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
 probeYZ_option        =   ["YES" ; "NO"][1]
-probeYZ_x             =   0*lambda0
+probeYZ_x             =   0
 probeYZ_points_y      =   50
 probeYZ_points_z      =   100
-probeYZ_range_y       =   [-1 ; 1].*10*lambda0
-probeYZ_range_z       =   [-1 ; 1].*20*lambda0
+probeYZ_range_y       =   [-1 ; 1].*10
+probeYZ_range_z       =   [-1 ; 1].*20
 #
 #
 #Settings for the probe points in the YZ plane. 
 #If probeXZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
 probeXZ_option        =   ["YES" ; "NO"][1]
-probeXZ_y             =   0*lambda0
+probeXZ_y             =   0
 probeXZ_points_x      =   50
 probeXZ_points_z      =   100
-probeXZ_range_x       =   [-1 ; 1].*10*lambda0
-probeXZ_range_z       =   [-1 ; 1].*20*lambda0
+probeXZ_range_x       =   [-1 ; 1].*10
+probeXZ_range_z       =   [-1 ; 1].*20
 #
 #
 #Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
@@ -172,16 +167,16 @@ probeXZ_range_z       =   [-1 ; 1].*20*lambda0
 #The meaning of the variables is analogous to above
 probePLANE_option     =   ["YES" ; "NO"][1]
 probePlane_v3_vec     =   [1.0 ; 1.0 ; 1.0]./sqrt(3)
-probePlane_v3_value   =   0*lambda0
+probePlane_v3_value   =   0
 probePlane_points_v1  =   50
 probePlane_points_v2  =   50
-probePlane_range_v1   =   [-1 ; 1].*10*lambda0
-probePlane_range_v2   =   [-1 ; 1].*10*lambda0
+probePlane_range_v1   =   [-1 ; 1].*10
+probePlane_range_v2   =   [-1 ; 1].*10
 #
 #
 #Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
 probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
-probeSphere_radius    =   40*lambda0
+probeSphere_radius    =   40
 probeSphere_points    =   2000
 #
 #
@@ -190,7 +185,7 @@ probeSphere_points    =   2000
 #have different waist w0_target and different focal point z0_target. 
 const target_beam_option    =   ["YES" ; "NO"][1] 
 w0_target                   =   2*w0
-z0_target                   =   10*lambda0
+z0_target                   =   10
 #If norm_target_option == "YES" then this target beam is multiplied by (w0/w0_target)*exp(im*k0*z0_target), 
 #thus preserving the phase and power of the input beam
 normalize_target_option     =   ["YES" ; "NO"][1] 
@@ -235,11 +230,11 @@ if geometry_settings == "METALENS"
     #
     #METALENS PARAMETERS:
     #Focal length f
-    const focal_point               =    20*lambda0
+    const focal_point               =    20
     #Total radius of the metalens
-    const r_lens                	=    1.8*lambda0
+    const r_lens                	=    1.8
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    const disks_width               =    0.2*lambda0
+    const disks_width               =    0.2
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
     const buffer_smooth     	    =    0.2
     #Value of the phase shift at the center of the metalens, i.e. phi_0
