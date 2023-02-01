@@ -124,12 +124,12 @@ end
 #
 #
 #Consistency of defects_fraction with the rest of options
-if geometry_settings[1:3]=="DIS"
-    @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
-    defects_fraction = 0.0
-end
 if !isa(defects_fraction,Number) || defects_fraction<0.0 || defects_fraction>1.0
     @warn "The fraction of defects (i.e. defects_fraction) must be a positive number, lower than unity.\nSetting defects_fraction=0."
+    defects_fraction = 0.0
+end
+if geometry_settings[1:3]=="DIS" && defects_fraction>0.0
+    @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
     defects_fraction = 0.0
 end
 if mirror_symmetry_option=="YES" && defects_fraction>0.0
