@@ -3,7 +3,7 @@
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
-The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang.
+The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. Parts of this code have been used in [[1](Andreoli2021)-[3](Andreoli2023b)].
 
 ## 1.1 - Code specifications
 
@@ -30,7 +30,8 @@ Similarly, the total field can be reconstructed at $N\_{\text{probe}}$ probe poi
 
 This code allows to calculate the total field at different probe positions, given many geometric choices of the atomic positions (either ordered or with random distributions). The input field consists of a Gaussian input beam of waist $w\_0$ and focal point $\mathbf{r}=0$, with custom direction and polarization. Moreover, the code calculates the transmission and reflection by projecting the scattered field onto the same Gaussian mode as the input [,[14](Andreoli2021)]. On top of that, the user has the possibility to calculate the projection and reflection onto a different Gaussian mode as well, with custom waist $w\_{\text{target}}$ and custom focal point (but same direction and polarization as the input). At the same time, the computation can be performed for several values of the detuning $\Delta$, and given any (fixed) choice of the dipole orientation $\hat{\mathbf{d}}\_0$. Finally, when simulating lattice geometries, the user can test scenarios where a fixed fractions of defects (i.e. missing atoms at random lattice positions) is present. For any random setting that is enabled, the computation can be repeated multiple times, each sampling different configurations. 
 
-The number of emitters that we were able to simulate with this code is roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
+
+The possibility of simulating systems with a large number $N\gg 1$ of atom-like emitters is a thrilling idea, especially if $N$ becomes comparable to the typical values of actual experiments. At the same time, the quest for large-scale simulations has also theoretical roots. For example, this is an essential requirement to investigate the bulk properties of dense atomic media, where the effects of the boundary must be negligible. To obtain so, one can illuminate the atomic cloud with a finite light beam whose waist $w\_0$ is smaller than the size of the ensemble. Due to the paraxial approximation, however, this imposes the constraint $λ\_0\ggw\_0\gg l$, which converts to large $N$ for dense ensembles. The number of emitters that we were able to simulate with this code is roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
 
 
 
@@ -147,20 +148,38 @@ Here, we list the settings related to the probe points where the total field (in
 # 3 - References 
 
 
+<a id="Andreoli2021">[1]</a> 
+Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE. 
+*Maximum Refractive Index of an Atomic Medium.* 
+[Physical Review X 11, 011026](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.11.011026) (2021)
 
-<a id="Dicke1954">[1]</a> 
+ <a id="Andreoli2023a">[2]</a> 
+Andreoli F, Windt B, Grava S, Anolina GM, Gullans MJ, High AA, Chang DE. 
+*The maximum refractive index of an atomic crystal -- from quantum optics to quantum chemistry.* 
+In preparation (2023)
+
+<a id="Andreoli2023b">[3]</a> 
+Andreoli F, High AA, Chang DE. 
+*Metalens formed by structured, sub-wavelength atomic arrays.* 
+In preparation (2023)
+
+
+<a id="Dicke1954">[4]</a> 
 Dicke RH. 
 *Coherence in Spontaneous Radiation Processes.* 
-[Physical Review 93(1):99–110](https://link.aps.org/doi/10.1103/PhysRev.93.99), (1954) 
+[Physical Review 93, 99–110](https://link.aps.org/doi/10.1103/PhysRev.93.99), (1954) 
 
-<a id="Gross1982">[2]</a> 
+<a id="Gross1982">[5]</a> 
 Gross M, Haroche S. *Superradiance: An essay on the theory of collective spontaneous emission.* 
-Physics Reports. 1982 Dec 1;93(5):301–96. 
+Physics Reports 93, 301–96 (1982)
 
-<a id="Asenjo-Garcia2017">[16]</a> 
+<a id="Asenjo-Garcia2017">[6]</a> 
 Asenjo-Garcia A, Moreno-Cardoner M, Albrecht A, Kimble HJ, Chang DE. 
 *Exponential Improvement in Photon Storage Fidelities Using Subradiance and “Selective Radiance” in Atomic Arrays.*
-[Phys Rev X 7(3):31024](https://link.aps.org/doi/10.1103/PhysRevX.7.031024) (2017)
+[Physical Review X 7, 31024](https://link.aps.org/doi/10.1103/PhysRevX.7.031024) (2017)
+
+
+
 
 
 
