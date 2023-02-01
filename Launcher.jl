@@ -15,7 +15,8 @@ const results_folder_name = "Results"
 #For large-scale numerics Float32 is preferable compared to the default Float64
 const TN = [Float32 ; Float64][1]
 #
-#Uncomment the following line only if the code seems to be leaking RAM memory.
+#Uncomment the following line only if the code seems to be leaking RAM memory or spending too much time in 
+#garbage collection.
 #You will force the code to print a line any time the unused memory gets emptied.
 #These messages will appear in the form "GC: ..."
 #GC.enable_logging(true)

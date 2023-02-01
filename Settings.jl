@@ -176,8 +176,8 @@ probePlane_range_v2   =   [-1 ; 1].*10
 #
 #Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
 probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
-probeSphere_radius    =   40
-probeSphere_points    =   2000
+probeSphere_radius    =   2
+probeSphere_points    =   10000
 #
 #
 #If target_beam_option=="YES" then the code calculates the projection of the output field onto a target Gaussian beam.
