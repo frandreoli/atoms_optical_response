@@ -25,18 +25,18 @@
 const geometry_settings         =      
 [
 #
-"METALENS" ;                    #1
+"DISORDERED_SPHERE" ;           #1
+"DISORDERED_CYLINDER" ;         #2
+"DISORDERED_CUBOID" ;           #3
 #
-"DISORDERED_SPHERE" ;           #2
-"DISORDERED_CYLINDER" ;         #3
-"DISORDERED_CUBOID" ;           #4
+"ARRAYS" ;                      #4
 #
-"ARRAYS" ;                      #5
+"METALENS" ;                    #5
 #
 "CUSTOM_POSITIONS"              #6
 #
 #Choose here below the number wanted
-][1]
+][5]
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
