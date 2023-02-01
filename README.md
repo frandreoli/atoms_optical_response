@@ -75,10 +75,12 @@ The option defines the geometry of the positions of the quantum emitters. It can
 When this option is set to `YES` the simulation will save the atomic positions as a $N\_{\text{rep}}\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of $N\_{\text{rep}}$ will be defined below.
 
 - `defects_fraction = 0.0`\
-Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq $ `defects_fraction` $ \leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
+Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `mirror_symmetry_option`\
-When set to `YES`
+When set to `YES`, 
+
+as described in [Sec. 1.3.1](#131-physical-simplifications)
 
 
 ### 2.1.2 Physical settings
