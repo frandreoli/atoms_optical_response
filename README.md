@@ -54,16 +54,13 @@ In this section, further information will be provided on the use the code, detai
 
 
 ## 2.1 - Initialization
-Firts, we describe the settings and options available for the user. These latter are often provided in the form:
+Firts, we describe the settings and options available for the user, which can be found and edited in the file ***Settings.jl***. The options are often provided in the form:
 
 ```Julia
 option = ["option_1" ; "option_2"][i]
 ```
 
 and the user can change the integer number $i$ to choose the $i$-th option from the list. 
-
-The settings and options of the simulation can be found in the file *Settings.jl*, which has to be edited by the user to select the desired configuration.
-
 
 
 ### 2.1.1 - Overall settings
