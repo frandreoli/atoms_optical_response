@@ -93,13 +93,13 @@ The maximum amount of RAM that the user would prefer to allocate. The code will 
 
 
 ### 2.1.2 - Physical settings
-Here, we describe the settings related to the physical system.
+Here, we describe the settings related to the physical system. We recall that all lengths are intended in units of $\lambda\_0$ and all rates/frequencies in units of $\Gamma\_0$.
 
 - `dipoles_polarization = [1.0 ; 0.0 ; 0.0]`\
 It defines the dipole matrix element $\hat{\mathbf{d}}\_0$ of the quantum emitters. This must be a $3$-fold unit vector representing the $x$, $y$ and $z$ coordinates.
 
 - `gamma_prime = 0.0`\
-It defines the inelastic scattering rate $\Gamma'$, which quantifies the energy losses from the standpoint of the optical linear response. It must be a real number expressing the rate in units of $\Gamma\_0$.
+It defines the inelastic scattering rate $\Gamma'$, which quantifies the energy losses from the standpoint of the optical linear response.
 
 
 - `inhom_broad_std = 0.0`\
@@ -107,11 +107,21 @@ The user can opt for the atoms to have their resonant frequency $\omega\_0$ rand
 
 #### 2.1.2.1 - Input Gaussian beam
 
-- `laser_detunings = 0.0`\
-T
+- `laser_detunings = [0.0]`\
+Artay that defines the dimensionless detuning $\Delta=(\omega-\omega\_0)/\Gamma\_0$ between the frequency of the input beam $\omega$ and the resonance frequency $\omega\_0$, in units of $\Gamma_0$. Many values can be added, in the form `laser_detunings = [value_1 ; value_2 ; value_3 ...]`, and the results will be calculated for each of them
+
+- `w0 = 2.0`\
+Beam waist of the input Gaussian beam. For the paraxial approximation to be fully valid, one must have $w\_0\gtrsim 1$.
+
+- `laser_direction = [0.0 ; 0.0 ; 1.0]`\
+Direction of propagation of the input Gaussian beam (unit vector).
+
+- `field_polarization = [1.0 ; 0.0 ; 0.0]`\
+Polarization of he input Gaussian beam (unit vector).
 
 
 ### 2.1.3 - Probe settings
+Here, we list the settings related to the probe points where the total field (input and scattered) will be calculated.
 
 
 
