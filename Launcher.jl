@@ -1,84 +1,24 @@
 #############################################################################################################
-################## PHYSICAL GLOSSARY ########################################################################
+################## INITIAL OPERATIONS #######################################################################
 #############################################################################################################
-#=
-- n_bulk   = refractive index of the embedding (dielectric, lossless) material (for air and vacuum n_bulk = 1)
-- Gamma0  = spontaneous (elastic) decay rate of the single atoms in the material. This is set to Gamma0=1, meaning that all the frequencies are expressed in units of Gamma0
-- omega0  = atomic resonance frequency between the groun |g> and the excited state |e>
-- lambda0 = (2*pi*c)/(omega0*n_bulk) resonant wavelength inside the bulk dielectric material. 
-All lengths are calculated in units of lambda0.
-=#
+#Designed for Julia 1.6
+using LinearAlgebra, Dates, HDF5, Random, Distributed
+include("Settings.jl")
+include("Core - Functions.jl")
+include("Core - Metalens.jl")
+include("Core - Evaluation.jl")
+Random.seed!()
+if nworkers()==1 addprocs() end
+BLAS.set_num_threads(nworkers())
+const ZERO_THRESHOLD = 10^(-12)
+const results_folder_name = "Results"
+#For large-scale numerics Float32 is preferable compared to the default Float64
+const TN = [Float32 ; Float64][1]
 #
-#
-#
-#
-#
-#
-#############################################################################################################
-################## OVERALL OPTIONS ##########################################################################
-#############################################################################################################
-#
-#
-#CODE SETTINGS:
-#GEOMETRICAL SETTINGS:
-#It defines the geometry of the atomic positions                
-#TBA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-const geometry_settings         =      
-[
-#
-"DISORDERED_SPHERE" ;           #1
-"DISORDERED_CYLINDER" ;         #2
-"DISORDERED_CUBOID" ;           #3
-#
-"ARRAYS" ;                      #4
-#
-"METALENS" ;                    #5
-#
-"CUSTOM_POSITIONS"              #6
-#
-#Choose here below the number wanted
-][5]
-#
-#
-#If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
-const pos_save_option           =      ["YES" ; "NO"][1]
-#
-#
-#Possibility of punching defects in the arrays/metalens 
-#i.e. removing a fraction defects_fraction of randomly chosen atoms
-defects_fraction = 0.0
-#
-#
-#SYMMETRY OPTION: 
-#Default: YES - If YES then the code calculates the atomic positions only in the positive (x>0, y>0) quadrant, 
-#and then assumes that the whole physical system (atoms+input light) is symmetric for x->-x and y->-y.
-#When applicable, this options allows to highly speed up the code, and consume less memory
-const mirror_symmetry_option    =      ["YES" ; "NO"][1]
-#
-#
-#REPETITION NUMBER
-#The code will calculate the atomic response a number of times given by n_repetitions
-#For disordered geometries, each repetition will sample different atomic positions
-#Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
-#of random resonance frequencies for the atoms
-n_repetitions = 1
-#
-#
-#
-#
-#
-#
-#############################################################################################################
-################## OVERALL PARAMETERS #######################################################################
-#############################################################################################################
-#
-#
-#INITIALIZATION PARAMETERS:
-#Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
-#If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
-const name_simulation = "DEFAULT"
-#Maximum RAM available for the computation (in GB)
-RAM_GB_max = 450
+#Uncomment the following line only if the code seems to be leaking RAM memory.
+#You will force the code to print a line any time the unused memory gets emptied.
+#These messages will appear in the form "GC: ..."
+#GC.enable_logging(true)
 #
 #
 #
@@ -87,159 +27,122 @@ RAM_GB_max = 450
 #
 #
 #############################################################################################################
-################## PHYSICAL PARAMETERS ######################################################################
+################## WARNINGS #################################################################################
 #############################################################################################################
 #
 #
-#ATOMIC SYSTEM & ENVIRONMENT:
-#Spatial orientation of the atomic dipole-matrix elements
-dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
-#Inelastic decay rate Gamma' of the atoms, in units of Gamma0
-const gamma_prime          =  0.0 
-#Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
-#If =0.0 then no inhomogeneous broadening is added.
-const inhom_broad_std      =  0.0
+#Converting all directions to real vectors
+if abs(conj_norm(imag.(laser_direction)))>ZERO_THRESHOLD
+    laser_direction = real.(laser_direction)
+    @warn "The direction of the input field, i.e. laser_direction, must be a real vector.\n Neglecting the imaginary parts."
+end
+if abs(conj_norm(imag.(probePlane_v3_vec)))>ZERO_THRESHOLD
+    probePlane_v3_vec = real.(probePlane_v3_vec)
+    @warn "The normal direction of the custom probe plane, i.e. probePlane_v3_vec, must be a real vector.\n Neglecting the imaginary parts."
+end
 #
 #
-#INPUT GAUSSIAN BEAM:
-#Detuning of the light frequency with respect to the atomic resonance frequency, in units of Gamma0
-#Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
-#Or as a range, by writing:
-#laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
-laser_detunings            =  [0.0] 
-#Beam waist of the input Gaussan beam
-const w0                   =  1.0
-#Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
-laser_direction            =  [0.0 ; 0.0 ; 1.0] 
-#Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
-field_polarization         =  [1.0 ; 0.0 ; 0.0] 
+#Checking the normalization of the direction vectors
+if probePLANE_option=="YES" && abs(conj_norm(probePlane_v3_vec)-1.0)>ZERO_THRESHOLD
+    probePlane_v3_vec=conj_normalize(probePlane_v3_vec)
+    @warn "The normal direction of the custom probe plane, i.e. probePlane_v3_vec, must be normalized to 1.\nNormalizing it to 1."
+end
+if abs(conj_norm(laser_direction)-1.0)>ZERO_THRESHOLD
+    laser_direction=conj_normalize(laser_direction)
+    @warn "The direction of input beam, i.e. laser_direction, must be normalized to 1.\nNormalizing it to 1."
+end
 #
 #
+#Symmetry consistency
+if abs(conj_norm(laser_direction.-[0.0 ; 0.0 ; 1.0]))>ZERO_THRESHOLD && mirror_symmetry_option=="YES"
+    mirror_symmetry_option = "NO"
+    @warn "The input field is not symmetric for x->-x and y->-y. Setting mirror_symmetry_option to NO."
+end
 #
 #
+#Transverse field consistency
+field_polarization       = conj_normalize(field_polarization)
+longitudinal_component   = conj_dot(laser_direction,field_polarization) 
+if abs(longitudinal_component) > ZERO_THRESHOLD
+    field_polarization   = field_polarization.-(laser_direction.*longitudinal_component)
+    field_polarization   = conj_normalize(field_polarization)
+    @warn "The field is not a transverse field. Removing from field_polarization its longitudinal component."
+end
 #
 #
-#
-#############################################################################################################
-################## PROBE PARAMETERS #########################################################################
-#############################################################################################################
-#
-#
-#Settings for the probe points in the XY plane. 
-#If probeXY_option = "NO" then this probe is not computed
-probeXY_option        =   ["YES" ; "NO"][1]
-#Distance (in the z direction) between the atoms, centered at (x,y,z)=(0,0,0), and the XY probe plane
-probeXY_z             =   20
-#Number of different probe coordinates in the x direction 
-probeXY_points_x      =   50
-#Number of different probe coordinates in the y direction 
-probeXY_points_y      =   50
-#Size of the probe rectangle in the x direction, in the form [min_x ; max_x]
-probeXY_range_x       =   [-1 ; 1].*10
-#Size of the probe rectangle in the y direction, in the form [min_y ; max_y]
-probeXY_range_y       =   [-1 ; 1].*10
+#Consistency of the definition of the standard deviation of inhomogenous broadening
+#If it is not defined as a number (tested with isa()), the code enters the if and soesn't evaluate the second condition
+if !isa(inhom_broad_std,Number) || inhom_broad_std <0 
+    @warn "The standard deviation in the Gaussian distribution of inhomogeneous bradening must be a positive number. \nSetting inhom_broad_std=0.0."
+    inhom_broad_std = 0.0
+end
 #
 #
-#Settings for the probe points in the YZ plane. 
-#If probeYZ_option = "NO" then this probe is not computed
-#The meaning of the variables is analogous to above
-probeYZ_option        =   ["YES" ; "NO"][1]
-probeYZ_x             =   0
-probeYZ_points_y      =   50
-probeYZ_points_z      =   100
-probeYZ_range_y       =   [-1 ; 1].*10
-probeYZ_range_z       =   [-1 ; 1].*20
+#Warns in case the atomic positions should be random, while mirror_symmetry_option=="YES"
+if mirror_symmetry_option=="YES" && geometry_settings[1:3]=="DIS"
+    @warn "The atomic positions are disordered, but mirror_symmetry_option=='YES'.\nThe atomic positions will be randomly chosen only in the positive (x>=0, y>=0) quadrant, while the other quadrants will be the mirror images."
+end
 #
 #
-#Settings for the probe points in the YZ plane. 
-#If probeXZ_option = "NO" then this probe is not computed
-#The meaning of the variables is analogous to above
-probeXZ_option        =   ["YES" ; "NO"][1]
-probeXZ_y             =   0
-probeXZ_points_x      =   50
-probeXZ_points_z      =   100
-probeXZ_range_x       =   [-1 ; 1].*10
-probeXZ_range_z       =   [-1 ; 1].*20
+#Warns in case the atomic positions are given as an input, while mirror_symmetry_option=="YES"
+if mirror_symmetry_option=="YES" && geometry_settings=="CUSTOM_POSITIONS"
+    @warn "The options mirror_symmetry_option=='YES' and geometry_settings='CUSTOM_POSITIONS' are set.\nThe code will only consider the atomic positions in the positive (x>=0, y>=0) quadrant."
+end
 #
 #
-#Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
-#If probePLANE_option = "NO" then this probe is not computed
-#The meaning of the variables is analogous to above
-probePLANE_option     =   ["YES" ; "NO"][1]
-probePlane_v3_vec     =   [1.0 ; 1.0 ; 1.0]./sqrt(3)
-probePlane_v3_value   =   0
-probePlane_points_v1  =   50
-probePlane_points_v2  =   50
-probePlane_range_v1   =   [-1 ; 1].*10
-probePlane_range_v2   =   [-1 ; 1].*10
-#
-#
-#Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
-probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
-probeSphere_radius    =   40
-probeSphere_points    =   2000
-#
-#
-#If target_beam_option=="YES" then the code calculates the projection of the output field onto a target Gaussian beam.
-#This has the same direction and polarization of the input Gaussian beam, but can 
-#have different waist w0_target and different focal point z0_target. 
-const target_beam_option    =   ["YES" ; "NO"][1] 
-w0_target                   =   2*w0
-z0_target                   =   10
-#If norm_target_option == "YES" then this target beam is multiplied by (w0/w0_target)*exp(im*k0*z0_target), 
-#thus preserving the phase and power of the input beam
-normalize_target_option     =   ["YES" ; "NO"][1] 
-#
-#
-#
-#
-#
-#
-#
-#############################################################################################################
-################## METALENS SETTINGS ########################################################################
-#############################################################################################################
-#
-#
-#Settings that are relevant only if the geometry is set to METALENS
-if geometry_settings == "METALENS"
+#Metalens consistency
+if geometry_settings == "METALENS" 
     #
-    #METALENS OPTIONS:
-    #
-    #Default: YES - If NO  then xi_z will smoothly vary as function of r, inside any ring (including the buffer zone). If YES then xi_z = xi_z^j is kept fixed in any j-th ring
-    const z_fixed_option            =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If NO  then xi_z will smoothly vary as function of r, but only inside the buffer zones
-    const z_fixed_buffer_option     =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If YES then the average phase of the i-th ring is given by phi((r_{i-1}+r_{i})/2), otherwise it excludes the buffer zone
-    const phase_center_ring_option  =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If YES then the code overwrites some of the probe parameters with the default probe parameters for the metalens.
-    #Specifically:
-    #probeXY_z -> focal distance from the lens
-    #probeYZ_x = probeXZ_y = 0.0
-    #The default sizes of the probe rectangles are specified in "initialization.jl"
-    #The number of probe points remains unchanged
-    const default_probe_option      =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If YES then (w0_target, z0_target) are overwritten by the default option.
-    #It consists of an ideal Gaussian beam expected after a perfect lens with the given focal_length 
-    #Similarly normalize_target_option are overwritten to YES
-    const default_target_option   =      ["YES" ; "NO"][1]       
-    #
-    #METALENS PARAMETERS:
-    #Focal length f
-    const focal_point               =    20
-    #Total radius of the metalens
-    const r_lens                	=    1.8
-    #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    const disks_width               =    0.2
-    #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
-    const buffer_smooth     	    =    0.2
-    #Value of the phase shift at the center of the metalens, i.e. phi_0
-    const phase_shift               =    1.0775
-    #
+    #Consistency of the buffer zone definition
+    if !isa(buffer_smooth,Number) || (buffer_smooth<0.0 || buffer_smooth>1.0)
+        @warn "The buffer zone is ill-defined out of the range 0<=buffer_smooth<=1. Setting buffer_smooth to the closest, valid value."
+        !isa(buffer_smooth,Number) || buffer_smooth<0.0 ? buffer_smooth=0.0 : nothing
+        buffer_smooth>1.0 ? buffer_smooth=1.0 : nothing
+    end
+    #Consistency of the disk width
+    if !isa(disks_width,Number) || disks_width>r_lens
+        @warn "The width of each disk must be a number smaller than the radius of the metalens. Setting disks_width = r_lens."
+        disks_width = r_lens
+    end
+    if disks_width<=0
+        @warn "The width of each disk cannot lower or equal zero. Setting disks_width = 0.1*r_lens."
+        disks_width = 0.1*r_lens
+    end
+end
+#
+#
+#Consistency of the repetition number
+rep_warning = "The number of repetition n_repetitions must be a positive, integer number.\nSetting n_repetitions=1."
+if typeof(n_repetitions)!==Int64
+    @warn rep_warning
+    n_repetitions = 1
+elseif n_repetitions<1
+    @warn rep_warning
+    n_repetitions = 1
+end
+if (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD)&& n_repetitions>1
+    @warn "Neither the atomic positions nor the resonance frequencies are randomly chosen.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
+    n_repetitions = 1
+end
+#
+#
+#Consistency of defects_fraction with the rest of options
+if !isa(defects_fraction,Number) || defects_fraction<0.0 || defects_fraction>1.0
+    @warn "The fraction of defects (i.e. defects_fraction) must be a positive number, lower than unity.\nSetting defects_fraction=0."
+    defects_fraction = 0.0
+end
+if geometry_settings[1:3]=="DIS" && defects_fraction>0.0
+    @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
+    defects_fraction = 0.0
+end
+if mirror_symmetry_option=="YES" && defects_fraction>0.0
+    @warn "The mirror symmetry is active and the fraction of (random) defects is non-null.\nThe positions of the defects will be randomized only in the x>0, y>0 quadrant, while they will be symmetric for x->-x and y->-y."
+end
+#
+#
+#Consistency of w0
+if w0<1
+    @warn "For the paraxial approximation to be fully valid a regime of w0>=1 is preferable."
 end
 #
 #
@@ -249,15 +152,60 @@ end
 #
 #
 #############################################################################################################
-################## ARRAYS SETTINGS ##########################################################################
+################## DEFINITION OF THE ATOMIC POSITIONS #######################################################
 #############################################################################################################
 #
 #
-#Settings that are relevant only if the geometry is set to ARRAYS
+#Definition of the wavevector (we recall that all lengths are in units of lambda0)
+const k0 = 2.0*pi
+#
+#
+time_start=time()
+#
+#Defines the settings and the atomic positions for an atomic metalens
+if geometry_settings == "METALENS"
+    (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_point, disks_width,buffer_smooth,phase_shift)
+    #
+    if default_target_option=="YES"
+        (w0_target, z0_target) = ideal_beam(w0, k0, focal_point)
+        normalize_target_option = "YES"
+    end
+    #
+    #Default settings of the probe points
+    if default_probe_option=="YES"
+        if probeXY_option == "YES" 
+            probe_range_factor = 0.9
+            probeXY_z = z0_target
+            probeXY_range_x = probeXY_range_y = [-1 ; 1].*(r_lens*probe_range_factor)
+        end
+        if probeYZ_option == "YES" 
+            probe_range_factor = 1.05
+            probeYZ_x = 0.0
+            probeYZ_range_y = [-1 ; 1].*(r_lens*probe_range_factor)
+            probeYZ_range_z = [-1 ; 2].*(3.0*z0_target)
+        end
+        if probeXZ_option == "YES" 
+            probe_range_factor = 1.05
+            probeXZ_y = 0.0
+            probeXZ_range_x = [-1 ; 1].*(r_lens*probe_range_factor)
+            probeXZ_range_z = [-1 ; 2].*(3.0*z0_target)
+        end
+    end
+end
+#
+#Defines the settings and the atomic positions for a series of atomic arrays
 if geometry_settings == "ARRAYS"
     #TBA!!!!
 end
 #
+time_atomic_pos=time()
+#
+#
+#Punching defects (only for ordered geometries, and if requested)
+if defects_fraction>0.0
+    (r_atoms,n_atoms) = defect_punching(r_atoms,n_atoms, defects_fraction)
+end
+#
 #
 #
 #
@@ -265,9 +213,133 @@ end
 #
 #
 #############################################################################################################
-################## RUNNING THE CODE #########################################################################
+################## SETTING THE ENVIRONMENT ##################################################################
 #############################################################################################################
 #
 #
-#Starting the code computation
-include("Initialization.jl")
+#Defines the filename, by adding labels identifying the user choices of parameters for the simulation
+length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[name_simulation] 
+if mirror_symmetry_option == "NO" 
+    file_name="_nAtoms"*string(n_atoms)
+elseif geometry_settings[1:3]!="DIS"
+    positive_points = count((r_atoms[:,1].>0.0).*(r_atoms[:,2].>0.0))
+    central_points  = count((abs.(r_atoms[:,1]).<ZERO_THRESHOLD).*(abs.(r_atoms[:,2]).<ZERO_THRESHOLD))
+    file_name="_nAtoms"*string(4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points)
+else
+    file_name="_nAtoms"*string(4*n_atoms)
+end
+#
+if defects_fraction>0.0
+    file_name*="_defects"
+end
+#
+file_name*="_w0"*string(w0)[1:min(length(string(w0)),3)]
+#
+gamma_prime>0      ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
+inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
+#
+#Only if a metalens is computed
+if geometry_settings == "METALENS" 
+    file_name*="_r"*string(r_lens)[1:min(length(string(r_lens)),3)]
+    file_name*="_f"*string(focal_point)[1:min(length(string(focal_point)),3)]
+    file_name*="_widths"*string(disks_width)[1:min(4,length(string(disks_width)))]
+    file_name*="_phase"*string(phase_shift)[1:min(5,length(string(phase_shift)))]
+    file_name*="_buffer"*string(buffer_smooth)[1:min(4,length(string(buffer_smooth)))]
+end
+#
+mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
+file_name*="_"*string(Dates.today())
+file_name=geometry_settings*file_name*"_"*args_checked[1]
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## MAIN EVALUATION ##########################################################################
+#############################################################################################################
+#
+#
+#Starting the evaluation
+println("\n\nTime: ",now(),"\nStarting evaluation of ", @__FILE__)
+println("Output file name: ",file_name,"\n")
+final_path_name="Data_Output/"*file_name*"/"
+mkpath(final_path_name)
+mkpath(final_path_name*"/"*results_folder_name)
+if pos_save_option=="YES" && geometry_settings[1:3]!="DIS"
+    #Adding a dummy dimension to uniform the data analysis with the atomic_positions for disordered systems
+    h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms)) ; open_option="w") 
+    println("Atomic positions created in                   ", dig_cut(time_atomic_pos-time_start)," seconds")
+end
+#
+#Saving data files with the settings of the simulation
+h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
+h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
+h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
+h5write_multiple(final_path_name*"settings", ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
+h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
+h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions),("probePlane_vec",probePlane_v3_vec))
+h5write_multiple(final_path_name*"settings", ("dipoles_polarization",dipoles_polarization))
+#
+if target_beam_option=="YES"
+    h5write_multiple(final_path_name*"settings", ("w0_target",w0_target),("z0_target",z0_target) )
+    h5write_multiple(final_path_name*"options", ("normalize_target_option", normalize_target_option) )
+end
+#
+#Saving data files with the settings specific of the atomic metalens
+if geometry_settings == "METALENS" 
+    n_phase_disks = length(collect(0.0:disks_width:r_lens))-1
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
+    h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) , ("phase_shift",phase_shift))
+    h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array))
+    h5write_multiple(final_path_name*"options_metalens",  ("z_fixed_option", z_fixed_option) , ("z_fixed_buffer_option",z_fixed_buffer_option),("phase_center_ring_option",phase_center_ring_option),("default_probe_option",default_probe_option),("default_target_option",default_target_option) ; open_option="w")
+end
+#
+#
+#Checking if the RAM estimated for this simulation exceed the threshold set by the user
+tot_probe_points = 0
+probeXY_option=="YES"     ? tot_probe_points+=probeXY_points_x*probeXY_points_y           : nothing
+probeYZ_option=="YES"     ? tot_probe_points+=probeYZ_points_y*probeYZ_points_z           : nothing
+probeXZ_option=="YES"     ? tot_probe_points+=probeXZ_points_x*probeXZ_points_z           : nothing
+probePLANE_option=="YES"  ? tot_probe_points+=probePlane_points_v1*probePlane_points_v2   : nothing
+probeSPHERE_option=="YES" ? tot_probe_points+=probeSphere_points                          : nothing
+RAM_GB_estimate = RAM_estimation(TN,tot_probe_points, n_atoms, length(laser_detunings))
+if 1.05*RAM_GB_estimate>RAM_GB_max 
+    error("Too many atoms: ", n_atoms,"\nThe RAM consumption is estimated as: ", RAM_GB_estimate)
+end
+#
+#
+#Initializes the data files, or overwrites them if already existing
+t_and_r_h5 = h5open(final_path_name*"/"*results_folder_name*"/"*"t_and_r.h5", "w")
+close(t_and_r_h5)
+#
+if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; probePLANE_option ])) || probeSPHERE_option!="NONE"
+    probe_pos_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_positions.h5", "w")
+    close(probe_pos_h5)
+    probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
+    close(probe_field_h5)
+end
+#
+GC.gc()
+#
+#Main computation
+performance=@timed for index_repetition in 1:n_repetitions
+    if geometry_settings[1:3]=="DIS"
+        #TBA!!!
+    end
+    #
+    GC.gc()
+    #
+    println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
+    println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
+    @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    #
+    index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance of the core code: ") : nothing
+end
+println("- Total core-computation time:                ", dig_cut(performance[2]-performance[4])," seconds" )
+println("- Total garbage-collection time:              ", dig_cut(performance[4])," seconds" )
+#
+println("\nEvaluation successfully completed. \n- Total running time:                         ", dig_cut(time()-time_start)," seconds","\n")
