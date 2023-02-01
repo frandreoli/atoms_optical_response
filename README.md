@@ -60,7 +60,9 @@ Firts, we describe the settings and options available for the user. These latter
 option = ["option_1" ; "option_2"][i]
 ```
 
-and the user can change the integer number $i$ to choose the $i$-th option from the list.  
+and the user can change the integer number $i$ to choose the $i$-th option from the list. 
+
+The settings and options of the simulation can be found in the file *Settings.jl*, which has to be edited by the user to select the desired configuration.
 
 
 
