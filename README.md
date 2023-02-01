@@ -72,15 +72,18 @@ Here, we describe the generic settings that can be implemented in th code
 The option defines the geometry of the positions of the quantum emitters. It can be set to three *disordered* geometries `"DISORDERED_SPHERE"`, `"DISORDERED_CYLINDER"` and `"DISORDERED_CUBOID"`, whose choice will randomly sample the positions from a uniform distribution inside the selected shape. When setting it to `"ARRAYS"` the emitters are arranged on a 3D lattice composed of many arrays in a row, whose number, size, lattice constants and distance can be later set. The choice of `"METALENS"` arranges the emitter position to form a three-layer atomic metalens. Finally, by selecting `"CUSTOM_POSITIONS"` the user can feed the simulation with its own set of emitter positions (in the 3D space), which must be formatted as a $N\times 3$ matrix and saved in a *.h5* file (HDF5 format) whose name can be later selected.
 
 - `pos_save_option` \
-When this option is set to `YES` the simulation will save the atomic positions as a $N\_{\text{rep}}\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of $N\_{\text{rep}}$ will be defined below.
+When this option is set to `YES` the simulation will save the atomic positions as a `n_repetitions` $\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of `n_repetitions` will be defined below.
 
 - `defects_fraction = 0.0`\
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `mirror_symmetry_option`\
-When set to `YES`, 
+When set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131-physical-simplifications). 
 
-as described in [Sec. 1.3.1](#131-physical-simplifications)
+- `n_repetitions = 1`\
+For disordered geometries, or settings that include random sampling, it is often convenient to repeat the simulation many times, sampling a different configuration each time. The value of `n_repetitions` defines the number of times the optical response will be calculated.
+
+
 
 
 ### 2.1.2 Physical settings
