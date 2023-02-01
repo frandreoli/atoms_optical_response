@@ -1,11 +1,11 @@
-# 1 Introduction
+# 1 - Introduction
 
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
 The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang.
 
-## 1.1 Code specifications
+## 1.1 - Code specifications
 
 The core code is written in [Julia](https://julialang.org/) (initially written for Julia 1.6 and well tested on the current version Julia 1.8), while the output data are saved in the HDF5 format. 
 A Mathematica notebook is provided to read the data and generate simple plots, with an intuitive, user-friendly interface. This latter is currently available only for the "Metalens" option (see below).
@@ -14,7 +14,7 @@ The simulation is specifically optimized for multi-threaded computation, and the
 
 
 
-## 1.2 Physical background and motivation
+## 1.2 - Physical background and motivation
 
 In this project, we implement a code to simulate the collective behavior of a mesoscopic ensemble of quantum emitters. This task is crucial to predict new phenomena that can occur in actual experiments, where cooperative effects can drastically alter the optical response [[1](Dicke1954)–[16](Asenjo-Garcia2017)]. 
 
@@ -37,35 +37,35 @@ The number of emitters that we were able to simulate with this code is roughly t
 
 
 
-## 1.3 Computational insights
+## 1.3 - Computational insights
 
 The core of our simulations is the inversion of $\mathcal{M}\_{jk}$, implemented with the backslash operator "\\" (see [*left division operator*](https://docs.julialang.org/en/v1/base/math/)). This performs adaptive algorithms based on the structure of the matrix, so that, in the worst-case scenario, the number of elementary operations scales as $\sim N^3$. This process is speeded up through the openBLAS library for linear algebra, which can evaluate the problem in parallel over up to 32 cores. Asymptotically, this task dominates the time complexity of the simulation, overcoming the other sources of time consumption, such as the creation of both $\mathcal{M}\_{jk}$ and $\mathcal{L}\_{jk}$, which scale as $\sim(N+3N_{\text{probe}} )N$. Nonetheless, the asymptotic scaling does not assure that these contributions are negligible in finite computations, due to both large pre-factors and different durations of the elementary operations. We empirically noticed that this is often not the case for reasonable values of $N$, expecially when this is comparable to $\sim N_{\text{probe}}$. Although we privileged operations performed in a vectorized fashion, this does not straightforwardly apply to the creation of the matrix $\mathcal{M}\_{jk}$, since the diagonal elements would exhibit infinite values corresponding to the dipole self-energy, which must be removed [[16]()]. To perform this task efficiently, we implemented a (sigle) loop cycle to run in parallel over several threads. To this aim, we designed the loop with only elementary operations, avoiding the possible bottleneck of multiple threads calling the same complicated functions.
 
 Similar considerations can be drawn regarding the memory consumption. The main allocations of RAM are associated to the creation of both the complex-diagonal, dense $N\times N$ matrix $\mathcal{M}\_{jk}$ and the $N\_{\text{probe}}\times N$ probe matrices $\mathcal{L}\_{jk}$. By properly arranging the algorithm, we avoid the allocation of unnecessay memory at the same time, flushing the RAM when desirable. For example, we fill in and invert $\mathcal{M}\_{jk}$ at the beginning of the core part and we promptly clear the memory, only conserving the $N$ solutions $d\_j$. The probe matrix $\mathcal{L}\_{jk}$ is constructed only afterwards, and if many probe geometries are selected, thn each matrix $\mathcal{L}\_{jk}$ is filled in, used and flushed before allocating the next one. Empirically, we observed that the backslash operator "\\" allocates $\mathcal{M}\_{jk}$ twice, when inverting it (observed in Julia 1.6), so that we roughly estimate the maximum allocated RAM by $\sim \max(2N,3N\_{\text{probe}} )N$ complex Floats. Finally, we drastically reduce this number by defining these matrices as Complex{Float32} (64 bit) rather than the custom Complex{Float64} (128 bit). We numerically checked that we were operating with enough precision.
 
-### 1.3.1 Physical simplifications
+### 1.3.1 - Physical simplifications
 To further simplify the computational problem, we give the user the option to take advantage of some common symmetries in the pysical system. In particular, a typical problem consists of studying the cooperative properties of ordered atomic lattices (26–28). Often, such a system can be arranged to be symmetric for $x\to -x$ and $y\to -y$, without much loss of generality in the physical conclusions. This implies that each dipole $d\_j$ is equal to those at the mirrored positions. The actual degrees of freedom are thus given by the number of atoms satisfying $x\_j\geq 0$ and $y\_j\geq 0$ (roughly $\sim N/4$). The coupled-dipole equations can be then simplified by accounting only for these atoms, and considering as if each of them scattered light from the mirrored positions as well. 
 
 
 
 
-# 2 Documentation
+# 2 - Documentation
 In this section, further information will be provided on the use the code, detailing the options and settings available to the user. The core simulation requires an installed version of [Julia](https://julialang.org/) higher than 1.6.
 
 
-## 2.1 Initialization
+## 2.1 - Initialization
 Firts, we describe the settings and options available for the user. These latter are often provided in the form:
 
 ```Julia
 option = ["option_1" ; "option_2"][i]
 ```
 
-and the user can change the integer number $i$ to choose the i-th option from the list.  
+and the user can change the integer number $i$ to choose the $i$-th option from the list.  
 
 
 
-### 2.1.1 Overall settings
-Here, we describe the generic settings that can be implemented in th code
+### 2.1.1 - Overall settings
+Here, we describe the generic settings that can be implemented in the code.
 
 
 - `geometry_settings` \
@@ -78,37 +78,64 @@ When this option is set to `YES` the simulation will save the atomic positions a
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `mirror_symmetry_option`\
-When set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131-physical-simplifications). 
+When set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
 
 - `n_repetitions = 1`\
-For disordered geometries, or settings that include random sampling, it is often convenient to repeat the simulation many times, sampling a different configuration each time. The value of `n_repetitions` defines the number of times the optical response will be calculated.
+For disordered geometries, or settings that include random sampling, it is often convenient to repeat the simulation many times, each sampling a different configuration. The value of `n_repetitions` defines the number of times the optical response will be calculated.
+
+- `name_simulation = "DEFAULT"`\
+This string allows to define a specific label for the simulation, to distinguish it from other runs.
+
+- `RAM_GB_max = 450`\
+The maximum amount of RAM that the user would prefer to allocate. The code will try to (roughly) estimate the RAM that it will allocate and abort the simulation if it exceeds `RAM_GB_max`.
 
 
 
 
-### 2.1.2 Physical settings
+### 2.1.2 - Physical settings
+Here, we describe the settings related to the physical system.
+
+- `dipoles_polarization = [1.0 ; 0.0 ; 0.0]`\
+It defines the dipole matrix element $\hat{\mathbf{d}}\_0$ of the quantum emitters. This must be a $3$-fold unit vector representing the $x$, $y$ and $z$ coordinates.
+
+- `gamma_prime = 0.0`\
+It defines the inelastic scattering rate $\Gamma'$, which quantifies the energy losses from the standpoint of the optical linear response. It must be a real number expressing the rate in units of $\Gamma\_0$.
 
 
-### 2.1.3 Specific settings
+- `inhom_broad_std = 0.0`\
+The user can opt for the atoms to have their resonant frequency $\omega\_0$ randomly shifted, by sampling (for each atom) from a Gaussian distribution of mean value $\omega\_0$ and standard deviation `inhom_broad_std` (in units of $\Gamma\_0$). This addresses the possibility of inhomogeneous broadening. If `inhom_broad_std = 0.0`, then all atoms have the same resonant frequency $\omega\_0$.
+
+#### 2.1.2.1 - Input Gaussian beam
+
+- `laser_detunings = 0.0`\
+T
+
+
+### 2.1.3 - Probe settings
 
 
 
-#### 2.1.3.1 Disordered geometries settings
 
-#### 2.1.3.2 Array settings
-
-#### 2.1.3.3 Atomic metalens settings
-
-#### 2.1.3.4 Custom geometry settings
-
-
-## 2.2 Run the simulation
-
-## 2.3 Data outputs
+### 2.1.4 - Specific settings
 
 
 
-# 3) References 
+#### 2.1.4.1 - Disordered geometries settings
+
+#### 2.1.4.2 - Array settings
+
+#### 2.1.4.3 - Atomic metalens settings
+
+#### 2.1.4.4 - Custom geometry settings
+
+
+## 2.2 - Run the simulation
+
+## 2.3 - Data outputs
+
+
+
+# 3 - References 
 
 
 
