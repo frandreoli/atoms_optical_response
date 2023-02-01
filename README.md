@@ -157,13 +157,13 @@ Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE,
 
  <a id="Andreoli2023a">[2]</a> 
 Andreoli F, Windt B, Grava S, Anolina GM, Gullans MJ, High AA, Chang DE, 
-*The maximum refractive index of an atomic crystal -- from quantum optics to quantum chemistry*, 
-In preparation (2023)
+*The maximum refractive index of an atomic crystal - from quantum optics to quantum chemistry*, 
+paper in preparation (2023)
 
 <a id="Andreoli2023b">[3]</a> 
 Andreoli F, High AA, Chang DE, 
 *Metalens formed by structured, sub-wavelength atomic arrays*, 
-In preparation (2023)
+paper in preparation (2023)
 
 
 <a id="Dicke1954">[4]</a> 
