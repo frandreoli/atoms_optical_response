@@ -3,7 +3,7 @@
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
-The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. Parts of this code have been used in [[1]](Andreoli2021)-[[3]](Andreoli2023b).
+The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. Parts of this code have been used in [[1](#Andreoli2021)-[3](#Andreoli2023b)].
 
 ## 1.1 - Code specifications
 
@@ -149,18 +149,18 @@ Here, we list the settings related to the probe points where the total field (in
 
 
 <a id="Andreoli2021">[1]</a> 
-Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE. 
-*Maximum Refractive Index of an Atomic Medium.* 
+Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE, 
+*Maximum Refractive Index of an Atomic Medium*, 
 [Physical Review X 11, 011026](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.11.011026) (2021)
 
  <a id="Andreoli2023a">[2]</a> 
-Andreoli F, Windt B, Grava S, Anolina GM, Gullans MJ, High AA, Chang DE. 
-*The maximum refractive index of an atomic crystal -- from quantum optics to quantum chemistry.* 
+Andreoli F, Windt B, Grava S, Anolina GM, Gullans MJ, High AA, Chang DE, 
+*The maximum refractive index of an atomic crystal -- from quantum optics to quantum chemistry*, 
 In preparation (2023)
 
 <a id="Andreoli2023b">[3]</a> 
-Andreoli F, High AA, Chang DE. 
-*Metalens formed by structured, sub-wavelength atomic arrays.* 
+Andreoli F, High AA, Chang DE, 
+*Metalens formed by structured, sub-wavelength atomic arrays*, 
 In preparation (2023)
 
 
