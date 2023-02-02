@@ -165,10 +165,10 @@ time_start=time()
 #
 #Defines the settings and the atomic positions for an atomic metalens
 if geometry_settings == "METALENS"
-    (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_point, disks_width,buffer_smooth,phase_shift)
+    (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_length, disks_width,buffer_smooth,phase_shift)
     #
     if default_target_option=="YES"
-        (w0_target, z0_target) = ideal_beam(w0, k0, focal_point)
+        (w0_target, z0_target) = ideal_beam(w0, k0, focal_length)
         normalize_target_option = "YES"
     end
     #
@@ -242,7 +242,7 @@ inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)               
 #Only if a metalens is computed
 if geometry_settings == "METALENS" 
     file_name*="_r"*string(r_lens)[1:min(length(string(r_lens)),3)]
-    file_name*="_f"*string(focal_point)[1:min(length(string(focal_point)),3)]
+    file_name*="_f"*string(focal_length)[1:min(length(string(focal_length)),3)]
     file_name*="_widths"*string(disks_width)[1:min(4,length(string(disks_width)))]
     file_name*="_phase"*string(phase_shift)[1:min(5,length(string(phase_shift)))]
     file_name*="_buffer"*string(buffer_smooth)[1:min(4,length(string(buffer_smooth)))]
@@ -292,7 +292,7 @@ end
 #Saving data files with the settings specific of the atomic metalens
 if geometry_settings == "METALENS" 
     n_phase_disks = length(collect(0.0:disks_width:r_lens))-1
-    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_point", focal_point) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_length", focal_length) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
     h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
     h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) , ("phase_shift",phase_shift))
     h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array))

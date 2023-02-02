@@ -204,16 +204,21 @@ normalize_target_option     =   ["YES" ; "NO"][1]
 #Settings that are relevant only if the geometry is set to METALENS
 if geometry_settings == "METALENS"
     #
+    #
+    #METALENS PARAMETERS:
+    #Focal length f
+    const focal_length               =    20
+    #Total radius of the metalens
+    const r_lens                	=    1.8
+    #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
+    const disks_width               =    0.2
+    #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
+    const buffer_smooth     	    =    0.2
+    #Value of the phase shift at the center of the metalens, i.e. phi_0
+    const phase_shift               =    1.0775
+    #
+    #
     #METALENS OPTIONS:
-    #
-    #Default: YES - If NO  then xi_z will smoothly vary as function of r, inside any ring (including the buffer zone). If YES then xi_z = xi_z^j is kept fixed in any j-th ring
-    const z_fixed_option            =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If NO  then xi_z will smoothly vary as function of r, but only inside the buffer zones
-    const z_fixed_buffer_option     =      ["YES" ; "NO"][1] 
-    #
-    #Default: YES - If YES then the average phase of the i-th ring is given by phi((r_{i-1}+r_{i})/2), otherwise it excludes the buffer zone
-    const phase_center_ring_option  =      ["YES" ; "NO"][1] 
     #
     #Default: YES - If YES then the code overwrites some of the probe parameters with the default probe parameters for the metalens.
     #Specifically:
@@ -228,17 +233,18 @@ if geometry_settings == "METALENS"
     #Similarly normalize_target_option are overwritten to YES
     const default_target_option   =      ["YES" ; "NO"][1]       
     #
-    #METALENS PARAMETERS:
-    #Focal length f
-    const focal_point               =    20
-    #Total radius of the metalens
-    const r_lens                	=    1.8
-    #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    const disks_width               =    0.2
-    #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
-    const buffer_smooth     	    =    0.2
-    #Value of the phase shift at the center of the metalens, i.e. phi_0
-    const phase_shift               =    1.0775
+    #
+    #
+    #The following parameters allow to modify the algorithm by which the atomic metalens is constructed
+    #
+    #Default: YES - If NO  then xi_z will smoothly vary as function of r, inside any ring (including the buffer zone). If YES then xi_z = xi_z^j is kept fixed in any j-th ring
+    const z_fixed_option            =      ["YES" ; "NO"][1] 
+    #
+    #Default: YES - If NO  then xi_z will smoothly vary as function of r, but only inside the buffer zones
+    const z_fixed_buffer_option     =      ["YES" ; "NO"][1] 
+    #
+    #Default: YES - If YES then the average phase of the i-th ring is given by phi((r_{i-1}+r_{i})/2), otherwise it excludes the buffer zone
+    const phase_center_ring_option  =      ["YES" ; "NO"][1] 
     #
 end
 #

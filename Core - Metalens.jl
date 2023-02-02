@@ -3,13 +3,13 @@
 #############################################################################################################
 #
 #
-#Calculate the waist and focal point of the theoretical, ideal Gaussian beam after a lens with focal_point
+#Calculate the waist and focal point of the theoretical, ideal Gaussian beam after a lens with focal_length
 #given an initial waist w0 and focal point z0_in
-function ideal_beam(w0, k0, focal_point, z0_in=0.0)
+function ideal_beam(w0, k0, focal_length, z0_in=0.0)
 	zR_in = (k0*(w0^2))/2.0
-	magn  = focal_point/sqrt((z0_in-focal_point)^2+zR_in^2)
+	magn  = focal_length/sqrt((z0_in-focal_length)^2+zR_in^2)
 	w0_f  = w0*magn
-	z0_f  = focal_point+(z0_in-focal_point)*magn^2
+	z0_f  = focal_length+(z0_in-focal_length)*magn^2
 	return (w0_f, z0_f)
 end
 #
@@ -33,14 +33,14 @@ function nearest_choice(array, value)
 end
 #
 #Main function to construct the atomic metalens
-function metalens_creation(r_lens, focal_point, disks_width, buffer_zone,phase_shift)
+function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_shift)
 	#The variable "/PhaseData" in "phase_constants_data.h5" contains a 4xM array.
 	#This stores M vectors with 4 elements each, i.e. xi_x^i, xi_y^i, xi_z(xi_x^i,xi_y^i) and phi(xi_x^i,xi_y^i)
 	#When the algorithm needs a value of phi_j in the j-th ring, it finds the closest match phi_j=phi(xi_x^i,xi_y^i)
 	#And then it infers the corresponding lattice constants
     phase_full_data=h5read("Data_Input/phase_constants_data"*".h5", "/PhaseData")
 	phase_full_data[4,:]=shift_phase.(phase_full_data[4,:])
-    phi_func(r1,r2) = mod(k0*(focal_point-sqrt(focal_point^2+((r1+r2)/2)^2))+phase_shift,2*pi)
+    phi_func(r1,r2) = mod(k0*(focal_length-sqrt(focal_length^2+((r1+r2)/2)^2))+phase_shift,2*pi)
 	#Calculates the radii of the rings
     r_range       = collect(0.0:disks_width:r_lens)
 	#Calculates the number of rings
@@ -215,7 +215,7 @@ function metalens_creation_core(r_lens, lattice_constants, r_max,r_min)
 	if z_fixed_option=="YES"
 		return (hcat(repeat(lattice_array_x,3),repeat(lattice_array_y,3),[z*a_z for z in [-1 ; 0 ; 1 ].+0.0 for i in 1:n_points_selected ]), maximum(lattice_array_x),maximum(lattice_array_y) )
 	else
-		phi_func(rr) = mod(k0*(focal_point-sqrt(focal_point^2+rr^2))+phase_shift,2*pi)
+		phi_func(rr) = mod(k0*(focal_length-sqrt(focal_length^2+rr^2))+phase_shift,2*pi)
 		z_func(rr)   = (2*pi-mod(phi_func(rr),pi) )/(6*pi)
 		return ( hcat(repeat(lattice_array_x,3),repeat(lattice_array_y,3),[z*(z_func(sqrt(lattice_array_x[i]^2+lattice_array_y[i]^2))) for z in [-1 ; 0 ; 1 ].+0.0 for i in 1:n_points_selected ]) , maximum(lattice_array_x),maximum(lattice_array_y) )
 	end
@@ -335,7 +335,7 @@ function metalens_creation_buffer_z(r_atoms_buffer_x, r_atoms_buffer_y, a_z_shar
 	if a_z_sharp>0.0
 		return hcat(repeat(r_atoms_buffer_x,3),repeat(r_atoms_buffer_y,3),[z*a_z_sharp for z in [-1 ; 0 ; 1 ].+0.0 for i in 1:n_points_selected ])
 	else
-		phi_func(rr) = mod(k0*(focal_point-sqrt(focal_point^2+rr^2))+phase_shift,2*pi)
+		phi_func(rr) = mod(k0*(focal_length-sqrt(focal_length^2+rr^2))+phase_shift,2*pi)
 		z_func(rr)   = (2*pi-mod(phi_func(rr),pi) )/(6*pi)
 		return hcat(repeat(r_atoms_buffer_x,3),repeat(r_atoms_buffer_y,3),[z*(z_func(sqrt(r_atoms_buffer_x[i]^2+r_atoms_buffer_y[i]^2))) for z in [-1 ; 0 ; 1 ].+0.0 for i in 1:n_points_selected ])
 	end
