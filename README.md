@@ -220,7 +220,7 @@ Physics Reports 93, 301–96 (1982)
 
 <a id="Asenjo-Garcia2017">[6]</a> 
 Asenjo-Garcia A, Moreno-Cardoner M, Albrecht A, Kimble HJ, Chang DE. 
-*Exponential Improvement in Photon Storage Fidelities Using Subradiance and “Selective Radiance” in Atomic Arrays.*
+*Exponential Improvement in Photon Storage Fidelities Using Subradiance and "Selective Radiance" in Atomic Arrays.*
 [Physical Review X 7, 31024](https://link.aps.org/doi/10.1103/PhysRevX.7.031024) (2017)
 
 
