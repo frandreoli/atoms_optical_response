@@ -78,7 +78,7 @@ When this option is set to `YES` the simulation will save the atomic positions a
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `mirror_symmetry_option`\
-When set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
+When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
 
 - `n_repetitions = 1`\
 For disordered geometries, or settings that include random sampling, it is often convenient to repeat the simulation many times, each sampling a different configuration. The value of `n_repetitions` defines the number of times the optical response will be calculated.
@@ -123,9 +123,22 @@ Polarization of the input Gaussian beam (unit vector).
 ### 2.1.3 - Probe settings
 Here, we list the settings related to the probe points where the total field (input and scattered) will be calculated.
 
-- `field_polarization = [1.0 ; 0.0 ; 0.0]`\
+- `probeXY_option`\
+When it is set to `probeXY_option="YES"`, the total field will be calculated on a number `probeXY_points_x*probeXY_points_y` of points on the $x$-$y$ plane at a distance $z=$`probeXY_z`. These points will form a grid inside a rectange of dimensions `probeXY_range_x=[x_min ; x_max]` and `probeXY_range_y=[y_min ; y_max]`. 
+
+- `probeYZ_option`, `probeXZ_option`\
+Same as `probeXY_option`, but related to the $y$-$z$ and $x$-$z$ plane.
+
+-`probePLANE_option`\
+This option gives the possibility of calculating the probe points on a rectangle on a custom plane, which is orthogonal to the unit vector `probePlane_v3_vec`, and placed at a distance `probePlane_v3_value`.
+
+-`probeSPHERE_option`\
+This option allows to calculate the total field on a number `probeSphere_points` of probe points randomly chosen over a sphere of radius `probeSphere_radius`, around the atomic ensemble, by setting it to `FULL_SPHERE`. Otherwise, the values `FORWARD_HEMISPHERE` and `BACKWARD_HEMISPHERE` constrain these probe points on only, respectively, the $z>0$ and $z<0$ hemispheres. Finally, the choice of `NONE` will neglect this option.
+
 
 ### 2.1.3.1 - Target transmission mode
+The user has the possibility of calculating the transmission and reflection coefficients not only in the same optical mode as the input Gaussian beam (which is automatic), but also by projecting onto a custom, target mode. This can be accomplished by setting `target_beam_option="YES"`, and then defining the target mode by its waist `w0_target` and focal distance `z0_target`. This target mode will retain the same direction and polarization of the input mode. Finally, in some cases (such as for the `METALENS` geometry), one might want to normalize that mode to carry the same power as the input field (to ensure energy conservation), and the same phase. This is accomplished by setting `normalize_target_option="YES"`.
+
 
 
 ### 2.1.4 - Specific settings
