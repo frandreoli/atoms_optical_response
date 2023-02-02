@@ -208,21 +208,75 @@ Andreoli F, High AA, Chang DE,
 *Metalens formed by structured, sub-wavelength atomic arrays*, 
 paper in preparation (2023)
 
+<a id="Dicke1954CoherenceProcesses">[4]</a>
+*Coherence in Spontaneous Radiation Processes*,
+Dicke R. H.,
+[Physical Review 93, 1, 99-110](https:\\dx.doi.org\10.1103/PhysRev.93.99)(1954)
 
-<a id="Dicke1954">[4]</a> 
-Dicke RH. 
-*Coherence in Spontaneous Radiation Processes.* 
-[Physical Review 93, 99–110](https://link.aps.org/doi/10.1103/PhysRev.93.99), (1954) 
+<a id="Gross1982SuperradianceEmission">[5]</a>
+*Superradiance: An essay on the theory of collective spontaneous emission*,
+Gross M., Haroche S.,
+[Physics Reports 93, 5, 301-396](https:\\dx.doi.org\10.1016/0370-1573(82)90102-8)(1982)
 
-<a id="Gross1982">[5]</a> 
-Gross M, Haroche S. *Superradiance: An essay on the theory of collective spontaneous emission.* 
-Physics Reports 93, 301–96 (1982)
+<a id="AsenjoGarcia2017ExponentialArrays">[6]</a>
+*Exponential Improvement in Photon Storage Fidelities Using Subradiance and "Selective Radiance" in Atomic Arrays*,
+Asenjo-Garcia A, Moreno-Cardoner M, Albrecht A, Kimble H J, Chang D E,
+[Physical Review X 7, 3, 31024](https:\\dx.doi.org\10.1103/PhysRevX.7.031024)(2017)
 
-<a id="Asenjo-Garcia2017">[6]</a> 
-Asenjo-Garcia A, Moreno-Cardoner M, Albrecht A, Kimble HJ, Chang DE. 
-*Exponential Improvement in Photon Storage Fidelities Using Subradiance and "Selective Radiance" in Atomic Arrays.*
-[Physical Review X 7, 31024](https://link.aps.org/doi/10.1103/PhysRevX.7.031024) (2017)
+<a id="Javanainen2014ShiftsSample">[7]</a>
+*Shifts of a resonance line in a dense atomic sample*,
+Javanainen Juha, Ruostekoski Janne, Li Yi, Yoo Sung Mi,
+[Physical Review Letters 112, 11, ](https:\\dx.doi.org\10.1103/PhysRevLett.112.113603)(2014)
 
+<a id="Schilder2016PolaritonicAtoms">[8]</a>
+*Polaritonic modes in a dense cloud of cold atoms*,
+Schilder N. J., Sauvan C., Hugonin J.-P., Jennewein S., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+[Physical Review A 93, 6, 063835](https:\\dx.doi.org\10.1103/PhysRevA.93.063835)(2016)
+
+<a id="Schilder2017HomogenizationScatterers">[9]</a>
+*Homogenization of an ensemble of interacting resonant scatterers*,
+Schilder N. J., Sauvan C., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+[Physical Review A 96, 1, 013825](https:\\dx.doi.org\10.1103/PhysRevA.96.013825)(2017)
+
+<a id="Schilder2020NearResonantAtoms">[10]</a>
+*Near-Resonant Light Scattering by a Subwavelength Ensemble of Identical Atoms*,
+Schilder N. J., Sauvan C., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+[Physical Review Letters 124, 7, 073403](https:\\dx.doi.org\10.1103/PhysRevLett.124.073403)(2020)
+
+<a id="Chomaz2012AbsorptionAnalysis">[11]</a>
+*Absorption imaging of a quasi-two-dimensional gas: a multiple scattering analysis*,
+Chomaz L., Corman L., Yefsah T., Desbuquois R., Dalibard J.,
+[New Journal of Physics 14, 5, 055001](https:\\dx.doi.org\10.1088/1367-2630/14/5/055001)(2012)
+
+<a id="Javanainen2016LightOptics">[12]</a>
+*Light propagation beyond the mean-field theory of standard optics*,
+Javanainen Juha, Ruostekoski Janne,
+[Optics Express 24, 2, 993](https:\\dx.doi.org\10.1364/oe.24.000993)(2016)
+
+<a id="Zhu2016LightMedia">[13]</a>
+*Light scattering from dense cold atomic media*,
+Zhu Bihui, Cooper John, Ye Jun, Rey Ana Maria,
+[Physical Review A 94, 2, 023612](https:\\dx.doi.org\10.1103/PhysRevA.94.023612)(2016)
+
+<a id="Jennewein2016PropagationAtoms">[14]</a>
+*Propagation of light through small clouds of cold interacting atoms*,
+Jennewein S., Sortais Y. R.P., Greffet J. J., Browaeys A.,
+[Physical Review A 94, 5, ](https:\\dx.doi.org\10.1103/PhysRevA.94.053828)(2016)
+
+<a id="Corman2017TransmissionAtoms">[15]</a>
+*Transmission of near-resonant light through a dense slab of cold atoms*,
+Corman L, Ville J L, Saint-Jalm R, Aidelsburger M, Bienaim'e T, Nascimb`ene S, Dalibard J, Beugnon J,
+[Physical Review A 96, 5, 53629](https:\\dx.doi.org\10.1103/PhysRevA.96.053629)(2017)
+
+<a id="Jenkins2016CollectiveExperiment">[16]</a>
+*Collective resonance fluorescence in small and dense atom clouds: Comparison between theory and experiment*,
+Jenkins S. D., Ruostekoski J., Javanainen J., Jennewein S., Bourgain R., Pellegrino J., Sortais Y. R. P., Browaeys A.,
+[Physical Review A 94, 2, 023842](https:\\dx.doi.org\10.1103/PhysRevA.94.023842)(2016)
+
+<a id="Dobbertin2020CollectiveNanocavities">[17]</a>
+*Collective dipole-dipole interactions in planar nanocavities*,
+Dobbertin Helge, L"ow Robert, Scheel Stefan,
+[Physical Review A 102, 3, 031701](https:\\dx.doi.org\10.1103/PhysRevA.102.031701)(2020)
 
 
 
