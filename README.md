@@ -124,15 +124,15 @@ Polarization of the input Gaussian beam (unit vector).
 Here, we list the settings related to the probe points where the total field (input and scattered) will be calculated.
 
 - `probeXY_option`\
-When it is set to `probeXY_option="YES"`, the total field will be calculated on a number `probeXY_points_x*probeXY_points_y` of points on the $x$-$y$ plane at a distance $z=$`probeXY_z`. These points will form a grid inside a rectange of dimensions `probeXY_range_x=[x_min ; x_max]` and `probeXY_range_y=[y_min ; y_max]`. 
+When it is set to `probeXY_option="YES"`, the total field will be calculated on a number `probeXY_points_x*probeXY_points_y` of points on the $(x,y)$ plane at a distance $z=$`probeXY_z`. These points will form a grid of dimensions `probeXY_range_x=[x_min ; x_max]` and `probeXY_range_y=[y_min ; y_max]`. 
 
-- `probeYZ_option`, `probeXZ_option`\
-Same as `probeXY_option`, but related to the $y$-$z$ and $x$-$z$ plane.
+- `probeYZ_option` and `probeXZ_option`\
+Same as `probeXY_option`, but related to the $(y,z)$ and $(x,z)$ plane.
 
--`probePLANE_option`\
+- `probePLANE_option`\
 This option gives the possibility of calculating the probe points on a rectangle on a custom plane, which is orthogonal to the unit vector `probePlane_v3_vec`, and placed at a distance `probePlane_v3_value`.
 
--`probeSPHERE_option`\
+- `probeSPHERE_option`\
 This option allows to calculate the total field on a number `probeSphere_points` of probe points randomly chosen over a sphere of radius `probeSphere_radius`, around the atomic ensemble, by setting it to `FULL_SPHERE`. Otherwise, the values `FORWARD_HEMISPHERE` and `BACKWARD_HEMISPHERE` constrain these probe points on only, respectively, the $z>0$ and $z<0$ hemispheres. Finally, the choice of `NONE` will neglect this option.
 
 
@@ -142,7 +142,7 @@ The user has the possibility of calculating the transmission and reflection coef
 
 
 ### 2.1.4 - Specific settings
-
+Some geometrical configurations of the positions of the emitters need further, specific settings, which are described in this section.
 
 
 #### 2.1.4.1 - Disordered geometries settings
@@ -150,6 +150,36 @@ The user has the possibility of calculating the transmission and reflection coef
 #### 2.1.4.2 - Array settings
 
 #### 2.1.4.3 - Atomic metalens settings
+When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of [3](#Andreoli2023b). This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
+
+- `focal_length`\
+Its values defines the focal length $f$ of the lens. We recall that the actual distance between the lens and the focal spot is close to $f$. 
+
+- `r_lens`\
+This parameter defines the radius of the atomic metalens (in units of $\lambda_0$).
+
+- `disks_width`\
+It corresponds to the width $r\_{j+1}-r\_j$ of each disk composing the atomic metalens (in units of $\lambda_0$).
+
+- `buffer_smooth`\
+It describes the fraction of `disks_width` that is covered by a buffer zone, as detailed in [3](#Andreoli2023b).
+
+- `phase_shift`\
+Its value defines the overal phase shift impressed by the lens, i.e. the phase shift $\phi\_0$ at the radial center $(x,y)=(0,0)$.
+
+
+
+##### Further metalens options
+Some further options are available for the `METALENS` geometry, which we list here.
+
+- `default_probe_option`\
+When it is set to `YES`, then some of the probe-point parameters will be overwritten by default settings. For example, the value of `probeXY_z` is set to correspond to the focal plane, while also imposing `probeYZ_x = probeXZ_y = 0.0`.
+
+- `default_target_option`\
+By setting this option to `YES` the user has the possibility of overwriting the specifications of the target Gaussian beam (as defined in [Sec. 2.1.3.1](#2131---target-transmission-mode) with those of the theoretical mode where an ideal thin lens with the same focal length would transmit.
+
+
+
 
 #### 2.1.4.4 - Custom geometry settings
 
