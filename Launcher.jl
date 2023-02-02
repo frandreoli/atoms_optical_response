@@ -6,6 +6,7 @@ using LinearAlgebra, Dates, HDF5, Random, Distributed
 include("Settings.jl")
 include("Core - Functions.jl")
 include("Core - Metalens.jl")
+include("Core - Array.jl")
 include("Core - Evaluation.jl")
 Random.seed!()
 if nworkers()==1 addprocs() end

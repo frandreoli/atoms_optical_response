@@ -102,7 +102,8 @@ const inhom_broad_std      =  0.0
 #
 #
 #INPUT GAUSSIAN BEAM:
-#Detuning of the light frequency with respect to the atomic resonance frequency, in units of Gamma0
+#Detuning of the light frequency with respect to the atomic resonance frequency, in units of Gamma0,
+#i.e. Delta = (omega_laser - omega0) / Gamma0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
@@ -261,5 +262,31 @@ end
 #
 #Settings that are relevant only if the geometry is set to ARRAYS
 if geometry_settings == "ARRAYS"
-    #TBA!!!!
+    #
+    #PHYSICAL SETTINGS OF THE ARRAY:
+    #
+    #Number of 2D arrays in series
+    const array_n_layers = 1
+    #Lattice constants of the 2D array
+    const array_xi_x = 0.1
+    const array_xi_y = 0.1
+    #Distance between the arrays
+    const array_xi_z = 0.3
+    #Size of the array
+    const array_size_x = [-2.0;2.0]
+    const array_size_y = [-2.0;2.0]
+    #
+    #
+    #OPTIONS:
+    #
+    #Default: YES - If YES then the laser detunings (saved laser_detunings) are intended so 
+    #that the zero corresponds to the cooperative resonance frequency omega_coop of the array, i.e.
+    #(laser_detunings*Gamma0 + omega_0 - omega_coop) / Gamma0
+    const array_omega_coop_option = ["YES" ; "NO"][1]
+    #
+    #Default: NO - If YES then the laser detunings (saved laser_detunings) are interpreted to be
+    #in units of the cooperative decay rate Gamma_coop, rather than the natural linewidth Gamma0, i.e.
+    #laser_detunings = laser_detunings*Gamma0/Gamma_coop
+    const array_gamma_coop_option = ["YES" ; "NO"][2]
+    #
 end
