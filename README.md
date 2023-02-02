@@ -199,7 +199,7 @@ Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE,
 [Physical Review X 11, 011026](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.11.011026) (2021)
 
  <a id="Andreoli2023a">[2]</a> 
-Andreoli F, Windt B, Grava S, Anolina GM, Gullans MJ, High AA, Chang DE, 
+Andreoli F, Windt B, Grava S, Andolina GM, Gullans MJ, High AA, Chang DE, 
 *The maximum refractive index of an atomic crystal - from quantum optics to quantum chemistry*, 
 paper in preparation (2023)
 
@@ -209,73 +209,74 @@ Andreoli F, High AA, Chang DE,
 paper in preparation (2023)
 
 <a id="Dicke1954CoherenceProcesses">[4]</a>
-Dicke R. H.,
+Dicke R H,
 *Coherence in Spontaneous Radiation Processes*,
-[Physical Review 93, 1, 99-110](https://dx.doi.org/10.1103/PhysRev.93.99) (1954)
+[Physical Review 93, 99-110](https://dx.doi.org/10.1103/PhysRev.93.99) (1954)
 
 <a id="Gross1982SuperradianceEmission">[5]</a>
-Gross M., Haroche S.,
+Gross M, Haroche S,
 *Superradiance: An essay on the theory of collective spontaneous emission*,
-[Physics Reports 93, 5, 301-396](https://dx.doi.org/10.1016/0370-1573(82)90102-8) (1982)
+[Physics Reports 93, 301-396](https://dx.doi.org/10.1016/0370-1573(82)90102-8) (1982)
 
 <a id="AsenjoGarcia2017ExponentialArrays">[6]</a>
 Asenjo-Garcia A, Moreno-Cardoner M, Albrecht A, Kimble H J, Chang D E,
 *Exponential Improvement in Photon Storage Fidelities Using Subradiance and "Selective Radiance" in Atomic Arrays*,
-[Physical Review X 7, 3, 31024](https://dx.doi.org/10.1103/PhysRevX.7.031024) (2017)
+[Physical Review X 7, 31024](https://dx.doi.org/10.1103/PhysRevX.7.031024) (2017)
 
 <a id="Javanainen2014ShiftsSample">[7]</a>
 Javanainen Juha, Ruostekoski Janne, Li Yi, Yoo Sung Mi,
 *Shifts of a resonance line in a dense atomic sample*,
-[Physical Review Letters 112, 11, ](https://dx.doi.org/10.1103/PhysRevLett.112.113603) (2014)
+[Physical Review Letters 112, ](https://dx.doi.org/10.1103/PhysRevLett.112.113603) (2014)
 
 <a id="Schilder2016PolaritonicAtoms">[8]</a>
-Schilder N. J., Sauvan C., Hugonin J.-P., Jennewein S., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+Schilder N J, Sauvan C, Hugonin J-P, Jennewein S, Sortais Y R P, Browaeys A, Greffet J-J,
 *Polaritonic modes in a dense cloud of cold atoms*,
-[Physical Review A 93, 6, 063835](https://dx.doi.org/10.1103/PhysRevA.93.063835) (2016)
+[Physical Review A 93, 063835](https://dx.doi.org/10.1103/PhysRevA.93.063835) (2016)
 
 <a id="Schilder2017HomogenizationScatterers">[9]</a>
-Schilder N. J., Sauvan C., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+Schilder N J, Sauvan C, Sortais Y R P, Browaeys A, Greffet J-J,
 *Homogenization of an ensemble of interacting resonant scatterers*,
-[Physical Review A 96, 1, 013825](https://dx.doi.org/10.1103/PhysRevA.96.013825) (2017)
+[Physical Review A 96, 013825](https://dx.doi.org/10.1103/PhysRevA.96.013825) (2017)
 
 <a id="Schilder2020NearResonantAtoms">[10]</a>
-Schilder N. J., Sauvan C., Sortais Y. R. P., Browaeys A., Greffet J.-J.,
+Schilder N J, Sauvan C, Sortais Y R P, Browaeys A, Greffet J-J,
 *Near-Resonant Light Scattering by a Subwavelength Ensemble of Identical Atoms*,
-[Physical Review Letters 124, 7, 073403](https://dx.doi.org/10.1103/PhysRevLett.124.073403) (2020)
+[Physical Review Letters 124, 073403](https://dx.doi.org/10.1103/PhysRevLett.124.073403) (2020)
 
 <a id="Chomaz2012AbsorptionAnalysis">[11]</a>
-Chomaz L., Corman L., Yefsah T., Desbuquois R., Dalibard J.,
+Chomaz L, Corman L, Yefsah T, Desbuquois R, Dalibard J,
 *Absorption imaging of a quasi-two-dimensional gas: a multiple scattering analysis*,
-[New Journal of Physics 14, 5, 055001](https://dx.doi.org/10.1088/1367-2630/14/5/055001) (2012)
+[New Journal of Physics 14, 055001](https://dx.doi.org/10.1088/1367-2630/14/5/055001) (2012)
 
 <a id="Javanainen2016LightOptics">[12]</a>
 Javanainen Juha, Ruostekoski Janne,
 *Light propagation beyond the mean-field theory of standard optics*,
-[Optics Express 24, 2, 993](https://dx.doi.org/10.1364/oe.24.000993) (2016)
+[Optics Express 24, 993](https://dx.doi.org/10.1364/oe.24.000993) (2016)
 
 <a id="Zhu2016LightMedia">[13]</a>
 Zhu Bihui, Cooper John, Ye Jun, Rey Ana Maria,
 *Light scattering from dense cold atomic media*,
-[Physical Review A 94, 2, 023612](https://dx.doi.org/10.1103/PhysRevA.94.023612) (2016)
+[Physical Review A 94, 023612](https://dx.doi.org/10.1103/PhysRevA.94.023612) (2016)
 
 <a id="Jennewein2016PropagationAtoms">[14]</a>
-Jennewein S., Sortais Y. R.P., Greffet J. J., Browaeys A.,
+Jennewein S, Sortais Y RP, Greffet J J, Browaeys A,
 *Propagation of light through small clouds of cold interacting atoms*,
-[Physical Review A 94, 5, ](https://dx.doi.org/10.1103/PhysRevA.94.053828) (2016)
+[Physical Review A 94, ](https://dx.doi.org/10.1103/PhysRevA.94.053828) (2016)
 
 <a id="Corman2017TransmissionAtoms">[15]</a>
 Corman L, Ville J L, Saint-Jalm R, Aidelsburger M, Bienaim'e T, Nascimb`ene S, Dalibard J, Beugnon J,
 *Transmission of near-resonant light through a dense slab of cold atoms*,
-[Physical Review A 96, 5, 53629](https://dx.doi.org/10.1103/PhysRevA.96.053629) (2017)
+[Physical Review A 96, 53629](https://dx.doi.org/10.1103/PhysRevA.96.053629) (2017)
 
 <a id="Jenkins2016CollectiveExperiment">[16]</a>
-Jenkins S. D., Ruostekoski J., Javanainen J., Jennewein S., Bourgain R., Pellegrino J., Sortais Y. R. P., Browaeys A.,
+Jenkins S D, Ruostekoski J, Javanainen J, Jennewein S, Bourgain R, Pellegrino J, Sortais Y R P, Browaeys A,
 *Collective resonance fluorescence in small and dense atom clouds: Comparison between theory and experiment*,
-[Physical Review A 94, 2, 023842](https://dx.doi.org/10.1103/PhysRevA.94.023842) (2016)
+[Physical Review A 94, 023842](https://dx.doi.org/10.1103/PhysRevA.94.023842) (2016)
 
 <a id="Dobbertin2020CollectiveNanocavities">[17]</a>
-Dobbertin Helge, L"ow Robert, Scheel Stefan,
+Dobbertin Helge, Low Robert, Scheel Stefan,
 *Collective dipole-dipole interactions in planar nanocavities*,
-[Physical Review A 102, 3, 031701](https://dx.doi.org/10.1103/PhysRevA.102.031701) (2020)
+[Physical Review A 102, 031701](https://dx.doi.org/10.1103/PhysRevA.102.031701) (2020)
+
 
 
