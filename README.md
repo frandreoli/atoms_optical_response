@@ -17,11 +17,11 @@ The simulation is specifically optimized for multi-threaded computation, and the
 
 ## 1.2 - Physical background and motivation
 
-In this project, we implement a code to simulate the collective behavior of a mesoscopic ensemble of quantum emitters. This task is crucial to predict new phenomena that can occur in actual experiments, where cooperative effects can drastically alter the optical response \[[4](#Dicke1954)–[16](#Asenjo-Garcia2017)\]. 
+In this project, we implement a code to simulate the collective behavior of a mesoscopic ensemble of quantum emitters. This task is crucial to predict new phenomena that can occur in actual experiments, where cooperative effects can drastically alter the optical response \[[4](#Dicke1954CoherenceProcesses)–[21](#Manzoni2018OptimizationArrays)\]. 
 
 We consider two-level emitters with dipole matrix elements $d\_0$, associated to the transition $\omega_0$ from the ground to the excited state. This latter has a spontaneous emission rate $\Gamma\_0$, which defines the elastic scattering rate of the atoms. A supplementary rate $\Gamma'$ (in units of $\Gamma\_0$ accounts for the possibility of inelastic scattering, which might be due to the system environment (such as the excitation of phononic modes). 
 A collection of $N$ emitters is characterized by their dipoles $\mathbf{d}\_j$. When illuminated by an external field $\mathbf{E}\_{\text{in}}(\mathbf{r}\_j)$, the optical response can be described by the coupled-dipole formalism, where each dipole is driven by both the input field and the field re-scattered by the other dipoles. This is valid as long as the external drive has a low intensity (with Rabi frequecy $\Omega_0\ll \Gamma_0$), so that non-linear effects are negligible. In these simulations, we assume that the dipoles have a well defined direction $\mathbf{d}\_j = d\_j \hat{\mathbf{d}}\_0$. When dealing with atoms in free space, this is a valid approximation provided that the input field is $\hat{\mathbf{x}}$-polarized and that it retains more intense that the scattere field at the atomic positions. 
-On the contrary, a constrain on the dipole orientations is imposed on solid-state emitters by the geometry of the environment (such as the surrounding diamond lattice for color centers in diamond). Finally, we assume that the emitters are in a bulk, dielectric material of (possitive, real) index $n\_{\text{bulk}}$, meaning that $k_0=2\pi/\lambda_0 = n\_{\text{bulk}}\omega_0/c$ denotes the resonant wavevector. Under these conditions, the steady-state response is described by [14,[16](Asenjo-Garcia2017)]
+On the contrary, a constrain on the dipole orientations is imposed on solid-state emitters by the geometry of the environment (such as the surrounding diamond lattice for color centers in diamond). Finally, we assume that the emitters are in a bulk, dielectric material of (possitive, real) index $n\_{\text{bulk}}$, meaning that $k_0=2\pi/\lambda_0 = n\_{\text{bulk}}\omega_0/c$ denotes the resonant wavevector. Under these conditions, the steady-state response is described by \[[6](#AsenjoGarcia2017ExponentialArrays)\]
 
  $$ d\_j = \alpha\_0\epsilon\_0 \left(\hat{\mathbf{d}}\_0\cdot \mathbf{E}\_{\text{in}}(\mathbf{r}\_j) + \mu\_0 \omega\_0^2 \displaystyle \sum\_{k\neq j}^N \hat{\mathbf{d}}\_0 \cdot \mathbf{G}(\mathbf{r}\_j-\mathbf{r}\_k,\omega\_0)\cdot \hat{\mathbf{d}}\_0 d_k \right), $$
 
@@ -29,10 +29,10 @@ where $\alpha\_0=-3\pi \epsilon\_0 /\[(\Delta + i(1+\Gamma')/2)k\_0^3\]$ is the 
 Similarly, the total field can be reconstructed at $N\_{\text{probe}}$ probe points $\textbf{r}\_{k}$ in space, as $\mathbf{E}(\mathbf{r}\_{k})=\mathbf{E}\_{\text{in}}(\mathbf{r}\_{k})+\sum\_j\mathcal{L}\_{jk}d\_j$, where we define the $3N\_{\text{probe}}\times N$ matrix $\mathcal{L}\_{jk}=\mu\_0\omega\_0^2\mathbf{G}(\mathbf{r}\_j-\mathbf{r}\_k,\omega\_0)\cdot  \hat{\mathbf{d}}\_0 $. 
 
 
-This code allows to calculate the total field at different probe positions, given many geometric choices of the atomic positions (either ordered or with random distributions). The input field consists of a Gaussian input beam of waist $w\_0$ and focal point $\mathbf{r}=0$, with custom direction and polarization. Moreover, the code calculates the transmission and reflection by projecting the scattered field onto the same Gaussian mode as the input \[,[14](#Andreoli2021)\]. On top of that, the user has the possibility to calculate the projection and reflection onto a different Gaussian mode as well, with custom waist $w\_{\text{target}}$ and custom focal point (but same direction and polarization as the input). At the same time, the computation can be performed for several values of the detuning $\Delta$, and given any (fixed) choice of the dipole orientation $\hat{\mathbf{d}}\_0$. Finally, when simulating lattice geometries, the user can test scenarios where a fixed fractions of defects (i.e. missing atoms at random lattice positions) is present. For any random setting that is enabled, the computation can be repeated multiple times, each sampling different configurations. 
+This code allows to calculate the total field at different probe positions, given many geometric choices of the atomic positions (either ordered or with random distributions). The input field consists of a Gaussian input beam of waist $w\_0$ and focal point $\mathbf{r}=0$, with custom direction and polarization. Moreover, the code calculates the transmission and reflection by projecting the scattered field onto the same Gaussian mode as the input \[[1](#Andreoli2021), [21](#Manzoni2018OptimizationArrays)\]. On top of that, the user has the possibility to calculate the projection and reflection onto a different Gaussian mode as well, with custom waist $w\_{\text{target}}$ and custom focal point (but same direction and polarization as the input). At the same time, the computation can be performed for several values of the detuning $\Delta$, and given any (fixed) choice of the dipole orientation $\hat{\mathbf{d}}\_0$. Finally, when simulating lattice geometries, the user can test scenarios where a fixed fractions of defects (i.e. missing atoms at random lattice positions) is present. For any random setting that is enabled, the computation can be repeated multiple times, each sampling different configurations. 
 
 
-The possibility of simulating systems with a large number $N\gg 1$ of atom-like emitters is a thrilling idea, especially if $N$ becomes comparable to the typical values of actual experiments. At the same time, the quest for large-scale simulations has also theoretical roots. For example, this is an essential requirement to investigate the bulk properties of dense atomic media, where the effects of the boundary must be negligible. To obtain so, one can illuminate the atomic cloud with a finite light beam whose waist $w\_0$ is smaller than the size of the ensemble $l$. Due to the paraxial approximation, however, this imposes the constraint $\lambda\_0 \ll w\_0\ll l$, which converts to large $N$ for dense ensembles. The number of emitters that we were able to simulate with this code is roughly two orders of magnitude larger than comparable works [5,10–12,14,17–23].
+The possibility of simulating systems with a large number $N\gg 1$ of atom-like emitters is a thrilling idea, especially if $N$ becomes comparable to the typical values of actual experiments. At the same time, the quest for large-scale simulations has also theoretical roots. For example, this is an essential requirement to investigate the bulk properties of dense atomic media, where the effects of the boundary must be negligible. To obtain so, one can illuminate the atomic cloud with a finite light beam whose waist $w\_0$ is smaller than the size of the ensemble $l$. Due to the paraxial approximation, however, this imposes the constraint $\lambda\_0 \ll w\_0\ll l$, which converts to large $N$ for dense ensembles. The number of emitters that we were able to simulate with this code is roughly two orders of magnitude larger than comparable works \[[7](#Javanainen2014ShiftsSample)-[17](#Dobbertin2020CollectiveNanocavities)\].
 
 
 
@@ -41,7 +41,7 @@ The possibility of simulating systems with a large number $N\gg 1$ of atom-like 
 
 ## 1.3 - Computational insights
 
-The core of our simulations is the inversion of $\mathcal{M}\_{jk}$, implemented with the backslash operator "\\" (see [*left division operator*](https://docs.julialang.org/en/v1/base/math/)). This performs adaptive algorithms based on the structure of the matrix, so that, in the worst-case scenario, the number of elementary operations scales as $\sim N^3$. This process is speeded up through the openBLAS library for linear algebra, which can evaluate the problem in parallel over up to 32 cores. Asymptotically, this task dominates the time complexity of the simulation, overcoming the other sources of time consumption, such as the creation of both $\mathcal{M}\_{jk}$ and $\mathcal{L}\_{jk}$, which scale as $\sim(N+3N_{\text{probe}} )N$. Nonetheless, the asymptotic scaling does not assure that these contributions are negligible in finite computations, due to both large pre-factors and different durations of the elementary operations. We empirically noticed that this is often not the case for reasonable values of $N$, expecially when this is comparable to $\sim N_{\text{probe}}$. Although we privileged operations performed in a vectorized fashion, this does not straightforwardly apply to the creation of the matrix $\mathcal{M}\_{jk}$, since the diagonal elements would exhibit infinite values corresponding to the dipole self-energy, which must be removed [[16]()]. To perform this task efficiently, we implemented a (sigle) loop cycle to run in parallel over several threads. To this aim, we designed the loop with only elementary operations, avoiding the possible bottleneck of multiple threads calling the same complicated functions.
+The core of our simulations is the inversion of $\mathcal{M}\_{jk}$, implemented with the backslash operator "\\" (see [*left division operator*](https://docs.julialang.org/en/v1/base/math/)). This performs adaptive algorithms based on the structure of the matrix, so that, in the worst-case scenario, the number of elementary operations scales as $\sim N^3$. This process is speeded up through the openBLAS library for linear algebra, which can evaluate the problem in parallel over up to 32 cores. Asymptotically, this task dominates the time complexity of the simulation, overcoming the other sources of time consumption, such as the creation of both $\mathcal{M}\_{jk}$ and $\mathcal{L}\_{jk}$, which scale as $\sim(N+3N_{\text{probe}} )N$. Nonetheless, the asymptotic scaling does not assure that these contributions are negligible in finite computations, due to both large pre-factors and different durations of the elementary operations. We empirically noticed that this is often not the case for reasonable values of $N$, expecially when this is comparable to $\sim N_{\text{probe}}$. Although we privileged operations performed in a vectorized fashion, this does not straightforwardly apply to the creation of the matrix $\mathcal{M}\_{jk}$, since the diagonal elements would exhibit infinite values corresponding to the dipole self-energy, which must be removed \[[6](#AsenjoGarcia2017ExponentialArrays)\]. To perform this task efficiently, we implemented a (sigle) loop cycle to run in parallel over several threads. To this aim, we designed the loop with only elementary operations, avoiding the possible bottleneck of multiple threads calling the same complicated functions.
 
 Similar considerations can be drawn regarding the memory consumption. The main allocations of RAM are associated to the creation of both the complex-diagonal, dense $N\times N$ matrix $\mathcal{M}\_{jk}$ and the $N\_{\text{probe}}\times N$ probe matrices $\mathcal{L}\_{jk}$. By properly arranging the algorithm, we avoid the allocation of unnecessay memory at the same time, flushing the RAM when desirable. For example, we fill in and invert $\mathcal{M}\_{jk}$ at the beginning of the core part and we promptly clear the memory, only conserving the $N$ solutions $d\_j$. The probe matrix $\mathcal{L}\_{jk}$ is constructed only afterwards, and if many probe geometries are selected, thn each matrix $\mathcal{L}\_{jk}$ is filled in, used and flushed before allocating the next one. Empirically, we observed that the backslash operator "\\" allocates $\mathcal{M}\_{jk}$ twice, when inverting it (observed in Julia 1.6), so that we roughly estimate the maximum allocated RAM by $\sim \max(2N,3N\_{\text{probe}} )N$ complex Floats. Finally, we drastically reduce this number by defining these matrices as Complex{Float32} (64 bit) rather than the custom Complex{Float64} (128 bit). We numerically checked that we were operating with enough precision.
 
@@ -152,6 +152,20 @@ Some geometrical configurations of the positions of the emitters need further, s
 #### 2.1.4.1 - Disordered geometries settings
 
 #### 2.1.4.2 - Array settings
+When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
+
+- `array_n_layers = 1`\
+This variable identifies the number of 2D arrays that are placed in series. It must be an integer number with `array_n_layers`>0.
+
+- `array_xi_x` and `array_xi_y`\
+These variables define the lattice constants (in units of $\lambda\_0$) of the 2D, rectangular arrays, along the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions.
+
+- `array_xi_z`\
+If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance between nearest-neighbour 2D arrays (in units of $\lambda\_0$).
+
+- `array_size_x` and `array_size_y`\
+These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They are in the form `array_size_i = [i_min, i_max]` for $i=x,y$.
+
 
 #### 2.1.4.3 - Atomic metalens settings
 When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of [3](#Andreoli2023b). This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
@@ -281,6 +295,28 @@ Jenkins S D, Ruostekoski J, Javanainen J, Jennewein S, Bourgain R, Pellegrino J,
 Dobbertin Helge, Low Robert, Scheel Stefan,
 *Collective dipole-dipole interactions in planar nanocavities*,
 [Physical Review A 102, 031701](https://dx.doi.org/10.1103/PhysRevA.102.031701) (2020)
+
+<a id="Bettles2016EnhancedArray">[18]</a>
+Bettles Robert J, Gardiner Simon A, Adams Charles S,
+*Enhanced Optical Cross Section via Collective Coupling of Atomic Dipoles in a 2D Array*,
+[Physical Review Letters 116, 103602](https://dx.doi.org/10.1103/PhysRevLett.116.103602) (2016)
+
+<a id="Shahmoon2017CooperativeArrays">[19]</a>
+Shahmoon Ephraim, Wild Dominik S, Lukin Mikhail D, Yelin Susanne F,
+*Cooperative Resonances in Light Scattering from Two-Dimensional Atomic Arrays*,
+[Physical Review Letters 118, 113601](https://dx.doi.org/10.1103/PhysRevLett.118.113601) (2017)
+
+<a id="Rui2020ALayer">[20]</a>
+Rui Jun, Wei David, Rubio-Abadal Antonio, Hollerith Simon, Zeiher Johannes, Stamper-Kurn Dan M, Gross Christian, Bloch Immanuel,
+*A subradiant optical mirror formed by a single structured atomic layer*,
+[Nature 583, 369-374](https://dx.doi.org/10.1038/s41586-020-2463-x) (2020)
+
+<a id="Manzoni2018OptimizationArrays">[21]</a>
+Manzoni M T, Moreno-Cardoner M, Asenjo-Garcia A, Porto J V, Gorshkov A V, Chang D E,
+*Optimization of photon storage fidelity in ordered atomic arrays*,
+[New Journal of Physics 20, 83048](https://dx.doi.org/10.1088/1367-2630/aadb74) (2018)
+
+
 
 
 
