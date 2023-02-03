@@ -220,8 +220,10 @@ When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical
 
 
 ## 2.2 - Run the simulation
+Section in progress.
 
 ## 2.3 - Data outputs
+Section in progress.
 
 
 
