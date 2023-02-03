@@ -49,6 +49,12 @@ const pos_save_option           =      ["YES" ; "NO"][1]
 defects_fraction = 0.0
 #
 #
+#Possibility of randomly shifting the atomic positions from their ordered geometry (array/metalens)
+#by a randomly chosen factor (in the 3 dimensions) sampled from a Gaussian with 
+#standard deviation small_disorder_std
+small_disorder_std = 0.0
+#
+#
 #SYMMETRY OPTION: 
 #Default: YES - If YES then the code calculates the atomic positions only in the positive (x>0, y>0) quadrant, 
 #and then assumes that the whole physical system (atoms+input light) is symmetric for x->-x and y->-y.
@@ -279,14 +285,20 @@ if geometry_settings == "ARRAYS"
     #
     #OPTIONS:
     #
-    #Default: YES - If YES then the laser detunings (saved laser_detunings) are intended so 
-    #that the zero corresponds to the cooperative resonance frequency omega_coop of the array, i.e.
-    #(laser_detunings*Gamma0 + omega_0 - omega_coop) / Gamma0
-    const array_omega_coop_option = ["YES" ; "NO"][1]
-    #
     #Default: NO - If YES then the laser detunings (saved laser_detunings) are interpreted to be
     #in units of the cooperative decay rate Gamma_coop, rather than the natural linewidth Gamma0, i.e.
-    #laser_detunings = laser_detunings*Gamma0/Gamma_coop
+    #laser_detunings ./= Gamma_coop
     const array_gamma_coop_option = ["YES" ; "NO"][2]
+    #
+    #Default: YES - If YES then the laser detunings (saved laser_detunings) are shifted so 
+    #that the zero corresponds to the cooperative resonance frequency omega_coop of the array, i.e.
+    #laser_detunings .= laser_detunings .- omega_coop 
+    const array_omega_coop_option = ["YES" ; "NO"][1]
+    #
+    #Meaning of the detuning for values of (array_gamma_coop_option,array_omega_coop_option)
+    #(NO,  NO ) -> Delta = (omega-omega_0)/Gamma0 (i.e. laser_detunings= 1 means 1*Gamma_0 shift from omega_0)
+    #(YES, NO ) -> Delta = (omega-omega_0)/Gamma_coop
+    #(NO,  YES) -> Delta = (omega-omega_coop)/Gamma0
+    #(YES, YES) -> Delta = (omega-omega_coop)/Gamma_coop (i.e. laser_detunings= 1 means 1*Gamma_coop shift from omega_coop)
     #
 end

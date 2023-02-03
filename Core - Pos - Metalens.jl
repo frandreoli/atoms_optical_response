@@ -156,14 +156,17 @@ function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_
 	#
 	#Adds the atomic positions in the other radiants in case mirror_symmetry_option=="NO"
 	if mirror_symmetry_option=="NO"
-		mirror_selection = (r_atoms[:,1].>0.0).*(r_atoms[:,2].>0.0)
+		#
+		mirror_selection = r_atoms[:,1].>0.0
 		r_atoms_temp = r_atoms[mirror_selection,:]
 		r_atoms_temp[:,1].*=-1
 		r_atoms = vcat(r_atoms,r_atoms_temp)
+		#
+		mirror_selection = r_atoms[:,2].>0.0
+		r_atoms_temp = r_atoms[mirror_selection,:]
 		r_atoms_temp[:,2].*=-1
 		r_atoms = vcat(r_atoms,r_atoms_temp)
-		r_atoms_temp[:,1].*=-1
-		r_atoms = vcat(r_atoms,r_atoms_temp)
+		#
 	end
 	#
     return (r_atoms[:,:],length(r_atoms[:,1]),phase_array,r_range,collect(phase_range), lattice_array)

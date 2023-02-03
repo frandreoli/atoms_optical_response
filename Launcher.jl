@@ -3,11 +3,6 @@
 #############################################################################################################
 #Designed for Julia 1.6
 using LinearAlgebra, Dates, HDF5, Random, Distributed
-include("Settings.jl")
-include("Core - Functions.jl")
-include("Core - Metalens.jl")
-include("Core - Array.jl")
-include("Core - Evaluation.jl")
 Random.seed!()
 if nworkers()==1 addprocs() end
 BLAS.set_num_threads(nworkers())
@@ -16,136 +11,18 @@ const results_folder_name = "Results"
 #For large-scale numerics Float32 is preferable compared to the default Float64
 const TN = [Float32 ; Float64][1]
 #
+include("Settings.jl")
+include("Core - Functions.jl")
+include("Core - Pos - Metalens.jl")
+include("Core - Pos - Array.jl")
+include("Core - Evaluation.jl")
+include("Core - Warnings.jl")
+#
 #Uncomment the following line only if the code seems to be leaking RAM memory or spending too much time in 
 #garbage collection.
 #You will force the code to print a line any time the unused memory gets emptied.
 #These messages will appear in the form "GC: ..."
 #GC.enable_logging(true)
-#
-#
-#
-#
-#
-#
-#
-#############################################################################################################
-################## WARNINGS #################################################################################
-#############################################################################################################
-#
-#
-#Converting all directions to real vectors
-if abs(conj_norm(imag.(laser_direction)))>ZERO_THRESHOLD
-    laser_direction = real.(laser_direction)
-    @warn "The direction of the input field, i.e. laser_direction, must be a real vector.\n Neglecting the imaginary parts."
-end
-if abs(conj_norm(imag.(probePlane_v3_vec)))>ZERO_THRESHOLD
-    probePlane_v3_vec = real.(probePlane_v3_vec)
-    @warn "The normal direction of the custom probe plane, i.e. probePlane_v3_vec, must be a real vector.\n Neglecting the imaginary parts."
-end
-#
-#
-#Checking the normalization of the direction vectors
-if probePLANE_option=="YES" && abs(conj_norm(probePlane_v3_vec)-1.0)>ZERO_THRESHOLD
-    probePlane_v3_vec=conj_normalize(probePlane_v3_vec)
-    @warn "The normal direction of the custom probe plane, i.e. probePlane_v3_vec, must be normalized to 1.\nNormalizing it to 1."
-end
-if abs(conj_norm(laser_direction)-1.0)>ZERO_THRESHOLD
-    laser_direction=conj_normalize(laser_direction)
-    @warn "The direction of input beam, i.e. laser_direction, must be normalized to 1.\nNormalizing it to 1."
-end
-#
-#
-#Symmetry consistency
-if abs(conj_norm(laser_direction.-[0.0 ; 0.0 ; 1.0]))>ZERO_THRESHOLD && mirror_symmetry_option=="YES"
-    mirror_symmetry_option = "NO"
-    @warn "The input field is not symmetric for x->-x and y->-y. Setting mirror_symmetry_option to NO."
-end
-#
-#
-#Transverse field consistency
-field_polarization       = conj_normalize(field_polarization)
-longitudinal_component   = conj_dot(laser_direction,field_polarization) 
-if abs(longitudinal_component) > ZERO_THRESHOLD
-    field_polarization   = field_polarization.-(laser_direction.*longitudinal_component)
-    field_polarization   = conj_normalize(field_polarization)
-    @warn "The field is not a transverse field. Removing from field_polarization its longitudinal component."
-end
-#
-#
-#Consistency of the definition of the standard deviation of inhomogenous broadening
-#If it is not defined as a number (tested with isa()), the code enters the if and soesn't evaluate the second condition
-if !isa(inhom_broad_std,Number) || inhom_broad_std <0 
-    @warn "The standard deviation in the Gaussian distribution of inhomogeneous bradening must be a positive number. \nSetting inhom_broad_std=0.0."
-    inhom_broad_std = 0.0
-end
-#
-#
-#Warns in case the atomic positions should be random, while mirror_symmetry_option=="YES"
-if mirror_symmetry_option=="YES" && geometry_settings[1:3]=="DIS"
-    @warn "The atomic positions are disordered, but mirror_symmetry_option=='YES'.\nThe atomic positions will be randomly chosen only in the positive (x>=0, y>=0) quadrant, while the other quadrants will be the mirror images."
-end
-#
-#
-#Warns in case the atomic positions are given as an input, while mirror_symmetry_option=="YES"
-if mirror_symmetry_option=="YES" && geometry_settings=="CUSTOM_POSITIONS"
-    @warn "The options mirror_symmetry_option=='YES' and geometry_settings='CUSTOM_POSITIONS' are set.\nThe code will only consider the atomic positions in the positive (x>=0, y>=0) quadrant."
-end
-#
-#
-#Metalens consistency
-if geometry_settings == "METALENS" 
-    #
-    #Consistency of the buffer zone definition
-    if !isa(buffer_smooth,Number) || (buffer_smooth<0.0 || buffer_smooth>1.0)
-        @warn "The buffer zone is ill-defined out of the range 0<=buffer_smooth<=1. Setting buffer_smooth to the closest, valid value."
-        !isa(buffer_smooth,Number) || buffer_smooth<0.0 ? buffer_smooth=0.0 : nothing
-        buffer_smooth>1.0 ? buffer_smooth=1.0 : nothing
-    end
-    #Consistency of the disk width
-    if !isa(disks_width,Number) || disks_width>r_lens
-        @warn "The width of each disk must be a number smaller than the radius of the metalens. Setting disks_width = r_lens."
-        disks_width = r_lens
-    end
-    if disks_width<=0
-        @warn "The width of each disk cannot lower or equal zero. Setting disks_width = 0.1*r_lens."
-        disks_width = 0.1*r_lens
-    end
-end
-#
-#
-#Consistency of the repetition number
-rep_warning = "The number of repetition n_repetitions must be a positive, integer number.\nSetting n_repetitions=1."
-if typeof(n_repetitions)!==Int64
-    @warn rep_warning
-    n_repetitions = 1
-elseif n_repetitions<1
-    @warn rep_warning
-    n_repetitions = 1
-end
-if (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD)&& n_repetitions>1
-    @warn "Neither the atomic positions nor the resonance frequencies are randomly chosen.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
-    n_repetitions = 1
-end
-#
-#
-#Consistency of defects_fraction with the rest of options
-if !isa(defects_fraction,Number) || defects_fraction<0.0 || defects_fraction>1.0
-    @warn "The fraction of defects (i.e. defects_fraction) must be a positive number, lower than unity.\nSetting defects_fraction=0."
-    defects_fraction = 0.0
-end
-if geometry_settings[1:3]=="DIS" && defects_fraction>0.0
-    @warn "For disordered geometries, punching random defects is redundant.\nSetting defects_fraction=0."
-    defects_fraction = 0.0
-end
-if mirror_symmetry_option=="YES" && defects_fraction>0.0
-    @warn "The mirror symmetry is active and the fraction of (random) defects is non-null.\nThe positions of the defects will be randomized only in the x>0, y>0 quadrant, while they will be symmetric for x->-x and y->-y."
-end
-#
-#
-#Consistency of w0
-if w0<1
-    @warn "For the paraxial approximation to be fully valid a regime of w0>=1 is preferable."
-end
 #
 #
 #
@@ -197,16 +74,27 @@ end
 #
 #Defines the settings and the atomic positions for a series of atomic arrays
 if geometry_settings == "ARRAYS"
-    #TBA!!!!
+    #
+    #Calculating the cooperative rates
+    time_tic = time()
+    (omega_coop, Gamma_coop) = coop_values_function(array_xi_x,array_xi_y,laser_direction[1], laser_direction[2], dipoles_polarization)
+    println("Cooperative frequency and rate computed in    ", dig_cut(time()-time_tic)," seconds" )
+    #
+    #Re-scaling the detuning if the option is on
+    if array_gamma_coop_option=="YES"
+        laser_detunings ./= Gamma_coop
+    end
+    #Shifting the detuning if the option is on
+    if array_omega_coop_option=="YES"
+        laser_detunings .= laser_detunings .- omega_coop 
+    end
+    #
+    #Creation of the atomic positions
+    (r_atoms, n_atoms) = arrays_creation(array_n_layers, array_xi_x,array_xi_y,array_xi_z,array_size_x,array_size_y)
+    #
 end
 #
 time_atomic_pos=time()
-#
-#
-#Punching defects (only for ordered geometries, and if requested)
-if defects_fraction>0.0
-    (r_atoms,n_atoms) = defect_punching(r_atoms,n_atoms, defects_fraction)
-end
 #
 #
 #
@@ -222,13 +110,15 @@ end
 #Defines the filename, by adding labels identifying the user choices of parameters for the simulation
 length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[name_simulation] 
 if mirror_symmetry_option == "NO" 
-    file_name="_nAtoms"*string(n_atoms)
+    file_name="_nAtoms"*string(Int(round(n_atoms*(1-defects_fraction))))
 elseif geometry_settings[1:3]!="DIS"
     positive_points = count((r_atoms[:,1].>0.0).*(r_atoms[:,2].>0.0))
     central_points  = count((abs.(r_atoms[:,1]).<ZERO_THRESHOLD).*(abs.(r_atoms[:,2]).<ZERO_THRESHOLD))
-    file_name="_nAtoms"*string(4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points)
+    n_atoms_estimated = 4*positive_points + 2*(n_atoms-(positive_points+central_points)) + central_points
+    n_atoms_estimated = Int(round(n_atoms_estimated*(1-defects_fraction)))
+    file_name="_nAtoms"*string(n_atoms_estimated)
 else
-    file_name="_nAtoms"*string(4*n_atoms)
+    file_name="_nAtoms"*string(4*Int(round(n_atoms*(1-defects_fraction))))
 end
 #
 if defects_fraction>0.0
@@ -242,11 +132,26 @@ inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)               
 #
 #Only if a metalens is computed
 if geometry_settings == "METALENS" 
-    file_name*="_r"*string(r_lens)[1:min(length(string(r_lens)),3)]
-    file_name*="_f"*string(focal_length)[1:min(length(string(focal_length)),3)]
-    file_name*="_widths"*string(disks_width)[1:min(4,length(string(disks_width)))]
-    file_name*="_phase"*string(phase_shift)[1:min(5,length(string(phase_shift)))]
-    file_name*="_buffer"*string(buffer_smooth)[1:min(4,length(string(buffer_smooth)))]
+    file_name*="_r"*dig_cut(r_lens,3)
+    file_name*="_f"*dig_cut(focal_length,3)
+    file_name*="_widths"*dig_cut(disks_width,4)
+    file_name*="_phase"*dig_cut(phase_shift,5)
+    file_name*="_buffer"*dig_cut(buffer_smooth,4)
+end
+#
+#Only if atomic arrays are computed
+if geometry_settings == "ARRAYS" 
+    file_name*="_nArrays"*string(array_n_layers)
+    if array_xi_x==array_xi_y
+        file_name*="_xi"*dig_cut(array_xi_x,3)
+    else
+        file_name*="_xi_x"*dig_cut(array_xi_x,3)
+        file_name*="_xi_y"*dig_cut(array_xi_y,3)
+    end
+    #
+    if array_n_layers>1
+        file_name*="_xi_z"*dig_cut(array_xi_z,3)
+    end
 end
 #
 mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
@@ -270,7 +175,9 @@ println("Output file name: ",file_name,"\n")
 final_path_name="Data_Output/"*file_name*"/"
 mkpath(final_path_name)
 mkpath(final_path_name*"/"*results_folder_name)
-if pos_save_option=="YES" && geometry_settings[1:3]!="DIS"
+#
+#Saving the positions, but only if no disorder is present
+if pos_save_option=="YES" && geometry_settings[1:3]!="DIS" && defects_fraction==0.0 && small_disorder_std==0.0
     #Adding a dummy dimension to uniform the data analysis with the atomic_positions for disordered systems
     h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms)) ; open_option="w") 
     println("Atomic positions created in                   ", dig_cut(time_atomic_pos-time_start)," seconds")
@@ -297,9 +204,16 @@ if geometry_settings == "METALENS"
     h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
     h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) , ("phase_shift",phase_shift))
     h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array))
-    h5write_multiple(final_path_name*"options_metalens",  ("z_fixed_option", z_fixed_option) , ("z_fixed_buffer_option",z_fixed_buffer_option),("phase_center_ring_option",phase_center_ring_option),("default_probe_option",default_probe_option),("default_target_option",default_target_option) ; open_option="w")
+    h5write_multiple(final_path_name*"options_metalens",   ("z_fixed_option", z_fixed_option) , ("z_fixed_buffer_option",z_fixed_buffer_option),("phase_center_ring_option",phase_center_ring_option),("default_probe_option",default_probe_option),("default_target_option",default_target_option) ; open_option="w")
 end
 #
+#Saving data files with the settings specific of the atomic arrays
+if geometry_settings == "ARRAYS" 
+    h5write_multiple(final_path_name*"settings_arrays", ("array_n_layers", array_n_layers), ("array_xi_x",array_xi_x), ("array_xi_y",array_xi_y), ("array_xi_z",array_xi_z)  ; open_option="w")
+    h5write_multiple(final_path_name*"settings_arrays", ("array_size_x", array_size_x), ("array_size_y",array_size_y) )
+    h5write_multiple(final_path_name*"coop_arrays",     ("omega_coop", omega_coop), ("Gamma_coop", Gamma_coop)  ; open_option="w")    
+    h5write_multiple(final_path_name*"options_arrays",  ("array_gamma_coop_option", array_gamma_coop_option) , ("array_omega_coop_option",array_omega_coop_option) ; open_option="w")
+end
 #
 #Checking if the RAM estimated for this simulation exceed the threshold set by the user
 tot_probe_points = 0
@@ -329,15 +243,38 @@ GC.gc()
 #
 #Main computation
 performance=@timed for index_repetition in 1:n_repetitions
+    #
     if geometry_settings[1:3]=="DIS"
         #TBA!!!
+    else
+        (r_atoms_here ,n_atoms_here) = (r_atoms[:,:] , n_atoms)
+    end
+    #
+    #Punching defects (only for ordered geometries, and if requested)
+    if defects_fraction>0.0
+        (r_atoms_here,n_atoms_here) = defect_punching(r_atoms_here,n_atoms_here, defects_fraction)
+    end
+    #
+    #Randomly shifting the positions (only for ordered geometries, and if requested)
+    if small_disorder_std>0 
+        r_atoms_here = r_atoms_here[:,:].+(randn(MersenneTwister(), Float64, (n_atoms_here,3)).*disorder_shift)
+        n_atoms_here = n_atoms
+    end
+    #
+    #Saving the new atomic positions
+    if pos_save_option=="YES" && (geometry_settings[1:3]=="DIS" || defects_fraction>0 || small_disorder_std>0)
+        if index_repetition==1
+            h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(n_atoms_here)) ; open_option="w"  )
+        else
+            h5write_append(final_path_name*"atomic_positions", add_dimension(n_atoms_here),  "r_atoms" )
+        end
     end
     #
     GC.gc()
     #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
     println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
-    @time CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    @time CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
     #
     index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance of the core code: ") : nothing
 end

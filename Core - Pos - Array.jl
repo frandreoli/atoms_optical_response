@@ -1,5 +1,5 @@
 #############################################################################################################
-################## COOPERATIVE PROPERTIES ARRAY##############################################################
+################## COOPERATIVE PROPERTIES OF ARRAY ##########################################################
 #############################################################################################################
 #
 #
@@ -85,10 +85,10 @@ function coop_value_theta(theta,xi_x,xi_y,k_in_x,k_in_y, d_vec)
     (3/(8*pi*xi_x*xi_y))*exp(-theta^2/2)*solution-g0(theta) + 0.5im
 end
 #
-#Accurate convergence function
+#Accurate convergence function (it returns omega_coop and Gamma_coop)
 function coop_values_function(xi_x,xi_y,k_in_x,k_in_y, d_vec)
     error_threshold=10.0^(-2)
-    theta_now=0.04
+    theta_now=(xi_x+xi_y)/(10)#0.04
     theta_min=0.0001
     decrement_ratio=1.5#1.2
     omega_coop_old=0
@@ -106,10 +106,57 @@ function coop_values_function(xi_x,xi_y,k_in_x,k_in_y, d_vec)
     (omega_coop_new, 2*imag(coop_values_complex))
 end
 #
-
-xi_x=0.3
-xi_y=xi_x*2
-k_x=1/sqrt(3)
-k_y=2/sqrt(3)
-
-println(coop_values_function(xi_x,xi_y,k_x,k_y, [1;0;0]))
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## ARRAY CONSTRUCTION #######################################################################
+#############################################################################################################
+#
+#
+#Functions to construct a lattice
+function array_boundaries(nAtoms)
+    if nAtoms%2==0
+        return [-nAtoms/2; nAtoms/2-1]
+    else
+        return [-(nAtoms-1)/2; (nAtoms-1)/2]
+    end
+end
+#
+#Function to create the atomic array
+function arrays_creation(m_planes, xi_x,xi_y,xi_z,array_size_x,array_size_y)
+    #
+    #Lattice properties
+    l_system_x = abs(sum(array_size_x.*[-1;1]))
+    l_system_y = abs(sum(array_size_y.*[-1;1]))
+	naX = Int(floor(2*l_system_x/xi_x))+1
+    naY = Int(floor(2*l_system_y/xi_x))+1
+    #
+    #Shift to complain to mirror symmetry
+	boundX=array_boundaries(naX)
+	boundY=array_boundaries(naY)
+	boundZ=array_boundaries(m_planes)
+	xOption=(naX+1)%2
+	yOption=(naY+1)%2
+	zOption=(m_planes+1)%2
+    #
+    #Lattice creation
+	lattice_array=[[(i + xOption/2)*xi_x; (j + yOption/2)*xi_y ; (k + zOption/2)*xi_z] for j in boundY[1]:boundY[2] for i in boundX[1]:boundX[2] for k in boundZ[1]:boundZ[2]]
+	#
+    if mirror_symmetry_option == "YES"
+        selected_positions = (x->(x[1]>=0.0 && x[2]>=0.0)).(lattice_array)
+        lattice_array = lattice_array[selected_positions]
+    end
+    #
+    #Saving the positions
+    r_atoms = Array{Float64}(undef, length(lattice_array), 3)
+	n_atoms = length(lattice_array)
+	for i in 1:n_atoms
+		r_atoms[i,:]= lattice_array[i]
+	end
+    #
+	return (r_atoms, n_atoms)
+end
