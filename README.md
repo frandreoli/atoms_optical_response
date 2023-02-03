@@ -3,8 +3,8 @@
 The code performs numerical simulations of the steady-state, optical response of large-scale systems of quantum, two-level emitters (atoms, color centers, etc.).
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
-The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. \
-Parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\].
+The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. 
+Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\].
 
 ## 1.1 - Code specifications
 
@@ -75,22 +75,22 @@ The option defines the geometry of the positions of the quantum emitters. It can
 - `pos_save_option` \
 When this option is set to `YES` the simulation will save the atomic positions as a `n_repetitions` $\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of `n_repetitions` will be defined below.
 
-- `defects_fraction = 0.0`\
+- `defects_fraction`\
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
-- `small_disorder_std = 0.0`\
+- `small_disorder_std`\
 Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std = 0.0`, then no shift will be applied.
 
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
 
-- `n_repetitions = 1`\
+- `n_repetitions`\
 For disordered geometries, or settings that include random sampling, it is often convenient to repeat the simulation many times, each sampling a different configuration. The value of `n_repetitions` defines the number of times the optical response will be calculated.
 
-- `name_simulation = "DEFAULT"`\
+- `name_simulation`\
 This string allows to define a specific label for the simulation, to distinguish it from other runs.
 
-- `RAM_GB_max = 450`\
+- `RAM_GB_max`\
 The maximum amount of RAM that the user would prefer to allocate. The code will try to (roughly) estimate the RAM that it will allocate and abort the simulation if it exceeds `RAM_GB_max`.
 
 
@@ -99,29 +99,29 @@ The maximum amount of RAM that the user would prefer to allocate. The code will 
 ### 2.1.2 - Physical settings
 Here, we describe the settings related to the physical system. We recall that all lengths are intended in units of $\lambda\_0$ and all rates/frequencies in units of $\Gamma\_0$.
 
-- `dipoles_polarization = [1.0 ; 0.0 ; 0.0]`\
-It defines the dipole matrix element $\hat{\mathbf{d}}\_0$ of the quantum emitters. This must be a $3$-fold unit vector representing the $x$, $y$ and $z$ coordinates.
+- `dipoles_polarization`\
+It defines the dipole matrix element $\hat{\mathbf{d}}\_0$ of the quantum emitters. This must be a $3$-fold unit vector representing the $x$, $y$ and $z$ coordinates, in the form `[x ; y ; z]`.
 
-- `gamma_prime = 0.0`\
+- `gamma_prime`\
 It defines the inelastic scattering rate $\Gamma'$, which quantifies the energy losses from the standpoint of the optical linear response.
 
 
-- `inhom_broad_std = 0.0`\
+- `inhom_broad_std`\
 The user can opt for the atoms to have their resonant frequency $\omega\_0$ randomly shifted, by sampling (for each atom) from a Gaussian distribution of mean value $\omega\_0$ and standard deviation `inhom_broad_std` (in units of $\Gamma\_0$). This addresses the possibility of inhomogeneous broadening. If `inhom_broad_std = 0.0`, then all atoms have the same resonant frequency $\omega\_0$.
 
 #### 2.1.2.1 - Input Gaussian beam
 
-- `laser_detunings = [0.0]`\
+- `laser_detunings`\
 Artay that defines the dimensionless detuning $\Delta=(\omega-\omega\_0)/\Gamma\_0$ between the frequency of the input beam $\omega$ and the resonance frequency $\omega\_0$, in units of $\Gamma_0$. Many values can be added, in the form `laser_detunings = [value_1 ; value_2 ; value_3 ...]`, and the results will be calculated for each of them
 
-- `w0 = 2.0`\
-Beam waist of the input Gaussian beam. For the paraxial approximation to be fully valid, one must have $w\_0\gtrsim 1$.
+- `w0`\
+Beam waist of the input Gaussian beam. For the paraxial approximation to be fully valid, one must have $w\_0\gtrsim 1$ (all in units of $\lambda\_0$).
 
-- `laser_direction = [0.0 ; 0.0 ; 1.0]`\
-Direction of propagation of the input Gaussian beam (unit vector).
+- `laser_direction`\
+Direction of propagation of the input Gaussian beam (unit vector with the same structure of `dipoles_polarization`).
 
-- `field_polarization = [1.0 ; 0.0 ; 0.0]`\
-Polarization of the input Gaussian beam (unit vector).
+- `field_polarization`\
+Polarization of the input Gaussian beam (unit vector with the same structure of `dipoles_polarization`).
 
 
 ### 2.1.3 - Probe settings
@@ -154,7 +154,7 @@ Some geometrical configurations of the positions of the emitters need further, s
 #### 2.1.4.2 - Array settings
 When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
 
-- `array_n_layers = 1`\
+- `array_n_layers`\
 This variable identifies the number of 2D arrays that are placed in series. It must be an integer number with `array_n_layers`>0.
 
 - `array_xi_x` and `array_xi_y`\
@@ -164,7 +164,10 @@ These variables define the lattice constants (in units of $\lambda\_0$) of the 2
 If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance between nearest-neighbour 2D arrays (in units of $\lambda\_0$).
 
 - `array_size_x` and `array_size_y`\
-These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They are in the form `array_size_i = [i_min, i_max]` for $i=x,y$.
+These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They must be written in the following form: `array_size_i = [i_min, i_max]` for $i=x,y$.
+
+- `array_gamma_coop_option` and `array_omega_coop_option`\
+These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option = "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
 
 
 #### 2.1.4.3 - Atomic metalens settings
@@ -184,11 +187,6 @@ It describes the fraction of `disks_width` that is covered by a buffer zone, as 
 
 - `phase_shift`\
 Its value defines the overal phase shift impressed by the lens, i.e. the phase shift $\phi\_0$ at the radial center $(x,y)=(0,0)$.
-
-
-
-##### Further metalens options
-Some further options are available for the `METALENS` geometry, which we list here.
 
 - `default_probe_option`\
 When it is set to `YES`, then some of the probe-point parameters will be overwritten by default settings. For example, the value of `probeXY_z` is set to correspond to the focal plane, while also imposing `probeYZ_x = probeXZ_y = 0.0`.
