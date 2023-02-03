@@ -214,6 +214,9 @@ By setting this option to `YES` the user has the possibility of overwriting the 
 
 
 #### 2.1.4.4 - Custom geometry settings
+When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical response of a system of quantum emitters whose positions in space are chosen by the user. These must be saved as a $N\times 3$ real matrix in a file .h5 with the HDF5 encoding. The folder where the file is located can be specified via `custom_pos_folder`, while the name of the file and the name of the variable with the relevant matrix are identified by respectively `custom_pos_file` and `custom_pos_variable`.
+
+
 
 
 ## 2.2 - Run the simulation
