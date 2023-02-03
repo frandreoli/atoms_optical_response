@@ -1,22 +1,12 @@
-  
 #############################################################################################################
-################## INITIALIZATION ###########################################################################
+################## COOPERATIVE PROPERTIES ARRAY##############################################################
 #############################################################################################################
 #
 #
+#Initialization
 using SpecialFunctions: erfi
 #
 #
-#
-#
-#
-#
-#
-#############################################################################################################
-################## COOPERATIVE PROPERTIES ###################################################################
-#############################################################################################################
-#
-#=
 #Functions for the regularization of the self-energy
 function g0(theta)
     -(
@@ -24,14 +14,30 @@ function g0(theta)
     - (-0.5+theta^2) / (sqrt(pi/2)*theta^3)
     ) /2
 end
-#
-function I0_lambda(a,b,xi_x,xi_y)
-    sqrt(complex(1- (a/xi_x)^2 - (b/xi_y)^2 ))
+#In the following the g_x and g_y are intended in units of k0
+function Lambda_func(g_x,g_y)
+    sqrt(complex(1- g_x^2 - g_y^2 ))
 end
 #
-function I0_func(a,b,theta,xi_x,xi_y)
-    lambda=I0_lambda(a,b,xi_x,xi_y)
-    -pi*(-1.0im+erfi(theta*lambda/sqrt(2)))/lambda
+function f1_func(theta,Lambda)
+    ( -1.0im+erfi(theta*Lambda/sqrt(2)) )/Lambda
+end
+#
+function I0_core(theta,Lambda,f1_val, g_x, g_y, d_vec)
+    solution = zeros(Complex{Float64}, 3,3)
+    solution[1,1] = (1-g_x^2)*f1_val
+    solution[2,2] = (1-g_y^2)*f1_val
+    solution[2,1] = solution[1,2] = -g_x*g_y*f1_val
+    solution[3,3] = (1-Lambda^2)*f1_val + exp(theta^2*Lambda^2/2)*sqrt(2/pi)/theta
+    return dot(d_vec,-solution*d_vec)
+end
+#
+function I0_func_generic(a,b,theta,xi_x,xi_y,k_in_x,k_in_y, d_vec)
+    k_tot_x = a/xi_x - k_in_x/(2*pi)
+    k_tot_y = b/xi_y - k_in_y/(2*pi)
+    Lambda=Lambda_func(k_tot_x, k_tot_y)
+    f1_val = f1_func(theta,Lambda)
+    return I0_core(theta,Lambda,f1_val, k_tot_x, k_tot_y, d_vec)
 end
 #
 #Function to sum up to convergence in a smart way
@@ -39,7 +45,7 @@ function smart_sum(func,args...)
     #Settings for convergence
     max_steps_conv=2000
     convergence_countdown_max=3
-    convergence_threshold=10.0^(-20)
+    convergence_threshold=10.0^(-8)
     #Initialization
     solution=old_solution=0.0
     convergence_countdown=0
@@ -60,37 +66,50 @@ function smart_sum(func,args...)
 end
 #
 #Function to evaluate the self energy
-function delta_coop_theta(theta,xi_x,xi_y)
+function coop_value_theta(theta,xi_x,xi_y,k_in_x,k_in_y, d_vec)
+    I0_func(a,b) = I0_func_generic(a,b,theta,xi_x,xi_y,k_in_x,k_in_y, d_vec)
     solution=0
-    solution+=I0_func(0,0,theta,xi_x,xi_y)
-    solution+=4*smart_sum( b_main ->  smart_sum( (a,b) -> (1-(a/xi_x)^2)*I0_func(a,b,theta,xi_x,xi_y)  , b_main)  )
-    solution+=2*smart_sum((a,b) -> (1-(a/xi_x)^2)*I0_func(a,b,theta,xi_x,xi_y) , 0)
-    solution+=2*smart_sum((b,a) -> (1-(a/xi_x)^2)*I0_func(a,b,theta,xi_x,xi_y) , 0)
-    (3/(8*pi^2*xi_x*xi_y))*exp(-theta^2/2)*solution-g0(theta)
+    solution+=I0_func(0,0)
+    #
+    solution+=smart_sum((a,b) -> I0_func(a,b) , 0)
+    solution+=smart_sum((a,b) -> I0_func(-a,b) , 0)
+    #
+    solution+=smart_sum((b,a) -> I0_func(a,b) , 0)
+    solution+=smart_sum((b,a) -> I0_func(a,-b) , 0)
+    #
+    solution+=smart_sum( b_main ->  smart_sum( (a,b) -> I0_func(a,b)  , b_main)  )
+    solution+=smart_sum( b_main ->  smart_sum( (a,b) -> I0_func(-a,b)  , b_main)  )
+    solution+=smart_sum( b_main ->  smart_sum( (a,b) -> I0_func(a,-b)  , b_main)  )
+    solution+=smart_sum( b_main ->  smart_sum( (a,b) -> I0_func(-a,-b)  , b_main)  )
+    #
+    (3/(8*pi*xi_x*xi_y))*exp(-theta^2/2)*solution-g0(theta) + 0.5im
 end
 #
 #Accurate convergence function
-function omega_coop_function(xi_x,xi_y)
+function coop_values_function(xi_x,xi_y,k_in_x,k_in_y, d_vec)
     error_threshold=10.0^(-2)
     theta_now=0.04
-    theta_min=0.005
-    decrement_ratio=1.2
-    delta_coop_old=0
-    delta_coop_new=real(delta_coop_theta(theta_now,xi_x,xi_y))
+    theta_min=0.0001
+    decrement_ratio=1.5#1.2
+    omega_coop_old=0
+    coop_values_complex = coop_value_theta(theta_now,xi_x,xi_y,k_in_x,k_in_y, d_vec) 
+    omega_coop_new= -real(coop_values_complex)
     #
     while theta_now>theta_min
         theta_now /= decrement_ratio
-        delta_coop_new = real(delta_coop_theta(theta_now,xi_x,xi_y))
-        abs((delta_coop_new-delta_coop_old))/abs(delta_coop_new) < error_threshold ? break : nothing
-        delta_coop_old = delta_coop_new
+        coop_values_complex = coop_value_theta(theta_now,xi_x,xi_y,k_in_x,k_in_y, d_vec)
+        omega_coop_new = -real(coop_values_complex)
+        abs((omega_coop_new-omega_coop_old))/abs(omega_coop_new) < error_threshold ? break : nothing
+        omega_coop_old = omega_coop_new
         theta_now<=theta_min ? error("theta not convergent") : nothing
     end
-    -delta_coop_new
+    (omega_coop_new, 2*imag(coop_values_complex))
 end
 #
-#Function to evaluate the Gamma_coop, when ξ<1
-function gamma_coop_function(xi_x,xi_y)
-    3/(4 *pi* xi_x*xi_y)
-end
-=#
-#
+
+xi_x=0.3
+xi_y=xi_x*2
+k_x=1/sqrt(3)
+k_y=2/sqrt(3)
+
+println(coop_values_function(xi_x,xi_y,k_x,k_y, [1;0;0]))
