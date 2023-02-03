@@ -152,6 +152,20 @@ Some geometrical configurations of the positions of the emitters need further, s
 #### 2.1.4.1 - Disordered geometries settings
 
 #### 2.1.4.2 - Array settings
+When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
+
+- `array_n_layers = 1`\
+This variable identifies the number of 2D arrays that are placed in series. It must be an integer number with `array_n_layers`>0.
+
+- `array_xi_x` and `array_xi_y`\
+These variables define the lattice constants (in units of $\lambda\_0$) of the 2D, rectangular arrays, along the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions.
+
+- `array_xi_z`\
+If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance between nearest-neighbour 2D arrays (in units of $\lambda\_0$).
+
+- `array_size_x` and `array_size_y`\
+These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They are in the form `array_size_i = [i_min, i_max]` for $i=x,y$.
+
 
 #### 2.1.4.3 - Atomic metalens settings
 When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of [3](#Andreoli2023b). This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
