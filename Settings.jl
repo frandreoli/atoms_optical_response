@@ -355,7 +355,7 @@ end
 #############################################################################################################
 #
 #
-#Settings that are relevant only for DISORDERED_SPHERE, DISORDERED_CYLINDER or DISORDERED_CUBOID
+#Settings that are relevant only when geometry_settings is set to CUSTOM_POSITIONS
 if geometry_settings=="CUSTOM_POSITIONS"
     custom_pos_folder   = "Data_Input"
     custom_pos_file     = "custom_pos.h5"
