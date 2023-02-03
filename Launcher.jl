@@ -31,7 +31,7 @@ include("Core - Warnings.jl")
 #
 #
 #############################################################################################################
-################## DEFINITION OF THE ATOMIC POSITIONS #######################################################
+################## ATOMIC POSITIONS (ORDERED) ###############################################################
 #############################################################################################################
 #
 #
@@ -93,6 +93,30 @@ if geometry_settings == "ARRAYS"
     (r_atoms, n_atoms) = arrays_creation(array_n_layers, array_xi_x,array_xi_y,array_xi_z,array_size_x,array_size_y)
     #
 end
+#
+#
+#Defines the settings and the atomic positions for a series of atomic arrays
+if geometry_settings == "CUSTOM_POSITIONS"
+    try
+        r_atoms = h5read(custom_pos_folder*"/"*custom_pos_file, "/"*custom_pos_variable)
+    catch error_log
+        println("\n\n")
+        @warn "There are problems opening the file with the custom atomic positions."
+        println("\n")
+        @error error_log
+    end
+    #
+    (custom_dim_1,custom_dim_2) = length.((r_atoms[:,1],r_atoms[1,:]))
+    #
+    if custom_dim_2!=3 && custom_dim_1!=3
+        println("\n\n")
+        @error "The custom atomic positions must be saved as a Nx3 matrix, where N is the number of atoms."
+    else
+        custom_dim_2!=3 && custom_dim_1==3
+        transpose!(r_atoms)
+    end
+end
+#
 #
 time_atomic_pos=time()
 #
