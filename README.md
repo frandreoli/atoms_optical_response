@@ -150,6 +150,22 @@ Some geometrical configurations of the positions of the emitters need further, s
 
 
 #### 2.1.4.1 - Disordered geometries settings
+When `geometry_settings="DISORDERED_SPHERE"` or `geometry_settings="DISORDERED_CYLINDER"` or `geometry_settings="DISORDERED_CUBOID"`, then the atomic positions are randomly sampled from a uniform distribution, inside the desired shape, centered at $\mathbf{r}=0$. 
+
+- `dis_atomic_density`\
+The number of atoms to be sampled is define through the atomic density (in units of $\lambda\_0^3$, which can be defined with this variable.
+
+- `dis_r_sphere`\
+When `geometry_settings="DISORDERED_SPHERE"`, then the shape of the atomic cloud is a 3D ball of radius `dis_r_sphere` (in units of $\lambda\_0$).
+
+- `dis_r_disk` and `dis_z_length`\
+When `geometry_settings="DISORDERED_CYLINDER"`, then the shape of the atomic cloud is a cylinder with axis along the $\hat{\mathbf{z}}$ direction, and whose radius and thickness are respectively given by `dis_r_disk` and `dis_z_length` (in units of $\lambda\_0$).
+
+- `dis_x_dim`, `dis_y_dim` and `dis_z_dim`\
+When `geometry_settings="DISORDERED_CUBOID"`, then the shape of the atomic cloud is a cuboid with sizes `dis_x_dim`, `dis_y_dim` and `dis_z_dim`.
+
+
+
 
 #### 2.1.4.2 - Array settings
 When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
