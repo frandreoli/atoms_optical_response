@@ -185,11 +185,6 @@ It describes the fraction of `disks_width` that is covered by a buffer zone, as 
 - `phase_shift`\
 Its value defines the overal phase shift impressed by the lens, i.e. the phase shift $\phi\_0$ at the radial center $(x,y)=(0,0)$.
 
-
-
-##### Further metalens options
-Some further options are available for the `METALENS` geometry, which we list here.
-
 - `default_probe_option`\
 When it is set to `YES`, then some of the probe-point parameters will be overwritten by default settings. For example, the value of `probeXY_z` is set to correspond to the focal plane, while also imposing `probeYZ_x = probeXZ_y = 0.0`.
 
