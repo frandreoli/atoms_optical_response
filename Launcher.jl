@@ -19,9 +19,9 @@ include("Core - Evaluation.jl")
 include("Core - Warnings.jl")
 #
 #Uncomment the following line only if the code seems to be leaking RAM memory or spending too much time in 
-#garbage collection.
-#You will force the code to print a line any time the unused memory gets emptied.
+#garbage collection. You will force the code to print a line any time the unused memory gets emptied.
 #These messages will appear in the form "GC: ..."
+#
 #GC.enable_logging(true)
 #
 #
@@ -223,6 +223,22 @@ if geometry_settings == "ARRAYS"
     h5write_multiple(final_path_name*"options_arrays",  ("array_gamma_coop_option", array_gamma_coop_option) , ("array_omega_coop_option",array_omega_coop_option) ; open_option="w")
 end
 #
+#Saving data files with the settings specific of the atomic arrays
+if geometry_settings[1:3]== "DIS" 
+    h5write_multiple(final_path_name*"settings_disorder", ("dis_atomic_density",dis_atomic_density) ; open_option="w") 
+    #
+    if geometry_settings == "DISORDERED_SPHERE"
+        h5write_multiple(final_path_name*"settings_disorder", ("dis_r_sphere",dis_r_sphere) )
+    end
+    if geometry_settings == "DISORDERED_CYLINDER"
+        h5write_multiple(final_path_name*"settings_disorder", ("dis_r_disk",dis_r_disk) , ("dis_z_length",dis_z_length))
+    end
+    if geometry_settings == "DISORDERED_CUBOID"
+        h5write_multiple(final_path_name*"settings_disorder", ("dis_x_dim",dis_x_dim) , ("dis_y_dim",dis_y_dim) , ("dis_z_dim",dis_z_dim) )
+    end
+    #
+end
+#
 #Checking if the RAM estimated for this simulation exceed the threshold set by the user
 tot_probe_points = 0
 probeXY_option=="YES"     ? tot_probe_points+=probeXY_points_x*probeXY_points_y           : nothing
@@ -252,10 +268,19 @@ GC.gc()
 #Main computation
 performance=@timed for index_repetition in 1:n_repetitions
     #
+    #Creating the disordered atomic positions, if requested
     if geometry_settings[1:3]=="DIS"
-        #TBA!!!
+        if geometry_settings=="DISORDERED_SPHERE" 
+            (r_atoms_here, n_atoms_here) = dis_sphere_creation(dis_r_sphere,dis_atomic_density)
+        end
+        if geometry_settings=="DISORDERED_CYLINDER" 
+            (r_atoms_here, n_atoms_here) = dis_cyl_creation(dis_r_disk,dis_z_length,dis_atomic_density)
+        end
+        if geometry_settings=="DISORDERED_CUBOID" 
+            (r_atoms_here, n_atoms_here) = dis_cuboid_creation(dis_x_dim,dis_y_dim,dis_z_dim,dis_atomic_density)
+        end
     else
-        (r_atoms_here ,n_atoms_here) = (r_atoms[:,:] , n_atoms)
+        (r_atoms_here, n_atoms_here) = (r_atoms[:,:] , n_atoms)
     end
     #
     #Punching defects (only for ordered geometries, and if requested)
@@ -269,7 +294,7 @@ performance=@timed for index_repetition in 1:n_repetitions
         n_atoms_here = n_atoms
     end
     #
-    #Saving the new atomic positions
+    #Saving the current atomic positions
     if pos_save_option=="YES" && (!no_randomness_option)
         if index_repetition==1
             h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms_here)) ; open_option="w"  )
@@ -286,6 +311,7 @@ performance=@timed for index_repetition in 1:n_repetitions
     #
     index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance of the core code: ") : nothing
 end
+#
 println("- Total core-computation time:                ", dig_cut(performance[2]-performance[4])," seconds" )
 println("- Total garbage-collection time:              ", dig_cut(performance[4])," seconds" )
 #

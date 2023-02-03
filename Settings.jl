@@ -302,3 +302,44 @@ if geometry_settings == "ARRAYS"
     #(YES, YES) -> Delta = (omega-omega_coop)/Gamma_coop (i.e. laser_detunings= 1 means 1*Gamma_coop shift from omega_coop)
     #
 end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## DISORDERED POSITIONS SETTINGS ############################################################
+#############################################################################################################
+#
+#
+#Settings that are relevant only for DISORDERED_SPHERE, DISORDERED_CYLINDER or DISORDERED_CUBOID
+if geometry_settings[1:3]=="DIS"
+    #
+    #Atomic density, in units of lambda0^3
+    dis_atomic_density = 0.2
+    #
+    #Option for a sphere centered in [0.0; 0.0; 0.0]
+    if geometry_settings=="DISORDERED_SPHERE"
+        #Radius of the sphere 
+        dis_r_sphere = 1.0
+    end
+    #
+    #Options for a cylinder with main axis in the z direction
+    if geometry_settings=="DISORDERED_CYLINDER"
+        #Radial coordinate of the cylinder 
+        dis_r_disk = 2.0
+        #Length of the main axis (i.e. thickness of the cylinder)
+        dis_z_length = 0.2
+    end
+    #
+    #Options for a cuboid
+    if geometry_settings=="DISORDERED_CUBOID"
+        #Lengths of the three axes
+        dis_x_dim = 2.0
+        dis_y_dim = 2.0
+        dis_z_dim = 2.0
+    end
+    #
+end

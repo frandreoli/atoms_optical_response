@@ -4,16 +4,16 @@
 #
 #
 #Function to uniformly sample in a cylinder with main axis oriented along z
-function uniform_sampling_cylinder!(r_atoms,n_atoms, xLength, yLength, zLength)
+function uniform_sampling_cylinder!(r_atoms,n_atoms, rLength, zLength)
   length(r_atoms[:,1])!=n_atoms ? error("Incompatible number of atoms in positions sampling.") : nothing
   length(r_atoms[1,:])!=3       ? error("Wrong vector space dimension in positions sampling.") : nothing
   phasesRandom=2.0*pi*rand(n_atoms)
   radiusRandom=sqrt.(rand(n_atoms))
   #
   #See: http://mathworld.wolfram.com/DiskPointPicking.html
-  xPoints=xLength*radiusRandom.*cos.(phasesRandom)
-  yPoints=yLength*radiusRandom.*sin.(phasesRandom)
-  zPoints=rand(n_atoms).*(2*zLength).-zLength
+  xPoints=rLength*radiusRandom.*cos.(phasesRandom)
+  yPoints=rLength*radiusRandom.*sin.(phasesRandom)
+  zPoints=rand(n_atoms).*(zLength).-(zLength/2)
   for i in 1:n_atoms
       r_atoms[i,:]=[xPoints[i];yPoints[i];zPoints[i]]
   end
@@ -230,7 +230,9 @@ end
 #If the file already exists it preserves the data, otherwise it creates the file
 #If the variable already exist in the file, it overwrites it
 #data_array is an array of tuples whose first element is the name of the variable
-#while the second is the variable to save
+#while the second is the variable to save. 
+#The option open_option="cw" only overwrites the chosen variable in the .h5 file,
+#while setting open_option="w" first deletes all elements stored in the file.
 function h5write_multiple(file_name,data_array... ; open_option="cw")
   file_h5=h5open(file_name*".h5", open_option)
   for index in 1:length(data_array)
@@ -243,6 +245,7 @@ function h5write_multiple(file_name,data_array... ; open_option="cw")
 end
 #
 #
+#Functions to add new elements to an array already stored
 function h5write_append(file_name,data, name_variable="")
   open_option="cw"
   file_h5=h5open(file_name*".h5", open_option)
@@ -345,4 +348,46 @@ function defect_punching(r_atoms,n_atoms, defects_fraction)
   n_atoms_new = Int(round(n_atoms*(1-defects_fraction)))
   r_atoms_new = r_atoms[sort((shuffle(1:length(r_atoms[:,1])))[1:n_atoms_new]),:]
   (r_atoms_new, n_atoms_new)
+end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## DISORDERED POSITIONS  ####################################################################
+#############################################################################################################
+#
+#
+#Function to define the atomic positions by uniformly sampling inside a sphere
+function dis_sphere_creation(r_sphere,atomic_density)
+  sphere_volume = (4/3)*pi*r_sphere^3
+  n_atoms = Int(round(sphere_volume*atomic_density))
+  r_atoms = Array{Float64}(undef, n_atoms, 3)
+  uniform_sampling_sphere!(r_atoms,n_atoms, r_sphere, "BALL","FULL_SPHERE")
+  return (r_atoms,n_atoms)
+end
+#
+#
+#Function to define the atomic positions by uniformly sampling inside a cylinder with main axis in the z direction
+function dis_cyl_creation(r_disk,z_length,atomic_density)
+  cylinder_volume = pi*r_disk^2*z_length
+  n_atoms = Int(round(cylinder_volume*atomic_density))
+  r_atoms = Array{Float64}(undef, n_atoms, 3)
+  uniform_sampling_cylinder!(r_atoms,n_atoms, rLength, zLength)
+  return (r_atoms,n_atoms)
+end
+#
+#
+#Function to define the atomic positions by uniformly sampling inside a cylinder with main axis in the z direction
+function dis_cuboid_creation(x_dim,y_dim,z_dim,atomic_density)
+  cuboid_volume = x_dim*y_dim*z_dim
+  n_atoms = Int(round(cuboid_volume*atomic_density))
+  r_atoms = Array{Float64}(undef, n_atoms, 3)
+  for ii in 1:3
+    r_atoms[:,ii].=(rand(Float64,n_atoms).*2.0 .- 1.0)*([x_dim ; y_dim ; z_dim][ii]/2)
+  end
+  return (r_atoms,n_atoms)
 end
