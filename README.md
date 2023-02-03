@@ -164,7 +164,7 @@ These variables define the lattice constants (in units of $\lambda\_0$) of the 2
 If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance between nearest-neighbour 2D arrays (in units of $\lambda\_0$).
 
 - `array_size_x` and `array_size_y`\
-These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They are in the form `array_size_i = [i_min, i_max]` for $i=x,y$.
+These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They must be written in the following form: `array_size_i = [i_min, i_max]` for $i=x,y$.
 
 
 #### 2.1.4.3 - Atomic metalens settings
