@@ -187,7 +187,7 @@ These two options allow the user to re-define the array `laser_detunings` with s
 
 
 #### 2.1.4.3 - Atomic metalens settings
-When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of [3](#Andreoli2023b). This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
+When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of \[[3](#Andreoli2023b)\]. This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
 
 - `focal_length`\
 Its values defines the focal length $f$ of the lens. We recall that the actual distance between the lens and the focal spot is close to $f$. 
