@@ -76,9 +76,9 @@ end
 if geometry_settings == "ARRAYS"
     #
     #Calculating the cooperative rates
-    time_tic = time()
+    time_coop_tic = time()
     (omega_coop, Gamma_coop) = coop_values_function(array_xi_x,array_xi_y,laser_direction[1], laser_direction[2], dipoles_polarization)
-    println("Cooperative frequency and rate computed in    ", dig_cut(time()-time_tic)," seconds" )
+    time_coop = time() - time_coop_tic
     #
     #Re-scaling the detuning if the option is on
     if array_gamma_coop_option=="YES"
@@ -123,6 +123,10 @@ end
 #
 if defects_fraction>0.0
     file_name*="_defects"
+end
+#
+if small_disorder_std>0.0
+    file_name*="_posShifts"
 end
 #
 file_name*="_w0"*string(w0)[1:min(length(string(w0)),3)]
@@ -176,8 +180,12 @@ final_path_name="Data_Output/"*file_name*"/"
 mkpath(final_path_name)
 mkpath(final_path_name*"/"*results_folder_name)
 #
+if geometry_settings == "ARRAYS" 
+    println("Cooperative frequency and rate computed in    ", dig_cut(time_coop)," seconds" )
+end
+#
 #Saving the positions, but only if no disorder is present
-if pos_save_option=="YES" && geometry_settings[1:3]!="DIS" && defects_fraction==0.0 && small_disorder_std==0.0
+if pos_save_option=="YES" && no_randomness_option
     #Adding a dummy dimension to uniform the data analysis with the atomic_positions for disordered systems
     h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms)) ; open_option="w") 
     println("Atomic positions created in                   ", dig_cut(time_atomic_pos-time_start)," seconds")
@@ -257,16 +265,16 @@ performance=@timed for index_repetition in 1:n_repetitions
     #
     #Randomly shifting the positions (only for ordered geometries, and if requested)
     if small_disorder_std>0 
-        r_atoms_here = r_atoms_here[:,:].+(randn(MersenneTwister(), Float64, (n_atoms_here,3)).*disorder_shift)
+        r_atoms_here = r_atoms_here[:,:].+(randn(MersenneTwister(), Float64, (n_atoms_here,3)).*small_disorder_std)
         n_atoms_here = n_atoms
     end
     #
     #Saving the new atomic positions
-    if pos_save_option=="YES" && (geometry_settings[1:3]=="DIS" || defects_fraction>0 || small_disorder_std>0)
+    if pos_save_option=="YES" && (!no_randomness_option)
         if index_repetition==1
-            h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(n_atoms_here)) ; open_option="w"  )
+            h5write_multiple(final_path_name*"atomic_positions", ("r_atoms", add_dimension(r_atoms_here)) ; open_option="w"  )
         else
-            h5write_append(final_path_name*"atomic_positions", add_dimension(n_atoms_here),  "r_atoms" )
+            h5write_append(final_path_name*"atomic_positions", add_dimension(r_atoms_here),  "r_atoms" )
         end
     end
     #

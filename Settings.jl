@@ -37,7 +37,7 @@ const geometry_settings         =
 "CUSTOM_POSITIONS"              #6
 #
 #Choose here below the number wanted
-][5]
+][4]
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
@@ -67,7 +67,7 @@ const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 #For disordered geometries, each repetition will sample different atomic positions
 #Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
 #of random resonance frequencies for the atoms
-n_repetitions = 1
+n_repetitions = 2
 #
 #
 #
@@ -272,15 +272,15 @@ if geometry_settings == "ARRAYS"
     #PHYSICAL SETTINGS OF THE ARRAY:
     #
     #Number of 2D arrays in series
-    const array_n_layers = 1
+    array_n_layers = 1
     #Lattice constants of the 2D array
-    const array_xi_x = 0.1
-    const array_xi_y = 0.1
+    array_xi_x = 0.1
+    array_xi_y = 0.1
     #Distance between the arrays
-    const array_xi_z = 0.3
+    array_xi_z = 0.3
     #Size of the array
-    const array_size_x = [-2.0;2.0]
-    const array_size_y = [-2.0;2.0]
+    array_size_x = [-2.0;2.0]
+    array_size_y = [-2.0;2.0]
     #
     #
     #OPTIONS:

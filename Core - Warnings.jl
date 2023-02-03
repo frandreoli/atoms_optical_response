@@ -3,6 +3,9 @@
 #############################################################################################################
 #
 #
+println("\n")
+#
+#
 #Converting all directions to real vectors
 if abs(conj_norm(imag.(laser_direction)))>ZERO_THRESHOLD
     laser_direction = real.(laser_direction)
@@ -59,21 +62,6 @@ end
 #Warns in case the atomic positions are given as an input, while mirror_symmetry_option=="YES"
 if mirror_symmetry_option=="YES" && geometry_settings=="CUSTOM_POSITIONS"
     @warn "The options mirror_symmetry_option=='YES' and geometry_settings='CUSTOM_POSITIONS' are set.\nThe code will only consider the atomic positions in the positive (x>=0, y>=0) quadrant."
-end
-#
-#
-#Consistency of the repetition number
-rep_warning = "The number of repetition n_repetitions must be a positive, integer number.\nSetting n_repetitions=1."
-if typeof(n_repetitions)!==Int64
-    @warn rep_warning
-    n_repetitions = 1
-elseif n_repetitions<1
-    @warn rep_warning
-    n_repetitions = 1
-end
-if (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD)&& n_repetitions>1
-    @warn "Neither the atomic positions nor the resonance frequencies are randomly chosen.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
-    n_repetitions = 1
 end
 #
 #
@@ -147,8 +135,20 @@ if geometry_settings == "METALENS"
 end
 #
 #
+#Overall randomness in the simulation
+no_randomness_option = (geometry_settings[1:3]!="DIS" && abs(inhom_broad_std)<ZERO_THRESHOLD) && abs(defects_fraction)<ZERO_THRESHOLD && abs(small_disorder_std)<ZERO_THRESHOLD
 #
 #
-#
-#
-#
+#Consistency of the repetition number
+rep_warning = "The number of repetition n_repetitions must be a positive, integer number.\nSetting n_repetitions=1."
+if typeof(n_repetitions)!==Int64
+    @warn rep_warning
+    n_repetitions = 1
+elseif n_repetitions<1
+    @warn rep_warning
+    n_repetitions = 1
+end
+if no_randomness_option && n_repetitions>1
+    @warn "There are no randomly chosen parameters.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
+    n_repetitions = 1
+end
