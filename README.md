@@ -78,6 +78,9 @@ When this option is set to `YES` the simulation will save the atomic positions a
 - `defects_fraction = 0.0`\
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
+- `small_disorder_std = 0.0`\
+Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std = 0.0`, then no shift will be applied.
+
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
 
