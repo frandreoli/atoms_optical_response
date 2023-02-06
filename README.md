@@ -220,7 +220,14 @@ When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical
 
 
 ## 2.2 - Run the simulation
-Section in progress.
+To run the simulation, the user must first define the correct settings in the file ***Settings.jl***, following the guidelines of [Sec. 2.1](#21---initialization). Afterwards, the simulation can be performed by simply running the file ***Launcher.jl***, within Julia (the code has been written and tested for versions 1.6-1.8). Pay attention to have already installed the package [HDF5](https://juliaio.github.io/HDF5.jl/stable/).
+
+### 2.2.1 - Linux environment
+If the simulation is run on a Linux operating system, then a handy wrapper is provided in the file ***shell_launcher.sh***. This can be run from the command line by typing `bash shell_launcher.sh`. This launcher provides the possibility of controlling the number of cores (used by BLAS for linear algebra operations) and threads (used to fill in the matrices with the data) that the simulation will make use of. 
+
+[Plots](https://docs.juliaplots.org/stable/)
+
+
 
 ## 2.3 - Data outputs
 Section in progress.
