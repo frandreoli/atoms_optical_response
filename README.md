@@ -220,10 +220,17 @@ When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical
 
 
 ## 2.2 - Run the simulation
-Section in progress.
+To run the simulation, the user must first define the correct settings in the file ***Settings.jl***, following the guidelines of [Sec. 2.1](#21---initialization). Afterwards, the simulation can be performed by simply running the file ***Launcher.jl***, within Julia (the code has been written and tested for versions 1.6-1.8). Attention must be paid to have already installed the package [HDF5](https://juliaio.github.io/HDF5.jl/stable/).
+
+### 2.2.1 - Linux environment
+If the simulation is run on a Linux operating system, then a handy wrapper is provided in the file ***shell_launcher.sh***. This can be run from the command line by typing `bash shell_launcher.sh`. This launcher provides the possibility of controlling the number of cores (used for operations of linear algebra) and threads (used to fill in the matrices with the data) that the simulation will make use of. The command-line outputs of the simulation will be stored in a specific file ".out" in the directory ***Data_Output/***.
+
+Through this launcher, the user can also choose to monitor the RAM and CPUs used by the main simulation by setting `yesORnoMonitor="y"`. This option will launch an additional code (contained in ***Resources\_monitor/Resources\_monitor.jl***), which is aimed to keep track of the usage of these computational resources. This supplementary tool will produce two plots (in png format) with either the RAM or CPU used as a function of time. It requires the Julia package [Plots](https://docs.juliaplots.org/stable/) and it has been tested on the operating system *CentOS Linux 7 (Core)*.
+
+
 
 ## 2.3 - Data outputs
-Section in progress.
+
 
 
 
