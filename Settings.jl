@@ -158,7 +158,7 @@ probeYZ_range_y       =   [-1 ; 1].*10
 probeYZ_range_z       =   [-1 ; 1].*20
 #
 #
-#Settings for the probe points in the YZ plane. 
+#Settings for the probe points in the XZ plane. 
 #If probeXZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
 probeXZ_option        =   ["YES" ; "NO"][1]
