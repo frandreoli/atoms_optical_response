@@ -75,7 +75,7 @@ end
 #
 #Probe points computed on the plane perpendicular to v3_vec
 function f_probe_PLANE(v3_vec, v3_value, points_v1, points_v2, range_v1, range_v2)
-	rot_matrix = inv(rot_matrix_function(v3_vec))
+	rot_matrix = rot_matrix_function(v3_vec)
 	v1Range=range(range_v1[1],stop=range_v1[2],length=points_v1)
 	v2Range=range(range_v2[1],stop=range_v2[2],length=points_v2)
 	r_probe=Array{Float64}(undef,points_v1,points_v2,3)

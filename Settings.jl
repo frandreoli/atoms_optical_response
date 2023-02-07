@@ -22,7 +22,6 @@ All lengths are calculated in units of lambda0.
 #CODE SETTINGS:
 #GEOMETRICAL SETTINGS:
 #It defines the geometry of the atomic positions                
-#TBA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 const geometry_settings         =      
 [
 #
@@ -37,7 +36,7 @@ const geometry_settings         =
 "CUSTOM_POSITIONS"              #6
 #
 #Choose here below the number wanted
-][4]
+][5]
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
@@ -67,7 +66,7 @@ const mirror_symmetry_option    =      ["YES" ; "NO"][1]
 #For disordered geometries, each repetition will sample different atomic positions
 #Similarly, if inhom_broad_std>0 (see below), each repetition will sample a different set 
 #of random resonance frequencies for the atoms
-n_repetitions = 2
+n_repetitions = 1
 #
 #
 #
@@ -101,7 +100,7 @@ RAM_GB_max = 450
 #Spatial orientation of the atomic dipole-matrix elements
 dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
-const gamma_prime          =  0.0 
+const gamma_prime          =  5.75 
 #Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
 const inhom_broad_std      =  0.0
@@ -115,7 +114,7 @@ const inhom_broad_std      =  0.0
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
 laser_detunings            =  [0.0] 
 #Beam waist of the input Gaussan beam
-const w0                   =  1.0
+const w0                   =  4.0
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
 laser_direction            =  [0.0 ; 0.0 ; 1.0] 
 #Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
@@ -172,7 +171,7 @@ probeXZ_range_z       =   [-1 ; 1].*20
 #Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
 #If probePLANE_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
-probePLANE_option     =   ["YES" ; "NO"][1]
+probePLANE_option     =   ["YES" ; "NO"][2]
 probePlane_v3_vec     =   [1.0 ; 1.0 ; 1.0]./sqrt(3)
 probePlane_v3_value   =   0
 probePlane_points_v1  =   50
@@ -182,7 +181,7 @@ probePlane_range_v2   =   [-1 ; 1].*10
 #
 #
 #Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
-probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][2]
+probeSPHERE_option    =   ["NONE" ; "FULL_SPHERE" ; "FORWARD_HEMISPHERE" ; "BACKWARD_HEMISPHERE"][1]
 probeSphere_radius    =   2
 probeSphere_points    =   10000
 #
@@ -214,11 +213,11 @@ if geometry_settings == "METALENS"
     #
     #METALENS PARAMETERS:
     #Focal length f
-    const focal_length               =    20
+    const focal_length              =    20
     #Total radius of the metalens
-    const r_lens                	=    1.8
+    const r_lens                	=    10.5
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    const disks_width               =    0.2
+    const disks_width               =    7.0/10.5
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
     const buffer_smooth     	    =    0.2
     #Value of the phase shift at the center of the metalens, i.e. phi_0
@@ -238,7 +237,7 @@ if geometry_settings == "METALENS"
     #Default: YES - If YES then (w0_target, z0_target) are overwritten by the default option.
     #It consists of an ideal Gaussian beam expected after a perfect lens with the given focal_length 
     #Similarly normalize_target_option are overwritten to YES
-    const default_target_option   =      ["YES" ; "NO"][1]       
+    const default_target_option     =      ["YES" ; "NO"][1]       
     #
     #
     #
