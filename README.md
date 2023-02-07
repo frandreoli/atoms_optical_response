@@ -10,7 +10,7 @@ Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023
 
 The core code is written in [Julia](https://julialang.org/) (initially written for Julia 1.6 and well tested on the current version Julia 1.8), while the output data are saved in the HDF5 format. 
 A Mathematica notebook is provided to read the data and generate simple plots, with an intuitive, user-friendly interface. This latter is currently available only for the "METALENS" option (see [Sec. 2.1.2](#211---overall-settings)).
-The simulation is specifically optimized for multi-threaded computation, and the code was extensively used on a multi-core (>32 threads) cluster with ~400GB of RAM to simulate systems of up to $\sim 7\times 10^5$ atoms.
+The simulation is specifically optimized for multi-threaded computation, and the code was extensively used on a multi-core (>32 threads) cluster with ~500GB of RAM to simulate systems of up to $\sim 5\times 10^5$ atoms.
 
 
 
