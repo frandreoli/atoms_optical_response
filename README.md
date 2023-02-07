@@ -277,6 +277,11 @@ In the previous sections, we described the output files saving the chosen settin
 - ***Results/t_and_r.h5***\
 This file contains the results of the projections onto the input and target Gaussian beams. Specifically, the variables `t_in_re` and `t_in_im` store the real and imaginary parts of the complex transmission coefficient, defined as the projection onto the same Gaussian mode as the input. These are structured as matrices whose first index is the number of the repetition, while the second index labels the value of the detuning in `laser\_detunings`. Same applies for `r_in_re` and `r_in_im`, which define the reflection coefficient onto the same input mode. If `target_beam_option == "YES"`, then the similar projections are calculated onto a target Gaussian mode (defined by the user), which are stored in `t_target_re`, `t_target_im`, `r_target_re` and `r_target_im`.
 
+- ***Results/probe_positions.h5***\
+This file stores the values of the positions, in space, where the total field (i.e. the probes) is calculated. We recall that various probe geometries can be implemented, labeled by `name = XY`, `YZ`, `XZ`, `PLANE` and `SPHERE` (which includes either the full $4\pi$ solid angle or just an hemisphere). For each of this configuration (when enabled by the user), the probe positions are stored in under the variable name `probe_pos_` followed by the value of the string `name`. Each variable identifies a $N\_{\text{probe}}\times 3$ matrix where the first index is the label of the probe point, while the second identifies the coordinate (x, y or z) in space. 
+
+- ***Results/probe_field.h5***\
+This file
 
 
 # 3 - References 
