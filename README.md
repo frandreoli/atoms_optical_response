@@ -10,7 +10,7 @@ Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023
 
 The core code is written in [Julia](https://julialang.org/) (initially written for Julia 1.6 and well tested on the current version Julia 1.8), while the output data are saved in the HDF5 format. 
 A Mathematica notebook is provided to read the data and generate simple plots, with an intuitive, user-friendly interface. This latter is currently available only for the "METALENS" option (see [Sec. 2.1.2](#211---overall-settings)).
-The simulation is specifically optimized for multi-threaded computation, and the code was extensively used on a multi-core (>32 threads) cluster with ~400GB of RAM to simulate systems of up to $\sim 7\times 10^5$ atoms.
+The simulation is specifically optimized for multi-threaded computation, and the code was extensively used on a multi-core (>32 threads) cluster with ~500GB of RAM to simulate systems of up to $\sim 5\times 10^5$ atoms.
 
 
 
@@ -79,7 +79,7 @@ When this option is set to `YES` the simulation will save the atomic positions a
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `small_disorder_std`\
-Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std = 0.0`, then no shift will be applied.
+Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std == 0.0`, then no shift will be applied.
 
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
@@ -150,7 +150,7 @@ Some geometrical configurations of the positions of the emitters need further, s
 
 
 #### 2.1.4.1 - Disordered geometries settings
-When `geometry_settings="DISORDERED_SPHERE"` or `geometry_settings="DISORDERED_CYLINDER"` or `geometry_settings="DISORDERED_CUBOID"`, then the atomic positions are randomly sampled from a uniform distribution, inside the desired shape, centered at $\mathbf{r}=0$. 
+When `geometry_settings == "DISORDERED_SPHERE"` or `geometry_settings="DISORDERED_CYLINDER"` or `geometry_settings="DISORDERED_CUBOID"`, then the atomic positions are randomly sampled from a uniform distribution, inside the desired shape, centered at $\mathbf{r}=0$. 
 
 - `dis_atomic_density`\
 The number of atoms to be sampled is define through the atomic density (in units of $\lambda\_0^3$, which can be defined with this variable.
@@ -168,7 +168,7 @@ When `geometry_settings="DISORDERED_CUBOID"`, then the shape of the atomic cloud
 
 
 #### 2.1.4.2 - Array settings
-When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
+When `geometry_settings == "ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
 
 - `array_n_layers`\
 This variable identifies the number of 2D arrays that are placed in series. It must be an integer number with `array_n_layers`>0.
@@ -183,11 +183,11 @@ If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance be
 These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They must be written in the following form: `array_size_i = [i_min, i_max]` for $i=x,y$.
 
 - `array_gamma_coop_option` and `array_omega_coop_option`\
-These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option = "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
+These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option == "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
 
 
 #### 2.1.4.3 - Atomic metalens settings
-When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of \[[3](#Andreoli2023b)\]. This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
+When `geometry_settings == "METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of \[[3](#Andreoli2023b)\]. This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
 
 - `focal_length`\
 Its values defines the focal length $f$ of the lens. We recall that the actual distance between the lens and the focal spot is close to $f$. 
@@ -214,7 +214,7 @@ By setting this option to `YES` the user has the possibility of overwriting the 
 
 
 #### 2.1.4.4 - Custom geometry settings
-When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical response of a system of quantum emitters whose positions in space are chosen by the user. These must be saved as a $N\times 3$ real matrix in a file .h5 with the HDF5 encoding. The folder where the file is located can be specified via `custom_pos_folder`, while the name of the file and the name of the variable with the relevant matrix are identified by respectively `custom_pos_file` and `custom_pos_variable`.
+When `geometry_settings == "CUSTOM_POSITIONS"`, then code will simulate the optical response of a system of quantum emitters whose positions in space are chosen by the user. These must be saved as a $N\times 3$ real matrix in a file .h5 with the HDF5 encoding. The folder where the file is located can be specified via `custom_pos_folder`, while the name of the file and the name of the variable with the relevant matrix are identified by respectively `custom_pos_file` and `custom_pos_variable`.
 
 
 
@@ -225,13 +225,63 @@ To run the simulation, the user must first define the correct settings in the fi
 ### 2.2.1 - Linux environment
 If the simulation is run on a Linux operating system, then a handy wrapper is provided in the file ***Shell_Launcher.sh***. This can be run from the command line by typing `bash Shell_Launcher.sh`. This launcher provides the possibility of controlling the number of cores (used for operations of linear algebra) and threads (used to fill in the matrices with the data) that the simulation will make use of. The command-line outputs of the simulation will be stored in a specific file ".out" in the directory ***Data_Output/***.
 
-Through this launcher, the user can also choose to monitor the RAM and CPUs used by the main simulation by setting `yesORnoMonitor="y"`. This option will launch an additional code (contained in ***Resources\_monitor/Resources\_monitor.jl***), which is aimed to keep track of the usage of these computational resources. This supplementary tool will produce two plots (in png format) with either the RAM or CPU used as a function of time. It requires the Julia package [Plots](https://docs.juliaplots.org/stable/) and it has been tested on the operating system *CentOS Linux 7 (Core)*.
+Through this launcher, the user can also choose to monitor the RAM and CPUs used by the main simulation by setting `yesORnoMonitor=1`. This option will launch an additional code (contained in ***Resources\_monitor/Resources\_monitor.jl***), which is aimed to keep track of the usage of these computational resources. This supplementary tool will produce two plots (in the .png format) with either the RAM or CPU used as a function of time. It requires the Julia package [Plots](https://docs.juliaplots.org/stable/), and it has been tested on the operating system *CentOS Linux 7 (Core)*.
 
 
 
 ## 2.3 - Data outputs
+The results of the simulation are stored in different output .h5 files, that we list here below. The data are have a HDF5 encoding, which allows to store many variables in the same file. 
+
+### 2.3.1 - Generic parameters and options
+
+- ***options.h5***\
+This file stores the values of the options defined by the user. Specifically, it contains the variables `pos_save_option`, `geometry_settings`, `target_beam_option`, `probeXY_option`, `probeYZ_option`, `probeXZ_option`, `probePLANE_option`, `probeSPHERE_option` and `mirror_symmetry_option`. If `target_beam_option=="YES"`, then the option `normalize_target_option` is stored too.
+
+- ***settings.h5***\
+This files stores the parameters of the simulations: `w0`, `gamma_prime`, `inhom_broad_std`, `laser_detunings`, `laser_direction`, `field_polarization`, `defects_fraction`, `n_repetitions`, `probePlane_vec` and `dipoles_polarization`. If `target_beam_option=="YES"`, then the variables `w0_target` and `z0_target` are stored too.
+
+- ***atomic_positions.h5***\
+If `pos_save_option=="YES"`, then the atomic positions are stored in this file, under the variable name `r_atoms`. This consist of a `n_repetitions` $\times N\times 3$ tensor, where the first index defines the repetition, the second is a label for each atom and the third identifies the spatial coordinate (x, y or z). When random configurations are enabled (such as disordered geometries) each repetition is associated to a different set of atomic positions.
+
+### 2.3.2 - Specific parameters and options
+Specific settings are also saved, related to each different chosen geometry.
+
+#### 2.3.2.1 - Disordered geometries
+For disordered geometries, the specific initializing parameters are stored in the file ***settings_disorder.h5***, which always contains the variable `dis_atomic_density`. If `geometry_settings == "DISORDERED_SPHERE"` then also the variable `dis_r_sphere` is saved. If `geometry_settings == "DISORDERED_CYLINDER"` then the two variables `dis_r_disk` and `dis_z_length` are stored. Finally, if `geometry_settings == "DISORDERED_CUBOID"` the file contains the variables: `dis_x_dim`, `dis_y_dim` and `dis_z_dim`.
 
 
+#### 2.3.2.2 - Array geometry
+When `geometry_settings == "ARRAYS"`, then the following data files are saved.
+
+- ***settings_arrays.h5***\
+This file contains the variables: `array_size_x`, `array_size_y`, `array_n_layers`, `array_xi_x`, `array_xi_y` and `array_xi_z`.
+
+- ***coop_arrays.h5***\
+This file stores the values of the cooperative resonance $\omega\_{\text{coop}}$ (with the name `omega_coop`) and decay rate $\Gamma\_{\text{coop}}$ (with the name `Gamma_coop`).
+
+- ***options_arrays.h5***\
+The specific options of the array are stored here, reading `array_gamma_coop_option` and `array_omega_coop_option`.
+
+#### 2.3.2.3 - Atomic metalens
+When `geometry_settings == "METALENS"`, then the following data files are saved.
+
+- ***settings_metalens.h5***\
+This file contains the values of the variables  `n_phase_disks`, `focal_length`, `r_lens`, `buffer_smooth`, `phase_shift` and `disks_width`. It also includes the array `lattice_array` where are saved the values of the three lattice constants $d\_x^j/\lambda\_0$, $d\_y^j/\lambda\_0$ and $d\_z^j/\lambda\_0$ for each $j$-th ring composing the metalens. On top of that array `phase_array` contains the phase shift $\phi\_j$ associated to the lattice constants of each ring, while `phase_array_theo` contains its target theoretical values.
+
+- ***options_metalens.h5***\
+This file stores the options specific to the metalens configuration. They read: `z_fixed_option`, `z_fixed_buffer_option`, `phase_center_ring_option`, `default_probe_option` and `default_target_option`.
+
+### 2.3.3 - Simulation results
+In the previous sections, we described the output files saving the chosen settings and options of the simulation. In this section, we describe the output files which store the actual results of the simulation. These are saved in the sub-folder ***Results/***, inside the main folder of the simulation.
+
+- ***Results/t_and_r.h5***\
+This file contains the results of the projections onto the input and target Gaussian beams. Specifically, the variables `t_in_re` and `t_in_im` store the real and imaginary parts of the complex transmission coefficient, defined as the projection onto the same Gaussian mode as the input. These are structured as matrices whose first index is the number of the repetition, while the second index labels the value of the detuning in `laser\_detunings`. Same applies for `r_in_re` and `r_in_im`, which define the reflection coefficient onto the same input mode. If `target_beam_option == "YES"`, then the similar projections are calculated onto a target Gaussian mode (defined by the user), which are stored in `t_target_re`, `t_target_im`, `r_target_re` and `r_target_im`.
+
+- ***Results/probe_positions.h5***\
+This file stores the values of the positions, in space, where the total field (i.e. the probes) is calculated. We recall that various probe geometries can be implemented, labeled by `name = XY`, `YZ`, `XZ`, `PLANE` and `SPHERE` (which includes either the full $4\pi$ solid angle or just an hemisphere). For each of this configuration (when enabled by the user), the probe positions are stored in under the variable name `probe_pos_` followed by the value of the string `name`. Each variable identifies a $N\_{\text{probe}}\times 3$ matrix where the first index is the label of the probe point, while the second identifies the coordinate (x, y or z) in space. 
+
+- ***Results/probe_field.h5***\
+This file contains the values of the (complex) total field at the probe position. Its real and imaginary parts are saved as tensors with the name `probe_field_*name*_re` and `probe_field_*name*_im`, where `name = XY`, `YZ`, `XZ`, `PLANE` or `SPHERE`. These tensors have four indeces. The first labels which repetition is the computed field associated to (if more repetitions with random parameters are enabled). The second is the index of the detuning value as defined the array `laser\_detunings`. The third refers to the probe position, while the fourth is the field polarization (either x, y or z). 
 
 
 # 3 - References 
