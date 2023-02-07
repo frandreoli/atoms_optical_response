@@ -281,7 +281,7 @@ This file contains the results of the projections onto the input and target Gaus
 This file stores the values of the positions, in space, where the total field (i.e. the probes) is calculated. We recall that various probe geometries can be implemented, labeled by `name = XY`, `YZ`, `XZ`, `PLANE` and `SPHERE` (which includes either the full $4\pi$ solid angle or just an hemisphere). For each of this configuration (when enabled by the user), the probe positions are stored in under the variable name `probe_pos_` followed by the value of the string `name`. Each variable identifies a $N\_{\text{probe}}\times 3$ matrix where the first index is the label of the probe point, while the second identifies the coordinate (x, y or z) in space. 
 
 - ***Results/probe_field.h5***\
-This file
+This file contains the values of the (complex) total field at the probe position. Its real and imaginary parts are saved as tensors with the name `probe_field_*name*_re` and `probe_field_*name*_im`, where `name = XY`, `YZ`, `XZ`, `PLANE` or `SPHERE`. These tensors have four indeces. The first labels which repetition is the computed field associated to (if more repetitions with random parameters are enabled). The second is the index of the detuning value as defined the array `laser\_detunings`. The third refers to the probe position, while the fourth is the field polarization (either x, y or z). 
 
 
 # 3 - References 
