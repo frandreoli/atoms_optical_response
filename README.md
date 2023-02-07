@@ -251,7 +251,7 @@ For disordered geometries, the specific initializing parameters are stored in th
 
 
 #### 2.3.2.2 - Array geometry
-When `geometry_settings == "ARRAYS"`, then the following data files are produced.
+When `geometry_settings == "ARRAYS"`, then the following data files are saved.
 
 - ***settings_arrays.h5***\
 This file contains the variables: `array_size_x`, `array_size_y`, `array_n_layers`, `array_xi_x`, `array_xi_y` and `array_xi_z`.
@@ -263,16 +263,22 @@ This file stores the values of the cooperative resonance $\omega\_{\text{coop}}$
 The specific options of the array are stored here, reading `array_gamma_coop_option` and `array_omega_coop_option`.
 
 #### 2.3.2.3 - Atomic metalens
+When `geometry_settings == "METALENS"`, then the following data files are saved.
 
+- ***settings_metalens.h5***\
+This file contains the values of the variables  `n_phase_disks`, `focal_length`, `r_lens`, `buffer_smooth`, `phase_shift` and `disks_width`. It also includes the array `lattice_array` where are saved the values of the three lattice constants $d\_x^j/\lambda\_0$, $d\_y^j/\lambda\_0$ and $d\_z^j/\lambda\_0$ for each $j$-th ring composing the metalens. On top of that array `phase_array` contains the phase shift $\phi\_j$ associated to the lattice constants of each ring, while `phase_array_theo` contains its target theoretical values.
+
+- ***options_metalens.h5***\
+This file stores the options specific to the metalens configuration. They read: `z_fixed_option`, `z_fixed_buffer_option`, `phase_center_ring_option`, `default_probe_option` and `default_target_option`.
 
 ### 2.3.3 - Simulation results
 
 
- ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
 
 
 
- ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
+
+``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
 
 
 # 3 - References 
