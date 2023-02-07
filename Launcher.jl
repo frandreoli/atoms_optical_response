@@ -232,7 +232,7 @@ end
 #Saving data files with the settings specific of the atomic metalens
 if geometry_settings == "METALENS" 
     n_phase_disks = length(collect(0.0:disks_width:r_lens))-1
-    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_length", focal_length) , ("r_lens",r_lens) , ("buffer", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_metalens",  ("n_phase_disks", n_phase_disks), ("focal_length", focal_length) , ("r_lens",r_lens) , ("buffer_smooth", buffer_smooth) , ("disks_width", disks_width) ; open_option="w")
     h5write_multiple(final_path_name*"settings_metalens",  ("phase_array",   phase_array) , ("phase_range_theo", phase_range_theo))
     h5write_multiple(final_path_name*"settings_metalens",  ("lens_disks_r",  lens_disks_r) , ("phase_shift",phase_shift))
     h5write_multiple(final_path_name*"settings_metalens",  ("lattice_array", lattice_array))

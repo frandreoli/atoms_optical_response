@@ -1,4 +1,4 @@
 /.local
+/.gitignore
 /.vscode
-.vscode/settings.json
-/Data_Output/METALENS_nAtoms461604_w04.0_gPr5.75_r10._f20._widths0.66_phase1.077_buffer0.20_MIRROR_2023-02-06_EXAMPLE
+/.vscode/settings.json
