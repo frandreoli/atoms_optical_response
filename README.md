@@ -230,8 +230,28 @@ Through this launcher, the user can also choose to monitor the RAM and CPUs used
 
 
 ## 2.3 - Data outputs
+The results of the simulation are stored in different output .h5 files, that we list here below. The data are have a HDF5 encoding, which allows to store many variables in the same file. 
+
+### 2.3.1 - Generic parameters and options
+
+- ***options.h5***\
+This file stores the values of the options defined by the user. Specifically, it contains the variables `pos_save_option`, `geometry_settings`, `target_beam_option`, `probeXY_option`, `probeYZ_option`, `probeXZ_option`, `probePLANE_option`, `probeSPHERE_option` and `mirror_symmetry_option`. If `target_beam_option=="YES"`, then the option `normalize_target_option` is stored too.
+
+- ***settings.h5***\
+This files stores the parameters of the simulations: `w0`, `gamma_prime`, `inhom_broad_std`, `laser_detunings`, `laser_direction`, `field_polarization`, `defects_fraction`, `n_repetitions`, `probePlane_vec` and `dipoles_polarization`. If `target_beam_option=="YES"`, then the variables `w0_target` and `z0_target` are stored too.
+
+### 2.3.2 - Specific parameters and options
+
+#### 2.3.2.1 
+
+### 2.3.3 - Simulation results
 
 
+``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
+
+
+
+ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
 
 
 # 3 - References 
