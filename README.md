@@ -79,7 +79,7 @@ When this option is set to `YES` the simulation will save the atomic positions a
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
 - `small_disorder_std`\
-Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std = 0.0`, then no shift will be applied.
+Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std == 0.0`, then no shift will be applied.
 
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
@@ -150,7 +150,7 @@ Some geometrical configurations of the positions of the emitters need further, s
 
 
 #### 2.1.4.1 - Disordered geometries settings
-When `geometry_settings="DISORDERED_SPHERE"` or `geometry_settings="DISORDERED_CYLINDER"` or `geometry_settings="DISORDERED_CUBOID"`, then the atomic positions are randomly sampled from a uniform distribution, inside the desired shape, centered at $\mathbf{r}=0$. 
+When `geometry_settings == "DISORDERED_SPHERE"` or `geometry_settings="DISORDERED_CYLINDER"` or `geometry_settings="DISORDERED_CUBOID"`, then the atomic positions are randomly sampled from a uniform distribution, inside the desired shape, centered at $\mathbf{r}=0$. 
 
 - `dis_atomic_density`\
 The number of atoms to be sampled is define through the atomic density (in units of $\lambda\_0^3$, which can be defined with this variable.
@@ -168,7 +168,7 @@ When `geometry_settings="DISORDERED_CUBOID"`, then the shape of the atomic cloud
 
 
 #### 2.1.4.2 - Array settings
-When `geometry_settings="ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
+When `geometry_settings == "ARRAYS"`, the system arrange the atomic position to into a series of finite 2D, rectangular arrays, extending in the $(x,y)$-plane and separated by a fixed distance in the $\hat{\mathbf{z}}$ direction. The specific settings for this geometry are listed here below.
 
 - `array_n_layers`\
 This variable identifies the number of 2D arrays that are placed in series. It must be an integer number with `array_n_layers`>0.
@@ -183,11 +183,11 @@ If `array_n_layers`>1, then `array_xi_z` identifies the longitudinal distance be
 These two variables identify the extension of the finite 2D arrays in the $\hat{\mathbf{x}}$ and $\hat{\mathbf{y}}$ directions. They must be written in the following form: `array_size_i = [i_min, i_max]` for $i=x,y$.
 
 - `array_gamma_coop_option` and `array_omega_coop_option`\
-These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option = "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
+These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option == "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
 
 
 #### 2.1.4.3 - Atomic metalens settings
-When `geometry_settings="METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of \[[3](#Andreoli2023b)\]. This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
+When `geometry_settings == "METALENS"`, the system arrange the atomic position to act as a metalens, following the recipe of \[[3](#Andreoli2023b)\]. This metalens extends in the $(x,y)$ plane, and it is meant to focus a Gaussian beam at normal incidence (i.e. travelling in the $\hat{\mathbf{z}}$ direction). 
 
 - `focal_length`\
 Its values defines the focal length $f$ of the lens. We recall that the actual distance between the lens and the focal spot is close to $f$. 
@@ -214,7 +214,7 @@ By setting this option to `YES` the user has the possibility of overwriting the 
 
 
 #### 2.1.4.4 - Custom geometry settings
-When `geometry_settings="CUSTOM_POSITIONS"`, then code will simulate the optical response of a system of quantum emitters whose positions in space are chosen by the user. These must be saved as a $N\times 3$ real matrix in a file .h5 with the HDF5 encoding. The folder where the file is located can be specified via `custom_pos_folder`, while the name of the file and the name of the variable with the relevant matrix are identified by respectively `custom_pos_file` and `custom_pos_variable`.
+When `geometry_settings == "CUSTOM_POSITIONS"`, then code will simulate the optical response of a system of quantum emitters whose positions in space are chosen by the user. These must be saved as a $N\times 3$ real matrix in a file .h5 with the HDF5 encoding. The folder where the file is located can be specified via `custom_pos_folder`, while the name of the file and the name of the variable with the relevant matrix are identified by respectively `custom_pos_file` and `custom_pos_variable`.
 
 
 
