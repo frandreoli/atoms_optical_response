@@ -20,10 +20,12 @@ const data_filename_all = "Resources_Monitor/all_"*file_name
 const max_seconds   = max_hours*60.0*60.0
 const update_time   = 1
 
-time_stamp   = 0.0
+time_stamp    = 0.0
 ram_array     = Array{Float64}(undef,0)
 cpu_array     = Array{Float64}(undef,0)
 time_array    = Array{Float64}(undef,0)
+ram_final     = 0.0
+cpu_final     = 0.0
 
 
 function check_string_number(a)
@@ -69,8 +71,8 @@ while time_stamp<max_seconds
     string_out2 = String(read(out2))
     close(inp2)
     #
-    time_stamp = time() - time_start
-    time_array = vcat(time_array, time_stamp)
+    global time_stamp = time() - time_start
+    global time_array = vcat(time_array, time_stamp)
     #
     string_temp_ram=string_out
     string_temp_cpu=string_out2
@@ -79,13 +81,13 @@ while time_stamp<max_seconds
     try
         global ram_final = parse(Float64, string_temp_ram)/1024^2
         global cpu_final = parse(Float64, string_temp_cpu)/100
+        global ram_array  = vcat(ram_array,  ram_final )
+        global cpu_array  = vcat(cpu_array,  cpu_final )
     catch
         println("#Finished monitoring")
         break
     end
     #
-    ram_array  = vcat(ram_array,  ram_final )
-    cpu_array  = vcat(cpu_array,  cpu_final )
     println(ram_final,"  ",cpu_final,"  ",time_stamp)
     #
     #h5write_save(data_filename_all, ram_array,cpu_array,time_array)

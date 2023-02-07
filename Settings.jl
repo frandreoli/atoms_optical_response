@@ -137,9 +137,9 @@ probeXY_option        =   ["YES" ; "NO"][1]
 #Distance (in the z direction) between the atoms, centered at (x,y,z)=(0,0,0), and the XY probe plane
 probeXY_z             =   20
 #Number of different probe coordinates in the x direction 
-probeXY_points_x      =   50
+probeXY_points_x      =   250
 #Number of different probe coordinates in the y direction 
-probeXY_points_y      =   50
+probeXY_points_y      =   250
 #Size of the probe rectangle in the x direction, in the form [min_x ; max_x]
 probeXY_range_x       =   [-1 ; 1].*10
 #Size of the probe rectangle in the y direction, in the form [min_y ; max_y]
@@ -151,8 +151,8 @@ probeXY_range_y       =   [-1 ; 1].*10
 #The meaning of the variables is analogous to above
 probeYZ_option        =   ["YES" ; "NO"][1]
 probeYZ_x             =   0
-probeYZ_points_y      =   50
-probeYZ_points_z      =   100
+probeYZ_points_y      =   200
+probeYZ_points_z      =   500
 probeYZ_range_y       =   [-1 ; 1].*10
 probeYZ_range_z       =   [-1 ; 1].*20
 #
@@ -162,8 +162,8 @@ probeYZ_range_z       =   [-1 ; 1].*20
 #The meaning of the variables is analogous to above
 probeXZ_option        =   ["YES" ; "NO"][1]
 probeXZ_y             =   0
-probeXZ_points_x      =   50
-probeXZ_points_z      =   100
+probeXZ_points_x      =   200
+probeXZ_points_z      =   500
 probeXZ_range_x       =   [-1 ; 1].*10
 probeXZ_range_z       =   [-1 ; 1].*20
 #
