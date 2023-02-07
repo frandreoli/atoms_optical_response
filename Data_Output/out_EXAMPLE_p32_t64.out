@@ -1,0 +1,28 @@
+
+
+
+
+Time: 2023-02-07T17:22:56.271
+Starting evaluation of /home/fandreoli/Simulations/GitHub Code/Launcher.jl
+Output file name: METALENS_nAtoms461604_w4.0_gPr5.75_r10._f20._widths0.66_phase1.077_buffer0.20_MIRROR_2023-02-07_EXAMPLE
+
+Atomic positions created in                   4.9370369911193 seconds
+
+Starting the repetition 1/1.
+| Current available RAM:                      903.65663528442 (GB)
+| Green's matrix initialized in               47.626873970031 seconds
+| SM core evaluation finished in              2356.0550339221 seconds
+| Transmission and reflection computed in     16.789322853088 seconds
+| Evaluation of the XY probe finished in      117.65305781364 seconds
+| Evaluation of the YZ probe finished in      203.24448013305 seconds
+| Evaluation of the XZ probe finished in      211.20029115676 seconds
+┕ Performance:
+2956.807808 seconds (24.42 M allocations: 2.690 TiB, 1.15% gc time)
+
+Core evaluation completed. Performance of the core code: 
+- Total core-computation time:                2922.6941099580 seconds
+- Total garbage-collection time:              34.214671577000 seconds
+
+Evaluation successfully completed. 
+- Total running time:                         2963.3975229263 seconds
+
