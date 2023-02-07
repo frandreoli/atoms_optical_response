@@ -240,9 +240,20 @@ This file stores the values of the options defined by the user. Specifically, it
 - ***settings.h5***\
 This files stores the parameters of the simulations: `w0`, `gamma_prime`, `inhom_broad_std`, `laser_detunings`, `laser_direction`, `field_polarization`, `defects_fraction`, `n_repetitions`, `probePlane_vec` and `dipoles_polarization`. If `target_beam_option=="YES"`, then the variables `w0_target` and `z0_target` are stored too.
 
-### 2.3.2 - Specific parameters and options
+- ***atomic_positions.h5***\
+If `pos_save_option=="YES"`, then the atomic positions are stored in this file, under the variable name `r_atoms`. This consist of a `n_repetitions` $\times N\times 3$ tensor, where the first index defines the repetition, the second is a label for each atom and the third identifies the spatial coordinate (x, y or z). When random configurations are enabled (such as disordered geometries) each repetition is associated to a different set of atomic positions.
 
-#### 2.3.2.1 
+### 2.3.2 - Specific parameters and options
+Specific settings are also saved, related to each different chosen geometry.
+
+#### 2.3.2.1 - Disordered geometries
+For disordered geometries, the specific initializing parameters are stored in the file ***settings_disorder.h5***, which always contains the variable `dis_atomic_density`. If `geometry_settings == "DISORDERED_SPHERE"` then also the variable `dis_r_sphere` is saved. If `geometry_settings == "DISORDERED_CYLINDER"` then the two variables `dis_r_disk` and `dis_z_length` are stored. Finally, if `geometry_settings == "DISORDERED_CUBOID"` the file contains the variables: `dis_x_dim`, `dis_y_dim` and `dis_z_dim`.
+
+
+#### 2.3.2.2 - Array geometry
+
+#### 2.3.2.3 - Atomic metalens
+
 
 ### 2.3.3 - Simulation results
 
