@@ -251,6 +251,16 @@ For disordered geometries, the specific initializing parameters are stored in th
 
 
 #### 2.3.2.2 - Array geometry
+When `geometry_settings == "ARRAYS"`, then the following data files are produced.
+
+- ***settings_arrays.h5***\
+This file contains the variables: `array_size_x`, `array_size_y`, `array_n_layers`, `array_xi_x`, `array_xi_y` and `array_xi_z`.
+
+- ***coop_arrays.h5***\
+This file stores the values of the cooperative resonance $\omega\_{\text{coop}}$ (with the name `omega_coop`) and decay rate $\Gamma\_{\text{coop}}$ (with the name `Gamma_coop`).
+
+- ***options_arrays.h5***\
+The specific options of the array are stored here, reading `array_gamma_coop_option` and `array_omega_coop_option`.
 
 #### 2.3.2.3 - Atomic metalens
 
@@ -258,7 +268,7 @@ For disordered geometries, the specific initializing parameters are stored in th
 ### 2.3.3 - Simulation results
 
 
-``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
+ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
 
 
 
