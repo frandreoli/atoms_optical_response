@@ -153,7 +153,7 @@ if small_disorder_std>0.0
     file_name*="_posShifts"
 end
 #
-file_name*="_w0"*string(w0)[1:min(length(string(w0)),3)]
+file_name*="_w"*string(w0)[1:min(length(string(w0)),3)]
 #
 gamma_prime>0      ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
 inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
