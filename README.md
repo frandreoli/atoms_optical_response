@@ -272,13 +272,11 @@ This file contains the values of the variables  `n_phase_disks`, `focal_length`,
 This file stores the options specific to the metalens configuration. They read: `z_fixed_option`, `z_fixed_buffer_option`, `phase_center_ring_option`, `default_probe_option` and `default_target_option`.
 
 ### 2.3.3 - Simulation results
+In the previous sections, we described the output files saving the chosen settings and options of the simulation. In this section, we describe the output files which store the actual results of the simulation. These are saved in the sub-folder ***Results/***, inside the main folder of the simulation.
 
+- ***Results/t_and_r.h5***\
+This file contains the results of the projections onto the input and target Gaussian beams. Specifically, the variables `t_in_re` and `t_in_im` store the real and imaginary parts of the complex transmission coefficient, defined as the projection onto the same Gaussian mode as the input. These are structured as matrices whose first index is the number of the repetition, while the second index labels the value of the detuning in `laser\_detunings`. Same applies for `r_in_re` and `r_in_im`, which define the reflection coefficient onto the same input mode. If `target_beam_option == "YES"`, then the similar projections are calculated onto a target Gaussian mode (defined by the user), which are stored in `t_target_re`, `t_target_im`, `r_target_re` and `r_target_im`.
 
-
-
-
-
-``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``,
 
 
 # 3 - References 
