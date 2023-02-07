@@ -4,7 +4,7 @@
 #SIMULATION PARAMETERS:
 #
 #Name of the simulation
-nameFile="_EXAMPLE"
+nameFile="EXAMPLE"
 #Number of cores used (for matrix inversion, max 32)
 nCores=32
 #Number of threads used (to fill in the matrices)
@@ -25,12 +25,12 @@ maxHoursRamMonitor=240
 echo "Launching Julia files"
 #
 #nohup /usr/bin/time -v 
-nohup julia -p $nCores -t $nThreads "Launcher.jl" $nameFile > "Data_Output/out$nameFile"_p"$nCores"_t"$nThreads.out" &
+nohup julia -p $nCores -t $nThreads "Launcher.jl" $nameFile > "Data_Output/out_$nameFile"_p"$nCores"_t"$nThreads.out" &
 codeSimulation=$!
 #
 if [ $yesORnoMonitor == 1 ]
 then
-    nohup julia -p 1 "Resources_Monitor/Resources_Monitor.jl" $nameFile $codeSimulation $maxHoursRamMonitor > "Resources_Monitor/res_out$nameFile"_p"$nCores"_t"$nThreads.out" &
+    nohup julia -p 1 "Resources_Monitor/Resources_Monitor.jl" $nameFile $codeSimulation $maxHoursRamMonitor > "Resources_Monitor/res_out_$nameFile"_p"$nCores"_t"$nThreads.out" &
     echo "Monitoring the resources"
 fi
 #

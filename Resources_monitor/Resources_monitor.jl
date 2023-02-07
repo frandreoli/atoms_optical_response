@@ -5,7 +5,8 @@
 #
 const time_start = time()
 #@time using HDF5
-@time using Plots
+time_initialization = @timed using Plots
+println("#Initialization time: ", time_initialization[2]," seconds")
 ENV["GKSwstype"]="nul"
 
 const file_name   = ARGS[1]
@@ -13,9 +14,9 @@ const process_id  = ARGS[2]
 const max_hours   = parse(Float64,ARGS[3])
 const cmd_ram = `ps -o rss $process_id`  #const cmd_ram = `pmap $process_id`#const cmd_ram=`ps -o vsz $process_id`
 const cmd_cpu = `top -b -n 2 -d 0.2 -p $process_id`  #`ps -o psr $process_id`
-const data_filename_ram  = "Resources_Monitor/ram"*file_name
-const data_filename_cpu = "Resources_Monitor/cpu"*file_name
-const data_filename_all = "Resources_Monitor/all"*file_name
+const data_filename_ram  = "Resources_Monitor/ram_"*file_name
+const data_filename_cpu = "Resources_Monitor/cpu_"*file_name
+const data_filename_all = "Resources_Monitor/all_"*file_name
 const max_seconds   = max_hours*60.0*60.0
 const update_time   = 1
 
@@ -37,7 +38,7 @@ function h5write_save(file_name,ram_array,cpu_array,time_array)
     close(file_h5)
 end
 
-println("Starting monitoring RAM")
+println("#Starting monitoring RAM")
 while time_stamp<max_seconds
     inp=Pipe()
     out=Pipe()
@@ -68,20 +69,23 @@ while time_stamp<max_seconds
     string_out2 = String(read(out2))
     close(inp2)
     #
-    global time_stamp = time() - time_start
-    global time_array = vcat(time_array, time_stamp)
+    time_stamp = time() - time_start
+    time_array = vcat(time_array, time_stamp)
     #
     string_temp_ram=string_out
     string_temp_cpu=string_out2
-    #
     length(string_temp_ram)==0 || length(string_temp_ram)==0 ? error("Finished. Time: ", time_stamp) : nothing
     #
-    ram_final = parse(Float64, string_temp_ram)/1024^2
-    global ram_array  = vcat(ram_array,  ram_final )
+    try
+        global ram_final = parse(Float64, string_temp_ram)/1024^2
+        global cpu_final = parse(Float64, string_temp_cpu)/100
+    catch
+        println("#Finished monitoring")
+        break
+    end
     #
-    cpu_final = parse(Float64, string_temp_cpu)/100
-    global cpu_array  = vcat(cpu_array,  cpu_final )
-    #
+    ram_array  = vcat(ram_array,  ram_final )
+    cpu_array  = vcat(cpu_array,  cpu_final )
     println(ram_final,"  ",cpu_final,"  ",time_stamp)
     #
     #h5write_save(data_filename_all, ram_array,cpu_array,time_array)
@@ -93,4 +97,4 @@ while time_stamp<max_seconds
     sleep(update_time)
 end
 
-error("Run out of time")
+error("#Run out of time")

@@ -98,7 +98,7 @@ end
 #Defines the settings and the atomic positions for a series of atomic arrays
 if geometry_settings == "CUSTOM_POSITIONS"
     try
-        r_atoms = h5read(custom_pos_folder*"/"*custom_pos_file, "/"*custom_pos_variable)
+        global r_atoms = h5read(custom_pos_folder*"/"*custom_pos_file, "/"*custom_pos_variable)
     catch error_log
         println("\n\n")
         @warn "There are problems opening the file with the custom atomic positions."
