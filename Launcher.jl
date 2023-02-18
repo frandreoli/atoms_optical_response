@@ -113,8 +113,9 @@ if geometry_settings == "CUSTOM_POSITIONS"
         @error "The custom atomic positions must be saved as a Nx3 matrix, where N is the number of atoms."
     else
         custom_dim_2!=3 && custom_dim_1==3
-        transpose!(r_atoms)
+        r_atoms=transpose(r_atoms)
     end
+    n_atoms = length(r_atoms[:,1])
 end
 #
 #
