@@ -376,7 +376,7 @@ function dis_cyl_creation(r_disk,z_length,atomic_density)
   cylinder_volume = pi*r_disk^2*z_length
   n_atoms = Int(round(cylinder_volume*atomic_density))
   r_atoms = Array{Float64}(undef, n_atoms, 3)
-  uniform_sampling_cylinder!(r_atoms,n_atoms, rLength, zLength)
+  uniform_sampling_cylinder!(r_atoms,n_atoms, r_disk,z_length)
   return (r_atoms,n_atoms)
 end
 #
