@@ -119,6 +119,22 @@ if geometry_settings == "CUSTOM_POSITIONS"
 end
 #
 #
+#Defines the settings for disordered geometries
+if geometry_settings[1:3]=="DIS"
+    #
+    if geometry_settings=="DISORDERED_SPHERE"
+        volume_disordered = (4*pi*dis_r_sphere^3)/3
+    elseif geometry_settings=="DISORDERED_CYLINDER"
+        volume_disordered = (pi*dis_r_disk^2)*dis_z_length
+    elseif geometry_settings=="DISORDERED_CUBOID"
+        volume_disordered = dis_x_dim*dis_y_dim*dis_z_dim
+    else
+        @error "The disordered settings are inconsistent."
+    end
+    #
+    n_atoms = dis_atomic_density*volume_disordered
+end
+#
 time_atomic_pos=time()
 #
 #
