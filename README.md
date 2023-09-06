@@ -295,7 +295,7 @@ Andreoli F, Gullans MJ, High AA, Browaeys A, Chang DE,
  <a id="Andreoli2023a">[2]</a> 
 Andreoli F, Windt B, Grava S, Andolina GM, Gullans MJ, High AA, Chang DE, 
 *The maximum refractive index of an atomic crystal - from quantum optics to quantum chemistry*, 
-paper in preparation (2023)
+[arXiv:2303.10998](https://arxiv.org/abs/2303.10998) (2023)
 
 <a id="Andreoli2023b">[3]</a> 
 Andreoli F, High AA, Chang DE, 
