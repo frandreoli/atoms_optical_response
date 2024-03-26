@@ -75,6 +75,9 @@ The option defines the geometry of the positions of the quantum emitters. It can
 - `pos_save_option` \
 When this option is set to `YES` the simulation will save the atomic positions as a `n_repetitions` $\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of `n_repetitions` will be defined below.
 
+- `coeff_save_option` \
+When this option is set to `YES` the simulation will save the steady-state coefficients of the atomic dipoles as a `n_repetitions` $\times$ `length(laser_detunings)` $\times N$ tensor named *atomic\_coeff*, in the file *atomic\_coeff.h5*. The value and meaning of `n_repetitions` and of the array `laser_detunings` will be defined below.
+
 - `defects_fraction`\
 Given an ordered geometry (array, metalens or custom) of the atomic positions, the user can remove a fraction $0\leq$ `defects_fraction` $\leq 1$ of atoms, randomly chosen, to simulate the presence of defects in the geometrical construction.
 
