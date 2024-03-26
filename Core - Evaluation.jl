@@ -97,6 +97,8 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	end	
 	#
 	println("┕ Performance:")
+	#
+	return state_coeff
 end
 #
 #

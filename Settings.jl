@@ -43,6 +43,10 @@ const geometry_settings         =
 const pos_save_option           =      ["YES" ; "NO"][1]
 #
 #
+#If YES then the code saves the steady-state, atomic coefficients in the file: "atomic_coeff.h5"
+const coeff_save_option         =      ["YES" ; "NO"][1]
+#
+#
 #Possibility of punching defects in the arrays/metalens 
 #i.e. removing a fraction defects_fraction of randomly chosen atoms
 defects_fraction = 0.0

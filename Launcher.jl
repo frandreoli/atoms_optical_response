@@ -348,7 +348,15 @@ performance=@timed for index_repetition in 1:n_repetitions
     #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
     println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
-    @time CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    @time state_coeff = CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    #
+    if coeff_save_option == "YES"
+        if index_repetition==1
+            h5write_complex(final_path_name*"/"*results_folder_name*"/"*"atomic_coeff", add_dimension(state_coeff), "state_coeff"; open_option="w"  )
+        else
+            h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"atomic_coeff", add_dimension(state_coeff), "state_coeff")
+        end
+	end
     #
     index_repetition==n_repetitions ? println("\nCore evaluation completed. Performance of the core code: ") : nothing
 end
