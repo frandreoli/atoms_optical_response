@@ -4,7 +4,7 @@
 #
 #
 #Main Function
-function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target )
+function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target,input_field_function )
 	#
 	#
 	#INITIALIZATION AND COUPLED-DIPOLE SOLUTION:
@@ -12,7 +12,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#Green's function construction and inversion of the couple-dipole equations. 
 	#The resulting dipoles are stored in state_coeff[:,:], where the first index defines the detuning of the input light and the second the atom
 	#This is the part requiring most of the computational time/memory
-	E_field_in    =  gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3],  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+	E_field_in    =  input_field_function.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3])
 	E_field_in  .*=  conj_dot(dipoles_polarization,field_polarization)
 	state_coeff   =  CD_inversion(r_atoms, n_atoms, dipoles_polarization, E_field_in, laser_detunings)
 	#
@@ -66,34 +66,34 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	if probeXY_option=="YES"
 		tot_probe_points = probeXY_points_x*probeXY_points_y
 		r_probe =  f_probe_PLANE([0.0;0.0;0.1], probeXY_z, probeXY_points_x, probeXY_points_y, probeXY_range_x, probeXY_range_y)
-		CD_output_field_wrap("XY", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+		CD_output_field_wrap("XY", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end
 	#
 	#Second probe, plane YZ:
 	if probeYZ_option=="YES"
 		tot_probe_points = probeYZ_points_y*probeYZ_points_z
 		r_probe =  f_probe_PLANE([1.0;0.0;0.0], probeYZ_x, probeYZ_points_y, probeYZ_points_z, probeYZ_range_y, probeYZ_range_z)
-		CD_output_field_wrap("YZ", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+		CD_output_field_wrap("YZ", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end
 	#
 	#Third probe, plane XZ:
 	if probeXZ_option=="YES"
 		tot_probe_points = probeXZ_points_x*probeXZ_points_z
 		r_probe =  f_probe_PLANE([0.0;1.0;0.0], probeXZ_y, probeXZ_points_x, probeXZ_points_z, probeXZ_range_x, probeXZ_range_z)
-		CD_output_field_wrap("XZ", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+		CD_output_field_wrap("XZ", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end	
 	#
 	#Fourth probe, custom plane:
 	if probePLANE_option=="YES"
 		tot_probe_points = probePlane_points_v1*probePlane_points_v2
 		r_probe =  f_probe_PLANE(probePlane_v3_vec, probePlane_v3_value, probePlane_points_v1, probePlane_points_v2, probePlane_range_v1, probePlane_range_v2)
-		CD_output_field_wrap("PLANE", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+		CD_output_field_wrap("PLANE", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end	
 	#
 	#Fifth probe, sphere:
 	if probeSPHERE_option!="NONE"
 		r_probe = f_probe_SPHERE(probeSphere_radius,probeSphere_points,probeSPHERE_option)
-		CD_output_field_wrap("SPHERE", n_detunings, probeSphere_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+		CD_output_field_wrap("SPHERE", n_detunings, probeSphere_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end	
 	#
 	println("┕ Performance:")
@@ -231,7 +231,7 @@ end
 #
 #
 #Wrapper of the function to evaluate the field at the probe points
-function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff, field_polarization, dipoles_polarization)
+function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms,  state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	time_temp = time()
 	E_field_out_probe = Array{Complex{Float64}}(undef, 1,n_detunings, tot_probe_points, 3)
 	#Computing the field for the 3 polarizations and for each detuning
@@ -239,7 +239,7 @@ function CD_output_field_wrap(name, n_detunings, tot_probe_points, n_atoms, r_pr
 	#the second is the detuning, the third is the position of the probe, 
 	#and the fourth is the field polarization (in the basis x,y,z)
 	for det_index in 1:n_detunings
-		E_field_out_probe[1,det_index, :,:] = CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff[det_index,:], field_polarization, dipoles_polarization)
+		E_field_out_probe[1,det_index, :,:] = CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff[det_index,:], field_polarization, dipoles_polarization,input_field_function)
 	end
 	#
 	#Saving the data
@@ -252,9 +252,9 @@ end
 #
 #
 #Function to evaluate the field at the probe points
-function CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, w0, k0, laser_direction, state_coeff_here, field_polarization, dipoles_polarization)
+function CD_output_field_func(tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff_here, field_polarization, dipoles_polarization,input_field_function)
 	G_matrix_probe =  Array{Complex{TN},2}(undef, tot_probe_points, n_atoms)
-	E_field_in_at_probe = gaussian_beam.(r_probe[:,1], r_probe[:,2], r_probe[:,3], w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+	E_field_in_at_probe = input_field_function.(r_probe[:,1], r_probe[:,2], r_probe[:,3])
 	unit_vec_xyz =([1.0 ; 0.0 ; 0.0],[0.0 ; 1.0 ; 0.0],[0.0 ; 0.0 ; 1.0])
 	E_field_out_probe = Array{Complex{TN},2}(undef, tot_probe_points, 3)
 	for pol_index = 1:3

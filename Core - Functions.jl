@@ -192,6 +192,17 @@ function gaussian_beam(x_vec_start,y_vec_start, z_vec_start, w0_x, w0_y, k, lase
 end
 #
 #
+#Functions to compute the selective drive
+function selective_drive(x_vec_start,y_vec_start, z_vec_start, select_drive_pos, select_drive_radius, select_drive_E0)
+  distance_from_center = sqrt(sum(([x_vec_start ; y_vec_start ; z_vec_start] .- select_drive_pos).^2))
+  if distance_from_center<=select_drive_radius
+    return select_drive_E0
+  else
+    return 0.0
+  end
+end
+#
+#
 #
 #
 #

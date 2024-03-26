@@ -344,11 +344,20 @@ performance=@timed for index_repetition in 1:n_repetitions
         end
     end
     #
+    #Defining the input field
+    if input_field_settings == "GAUSSIAN_BEAM"
+        input_field_function(x,y,z) = gaussian_beam(x,y,z,  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+    elseif input_field_settings == "SELECTIVE_DRIVE"
+        input_field_function(x,y,z) = selective_drive(x,y,z, select_drive_pos, select_drive_radius, select_drive_E0)
+    else
+        error("The input field function is not well defined.")
+    end
+    #
     GC.gc()
     #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
     println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
-    @time atomic_coeff = CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target)
+    @time atomic_coeff = CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target, input_field_function)
     #
     if coeff_save_option == "YES"
         if index_repetition==1

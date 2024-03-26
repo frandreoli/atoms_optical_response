@@ -24,19 +24,28 @@ All lengths are calculated in units of lambda0.
 #It defines the geometry of the atomic positions                
 const geometry_settings         =      
 [
-#
-"DISORDERED_SPHERE" ;           #1
-"DISORDERED_CYLINDER" ;         #2
-"DISORDERED_CUBOID" ;           #3
-#
-"ARRAYS" ;                      #4
-#
-"METALENS" ;                    #5
-#
-"CUSTOM_POSITIONS"              #6
-#
-#Choose here below the number wanted
+    #
+    "DISORDERED_SPHERE" ;           #1
+    "DISORDERED_CYLINDER" ;         #2
+    "DISORDERED_CUBOID" ;           #3
+    #
+    "ARRAYS" ;                      #4
+    #
+    "METALENS" ;                    #5
+    #
+    "CUSTOM_POSITIONS"              #6
+    #
+    #Choose here below the number wanted
 ][5]
+#
+#
+#INPUT FIELD SETTINGS:
+#It defines the type of input light field requested.                 
+const input_field_settings      =      
+[
+    "GAUSSIAN_BEAM" ;               #1
+    "SELECTIVE_DRIVE" ;             #2
+][1]
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
@@ -110,19 +119,31 @@ const gamma_prime          =  5.75
 const inhom_broad_std      =  0.0
 #
 #
-#INPUT GAUSSIAN BEAM:
+#INPUT FIELD PROPERTIES:
 #Detuning of the light frequency with respect to the atomic resonance frequency, in units of Gamma0,
 #i.e. Delta = (omega_laser - omega0) / Gamma0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
 laser_detunings            =  [0.0] 
+#Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
+field_polarization         =  [1.0 ; 0.0 ; 0.0] 
+#
+#
+#INPUT GAUSSIAN BEAM:
 #Beam waist of the input Gaussan beam
 const w0                   =  4.0
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
 laser_direction            =  [0.0 ; 0.0 ; 1.0] 
-#Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
-field_polarization         =  [1.0 ; 0.0 ; 0.0] 
+#
+#
+#INPUT SELECTIVE DRIVE:
+#Spatial point that is selectively driven
+select_drive_pos           =  [0.0 ; 0.0 ; 0.0]
+#Radius around selective_drive_pos where the atoms are selectively driven
+const select_drive_radius  =  [ZERO_THRESHOLD, 1.0][1]
+#Field value
+const select_drive_E0      =  1.0
 #
 #
 #
