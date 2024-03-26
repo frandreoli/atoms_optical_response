@@ -355,11 +355,26 @@ performance=@timed for index_repetition in 1:n_repetitions
         error("The input field function is not well defined.")
     end
     #
+    #Defining the value of gamma_prime
+    if gamma_prime_const_option == "YES"
+        gamma_prime_func(x,y,z) = gamma_prime
+    else
+        if geometry_settings == "ARRAYS"
+            scale_gamma_prime = Gamma_coop
+        else
+            scale_gamma_prime = 1.0
+        end
+        gamma_P_R_center = [0.0;0.0;0.0]
+        gamma_P_R_cutoff = (2/3)*array_size_x[2]
+        gamma_prime_func(x,y,z) = scale_gamma_prime*gamma_prime_disk(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0,2)
+    end
+    #
+    #
     GC.gc()
     #
     println("\nStarting the repetition ", index_repetition,"/",n_repetitions,".")
     println("| Current available RAM:                      ", dig_cut((Sys.free_memory() / 2^20)/1024), " (GB)")
-    @time atomic_coeff = CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target, input_field_function)
+    @time atomic_coeff = CD_main(r_atoms_here, n_atoms_here, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target, input_field_function, gamma_prime_func)
     #
     if coeff_save_option == "YES"
         if index_repetition==1

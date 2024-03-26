@@ -203,6 +203,13 @@ function selective_drive(x_vec_start,y_vec_start, z_vec_start, select_drive_pos,
 end
 #
 #
+#Functions to compute gamma_prime
+function gamma_prime_disk(x,y,z,R_center, R_cutoff, scale, power)
+  R_value = sqrt(sum(([x ; y ; z] .- R_center).^2))
+  scale*((R_value-R_cutoff)/(R_cutoff/2))^power
+end
+#
+#
 #
 #
 #

@@ -4,7 +4,7 @@
 #
 #
 #Main Function
-function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target,input_field_function )
+function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dipoles_polarization, field_polarization, w0_target, z0_target,input_field_function, gamma_prime_func )
 	#
 	#
 	#INITIALIZATION AND COUPLED-DIPOLE SOLUTION:
@@ -14,7 +14,8 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#This is the part requiring most of the computational time/memory
 	E_field_in    =  input_field_function.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3])
 	E_field_in  .*=  conj_dot(dipoles_polarization,field_polarization)
-	state_coeff   =  CD_inversion(r_atoms, n_atoms, dipoles_polarization, E_field_in, laser_detunings)
+	gamma_prime_array = gamma_prime_func.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3])
+	state_coeff   =  CD_inversion(r_atoms, n_atoms, dipoles_polarization, E_field_in, laser_detunings, gamma_prime_array)
 	#
 	GC.safepoint()
 	#
@@ -113,11 +114,11 @@ end
 #
 #
 #Function to invert the coupled-dipole equations
-function CD_inversion(r_atoms, n_atoms,dipoles_polarization,E_field_in, laser_detunings)
+function CD_inversion(r_atoms, n_atoms,dipoles_polarization,E_field_in, laser_detunings, gamma_prime_array)
 	n_detunings = length(laser_detunings)
 	CD_green_matrix  =  Array{Complex{TN},2}(undef, n_atoms, n_atoms)
 	time_temp=time()
-	CD_initialize!(CD_green_matrix, r_atoms, dipoles_polarization)
+	CD_initialize!(CD_green_matrix, r_atoms, dipoles_polarization, gamma_prime_array)
     println("| Green's matrix initialized in               ", dig_cut(time()-time_temp)," seconds")
 	#
 	time_temp=time()
@@ -132,7 +133,7 @@ end
 #
 #
 #Function to fill the green tensor for the SM
-function CD_initialize!(CD_green_matrix, r_vecs, p)
+function CD_initialize!(CD_green_matrix, r_vecs, p, gamma_prime_array)
     na = length(r_vecs[:,1])
 	r_vecs_x = r_vecs[:,1].*k0
 	r_vecs_y = r_vecs[:,2].*k0
@@ -162,7 +163,7 @@ function CD_initialize!(CD_green_matrix, r_vecs, p)
 		to_add=0.0+0.0im
 		#Value of the Greens's function
 		if i==j
-			to_add+=-(0.5im*(1+gamma_prime)) + inhom_broad_here
+			to_add+=-(0.5im*(1+gamma_prime_array[i])) + inhom_broad_here
 		else
 			x = x_i-x_j
 			y = y_i-y_j

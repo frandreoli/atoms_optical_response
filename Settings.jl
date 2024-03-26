@@ -56,6 +56,10 @@ const pos_save_option           =      ["YES" ; "NO"][1]
 const coeff_save_option         =      ["YES" ; "NO"][1]
 #
 #
+#If YES then the code assumes that gamma_prime is constant, otherwise it implements gamma_prime_function(x,y,z)
+const gamma_prime_const_option  =      ["YES" ; "NO"][1]
+#
+#
 #Possibility of punching defects in the arrays/metalens 
 #i.e. removing a fraction defects_fraction of randomly chosen atoms
 defects_fraction = 0.0
