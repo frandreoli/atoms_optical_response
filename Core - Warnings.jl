@@ -152,3 +152,14 @@ if no_randomness_option && n_repetitions>1
     @warn "There are no randomly chosen parameters.\nThere is no reason to repeat the simulation multiple times.\nSetting n_repetitions=1."
     n_repetitions = 1
 end
+#
+#
+#Consistency of the symmetry option
+if mirror_symmetry_option=="YES" && geometry_settings=="ARRAYS"
+    central_pos_x = sum(l_system_x)/2.0
+    central_pos_y = sum(l_system_y)/2.0
+    if abs(central_pos_x)>ZERO_THRESHOLD || abs(central_pos_y)>ZERO_THRESHOLD
+        @warn "The mirror_symmetry_option is incompatible with transversely shifted arrays. Setting mirror_symmetry_option=NO"
+        mirror_symmetry_option = "NO"
+    end
+end

@@ -132,8 +132,8 @@ function arrays_creation(m_planes, xi_x,xi_y,xi_z,array_size_x,array_size_y)
     #Lattice properties
     l_system_x = abs(sum(array_size_x.*[-1;1]))
     l_system_y = abs(sum(array_size_y.*[-1;1]))
-	naX = Int(floor(2*l_system_x/xi_x))+1
-    naY = Int(floor(2*l_system_y/xi_x))+1
+	naX = Int(floor(l_system_x/xi_x))+1
+    naY = Int(floor(l_system_y/xi_x))+1
     #
     #Shift to complain to mirror symmetry
 	boundX=array_boundaries(naX)
@@ -154,8 +154,10 @@ function arrays_creation(m_planes, xi_x,xi_y,xi_z,array_size_x,array_size_y)
     #Saving the positions
     r_atoms = Array{Float64}(undef, length(lattice_array), 3)
 	n_atoms = length(lattice_array)
+    central_pos_x = sum(l_system_x)/2.0
+    central_pos_y = sum(l_system_y)/2.0
 	for i in 1:n_atoms
-		r_atoms[i,:]= lattice_array[i]
+		r_atoms[i,:]= lattice_array[i] .+ [central_pos_x; central_pos_y; 0.0]
 	end
     #
 	return (r_atoms, n_atoms)

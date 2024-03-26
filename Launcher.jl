@@ -172,8 +172,8 @@ end
 #
 file_name*="_w"*string(w0)[1:min(length(string(w0)),3)]
 #
-gamma_prime>0      ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
-inhom_broad_std>0  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
+gamma_prime>0 && gamma_prime_const_option=="YES"   ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
+inhom_broad_std>0                                  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
 #
 #Only if a metalens is computed
 if geometry_settings == "METALENS" 
@@ -348,16 +348,16 @@ performance=@timed for index_repetition in 1:n_repetitions
     #
     #Defining the input field
     if input_field_settings == "GAUSSIAN_BEAM"
-        input_field_function(x,y,z) = gaussian_beam(x,y,z,  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
+        input_field_function = (x,y,z) -> gaussian_beam(x,y,z,  w0, w0, k0, laser_direction[1], laser_direction[2], laser_direction[3])
     elseif input_field_settings == "SELECTIVE_DRIVE"
-        input_field_function(x,y,z) = selective_drive(x,y,z, select_drive_pos, select_drive_radius, select_drive_E0)
+        input_field_function = (x,y,z) -> selective_drive(x,y,z, select_drive_pos, select_drive_radius, select_drive_E0)
     else
         error("The input field function is not well defined.")
     end
     #
     #Defining the value of gamma_prime
     if gamma_prime_const_option == "YES"
-        gamma_prime_func(x,y,z) = gamma_prime
+        gamma_prime_func = (x,y,z) -> gamma_prime
     else
         if geometry_settings == "ARRAYS"
             scale_gamma_prime = Gamma_coop
@@ -366,7 +366,7 @@ performance=@timed for index_repetition in 1:n_repetitions
         end
         gamma_P_R_center = [0.0;0.0;0.0]
         gamma_P_R_cutoff = (2/3)*array_size_x[2]
-        gamma_prime_func(x,y,z) = scale_gamma_prime*gamma_prime_disk(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0,2)
+        gamma_prime_func = (x,y,z) -> scale_gamma_prime*gamma_prime_disk(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0,2)
     end
     #
     #
