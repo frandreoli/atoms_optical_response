@@ -72,6 +72,9 @@ Here, we describe the generic settings that can be implemented in the code.
 - `geometry_settings` \
 The option defines the geometry of the positions of the quantum emitters. It can be set to three *disordered* geometries `"DISORDERED_SPHERE"`, `"DISORDERED_CYLINDER"` and `"DISORDERED_CUBOID"`, whose choice will randomly sample the positions from a uniform distribution inside the selected shape. When setting it to `"ARRAYS"` the emitters are arranged on a 3D lattice composed of many arrays in a row, whose number, size, lattice constants and distance can be later set. The choice of `"METALENS"` arranges the emitter position to form a three-layer atomic metalens (further information can be found in [[3](#Andreoli2023b)]). Finally, by selecting `"CUSTOM_POSITIONS"` the user can feed the simulation with its own set of emitter positions (in the 3D space), which must be formatted as a $N\times 3$ matrix and saved in a *.h5* file (HDF5 format) whose name can be later selected.
 
+- `input_field_settings` \
+The option defines the type of input field that drives the atomic medium. The choice of `"GAUSSIAN_BEAM"` defines it as a Gaussian beam illuminating the system, whose properties can be set, as described below. Otherwise, the choice of `"SELECTIVE_DRIVE"` defines the input field as an hypothetical field that only illuminates atoms within a radius `select_drive_radius` from the position `select_drive_pos`.
+
 - `pos_save_option` \
 When this option is set to `YES` the simulation will save the atomic positions as a `n_repetitions` $\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of `n_repetitions` will be defined below.
 
