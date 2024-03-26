@@ -170,7 +170,11 @@ if small_disorder_std>0.0
     file_name*="_posShifts"
 end
 #
-file_name*="_w"*string(w0)[1:min(length(string(w0)),3)]
+if input_field_settings ==  "GAUSSIAN_BEAM"
+    file_name*="_w"*string(w0)[1:min(length(string(w0)),3)]
+else
+    file_name*="_SelectDriven"
+end
 #
 gamma_prime>0 && gamma_prime_const_option=="YES"   ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
 inhom_broad_std>0                                  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing

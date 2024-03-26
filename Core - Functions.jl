@@ -328,7 +328,8 @@ end
 #
 #Adding a dummy dimension to a matrix
 function add_dimension(matrix)
-  matrix_temp = Array{Float64}(undef, 1, length(matrix[:,1]), length(matrix[1,:]) )
+  type_elements = typeof(matrix[1])
+  matrix_temp = Array{type_elements}(undef, 1, length(matrix[:,1]), length(matrix[1,:]) )
 	matrix_temp[1,:,:] = matrix[:,:]
   matrix_temp
 end
