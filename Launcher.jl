@@ -370,8 +370,12 @@ performance=@timed for index_repetition in 1:n_repetitions
         else
             scale_gamma_prime = 1.0
         end
-        gamma_P_R_center = [0.0;0.0;0.0]
-        gamma_P_R_cutoff = (2/3)*array_size_x[2]
+        if input_field_settings == "SELECTIVE_DRIVE"
+            gamma_P_R_center = select_drive_pos
+        else
+            gamma_P_R_center = [0.0;0.0;0.0]
+        end
+        gamma_P_R_cutoff = (2/3)*maximum(vcat(array_size_x,array_size_y))
         gamma_prime_func = (x,y,z) -> scale_gamma_prime*gamma_prime_disk(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0,2)
     end
     #
