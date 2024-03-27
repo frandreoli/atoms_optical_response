@@ -149,7 +149,10 @@ time_atomic_pos=time()
 #
 #
 #Defines the filename, by adding labels identifying the user choices of parameters for the simulation
-length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[name_simulation] 
+now_time = now()
+string_time = replace(string(Time(now_time))[1:8],":"=>".")
+string_date ="d"*string(Date(now_time))*"_"*string_time
+length(ARGS)>=1 ? args_checked=ARGS[:] : args_checked=[string_date*name_simulation] 
 if mirror_symmetry_option == "NO" 
     file_name="_nAtoms"*string(Int(round(n_atoms*(1-defects_fraction))))
 elseif geometry_settings[1:3]!="DIS"
@@ -204,8 +207,6 @@ if geometry_settings == "ARRAYS"
 end
 #
 mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
-now_time = now()
-file_name*="_D"*string(Date(now_time))*"_T"*string(Time(now_time))[1:8]#"_"*string(Dates.today())
 file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
 #
