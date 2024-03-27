@@ -206,7 +206,11 @@ end
 #Functions to compute gamma_prime
 function gamma_prime_disk(x,y,z,R_center, R_cutoff, scale, power)
   R_value = sqrt(sum(([x ; y ; z] .- R_center).^2))
-  scale*((R_value-R_cutoff)/(R_cutoff/2))^power
+  if R_value<=R_cutoff
+    return 0.0
+  else
+    return scale*((R_value-R_cutoff)/(R_cutoff/2))^power
+  end
 end
 #
 #
