@@ -86,7 +86,7 @@ if geometry_settings == "ARRAYS"
     end
     #Shifting the detuning if the option is on
     if array_omega_coop_option=="YES"
-        laser_detunings .= laser_detunings .- omega_coop 
+        laser_detunings .= laser_detunings .+ omega_coop 
     end
     #
     #Creation of the atomic positions
@@ -204,7 +204,8 @@ if geometry_settings == "ARRAYS"
 end
 #
 mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
-file_name*="_"*string(Dates.today())
+now_time = now()
+file_name*="_D"*string(Date(now_time))*"_T"*string(Time(now_time))[1:8]#"_"*string(Dates.today())
 file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
 #
@@ -219,7 +220,7 @@ file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
 #
 #Starting the evaluation
-println("\n\nTime: ",now(),"\nStarting evaluation of ", @__FILE__)
+println("\n\nTime: ",now_time,"\nStarting evaluation of ", @__FILE__)
 println("Output file name: ",file_name,"\n")
 final_path_name="Data_Output/"*file_name*"/"
 mkpath(final_path_name)

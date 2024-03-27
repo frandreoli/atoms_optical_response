@@ -5,6 +5,7 @@
 #
 #Name of the simulation
 nameFile="EXAMPLE"
+dateString=$(date +'%d-%m-%Y_%H.%M.%S')
 #Number of cores used (for matrix inversion, max 32)
 nCores=32
 #Number of threads used (to fill in the matrices)
@@ -25,7 +26,7 @@ maxHoursRamMonitor=240
 echo "Launching Julia files"
 #
 #nohup /usr/bin/time -v 
-nohup julia -p $nCores -t $nThreads "Launcher.jl" $nameFile > "Data_Output/out_$nameFile"_p"$nCores"_t"$nThreads.out" &
+nohup julia -p $nCores -t $nThreads "Launcher.jl" $nameFile > "Data_Output/out_$nameFile"_p"$nCores"_t"$nThreads"_d"$dateString.out" &
 codeSimulation=$!
 #
 if [ $yesORnoMonitor == 1 ]
