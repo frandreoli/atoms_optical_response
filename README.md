@@ -73,7 +73,7 @@ Here, we describe the generic settings that can be implemented in the code.
 The option defines the geometry of the positions of the quantum emitters. It can be set to three *disordered* geometries `"DISORDERED_SPHERE"`, `"DISORDERED_CYLINDER"` and `"DISORDERED_CUBOID"`, whose choice will randomly sample the positions from a uniform distribution inside the selected shape. When setting it to `"ARRAYS"` the emitters are arranged on a 3D lattice composed of many arrays in a row, whose number, size, lattice constants and distance can be later set. The choice of `"METALENS"` arranges the emitter position to form a three-layer atomic metalens (further information can be found in [[3](#Andreoli2023b)]). Finally, by selecting `"CUSTOM_POSITIONS"` the user can feed the simulation with its own set of emitter positions (in the 3D space), which must be formatted as a $N\times 3$ matrix and saved in a *.h5* file (HDF5 format) whose name can be later selected.
 
 - `input_field_settings` \
-The option defines the type of input field that drives the atomic medium. The choice of `"GAUSSIAN_BEAM"` defines it as a Gaussian beam illuminating the system, whose properties can be set, as described below. Otherwise, the choice of `"SELECTIVE_DRIVE"` defines the input field as an hypothetical field that only illuminates atoms within a radius `select_drive_radius` from the position `select_drive_pos`.
+The option defines the type of input field that drives the atomic medium. The choice of `"GAUSSIAN_BEAM"` defines it as a Gaussian beam illuminating the system, whose properties can be set, as described below. Otherwise, the choice of `"SELECTIVE_DRIVE"` defines the input field as an hypothetical field that only illuminates atoms within a radius `select_drive_radius` from the position `select_drive_pos` (see below).
 
 - `pos_save_option` \
 When this option is set to `YES` the simulation will save the atomic positions as a `n_repetitions` $\times N\times 3$ tensor named *r\_atoms*, in the file *atomic\_positions.h5*. The value and meaning of `n_repetitions` will be defined below.
@@ -111,14 +111,19 @@ It defines the dipole matrix element $\hat{\mathbf{d}}\_0$ of the quantum emitte
 - `gamma_prime`\
 It defines the inelastic scattering rate $\Gamma'$, which quantifies the energy losses from the standpoint of the optical linear response.
 
-
 - `inhom_broad_std`\
 The user can opt for the atoms to have their resonant frequency $\omega\_0$ randomly shifted, by sampling (for each atom) from a Gaussian distribution of mean value $\omega\_0$ and standard deviation `inhom_broad_std` (in units of $\Gamma\_0$). This addresses the possibility of inhomogeneous broadening. If `inhom_broad_std = 0.0`, then all atoms have the same resonant frequency $\omega\_0$.
 
-#### 2.1.2.1 - Input Gaussian beam
+#### 2.1.2.1 - Input Field
+These options below are associated to the input field. First we discuss some generic options, and then those uniquely related to the choice of either `input_field_settings = "GAUSSIAN_BEAM"` or `input_field_settings = "SELECTIVE_DRIVE"`.
 
 - `laser_detunings`\
-Artay that defines the dimensionless detuning $\Delta=(\omega-\omega\_0)/\Gamma\_0$ between the frequency of the input beam $\omega$ and the resonance frequency $\omega\_0$, in units of $\Gamma_0$. Many values can be added, in the form `laser_detunings = [value_1 ; value_2 ; value_3 ...]`, and the results will be calculated for each of them
+Artay that defines the dimensionless detuning $\Delta=(\omega-\omega\_0)/\Gamma\_0$ between the frequency of the input field $\omega$ and the resonance frequency $\omega\_0$, in units of $\Gamma_0$. Many values can be added, in the form `laser_detunings = [value_1 ; value_2 ; value_3 ...]`, and the results will be calculated for each of them.
+
+- `field_polarization`\
+Polarization of the input field (unit vector with the same structure of `dipoles_polarization`).
+
+##### 2.1.2.1.1 - Input Gaussian beam
 
 - `w0`\
 Beam waist of the input Gaussian beam. For the paraxial approximation to be fully valid, one must have $w\_0\gtrsim 1$ (all in units of $\lambda\_0$).
@@ -126,8 +131,16 @@ Beam waist of the input Gaussian beam. For the paraxial approximation to be full
 - `laser_direction`\
 Direction of propagation of the input Gaussian beam (unit vector with the same structure of `dipoles_polarization`).
 
-- `field_polarization`\
-Polarization of the input Gaussian beam (unit vector with the same structure of `dipoles_polarization`).
+##### 2.1.2.1.2 - Selective drive
+
+- `select_drive_pos`\
+Real-space position where the atoms are selectively driven.
+
+- `select_drive_radius`\
+Radius of space around `select_drive_pos` where the atoms are uniformly, selectively driven. Setting `select_drive_radius = ZERO_THRESHOLD` means that only if the atom is exactly at `select_drive_pos` then it is driven.
+
+- `select_drive_E0`\
+Value of the uniform field that selectively drives the atoms.
 
 
 ### 2.1.3 - Probe settings
