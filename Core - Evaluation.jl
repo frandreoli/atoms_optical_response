@@ -76,7 +76,7 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#Second probe, plane YZ:
 	if probeYZ_option=="YES"
 		tot_probe_points = probeYZ_points_y*probeYZ_points_z
-		r_probe =  f_probe_PLANE([1.0;0.0;0.0], probeYZ_x, probeYZ_points_y, probeYZ_points_z, probeYZ_range_y, probeYZ_range_z)
+		r_probe =  f_probe_PLANE([1.0;0.0;0.0], -probeYZ_x, probeYZ_points_y, probeYZ_points_z, probeYZ_range_y, probeYZ_range_z)
 		CD_output_field_wrap("YZ", n_detunings, tot_probe_points, n_atoms, r_probe, r_atoms, state_coeff, field_polarization, dipoles_polarization,input_field_function)
 	end
 	#

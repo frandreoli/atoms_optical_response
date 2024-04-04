@@ -38,7 +38,7 @@ const geometry_settings         =
     "CHAIN"                         #7
     #
     #Choose here below the number wanted
-][7]
+][1]
 #
 #
 #INPUT FIELD SETTINGS:
@@ -136,7 +136,7 @@ const inhom_broad_std      =  0.0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
-laser_detunings            =  [-2.18103] 
+laser_detunings            =  [-2.18103]#[-16.8608]#
 #Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
 field_polarization         =  [1.0 ; 0.0 ; 0.0] 
 #
@@ -171,13 +171,13 @@ const select_drive_E0      =  1.0
 #If probeXY_option = "NO" then this probe is not computed
 probeXY_option        =   ["YES" ; "NO"][1]
 #Distance (in the z direction) between the atoms, centered at (x,y,z)=(0,0,0), and the XY probe plane
-probeXY_z             =   20
+probeXY_z             =   0
 #Number of different probe coordinates in the x direction 
-probeXY_points_x      =   250
+probeXY_points_x      =   150
 #Number of different probe coordinates in the y direction 
-probeXY_points_y      =   250
+probeXY_points_y      =   150
 #Size of the probe rectangle in the x direction, in the form [min_x ; max_x]
-probeXY_range_x       =   [-1 ; 1].*10
+probeXY_range_x       =   [-1 ; 1].*40
 #Size of the probe rectangle in the y direction, in the form [min_y ; max_y]
 probeXY_range_y       =   [-1 ; 1].*10
 #
@@ -186,11 +186,11 @@ probeXY_range_y       =   [-1 ; 1].*10
 #If probeYZ_option = "NO" then this probe is not computed
 #The meaning of the variables is analogous to above
 probeYZ_option        =   ["YES" ; "NO"][1]
-probeYZ_x             =   0
-probeYZ_points_y      =   50
-probeYZ_points_z      =   100
+probeYZ_x             =   35
+probeYZ_points_y      =   150
+probeYZ_points_z      =   150
 probeYZ_range_y       =   [-1 ; 1].*10
-probeYZ_range_z       =   [-1 ; 1].*20
+probeYZ_range_z       =   [-1 ; 1].*10
 #
 #
 #Settings for the probe points in the XZ plane. 
@@ -198,10 +198,10 @@ probeYZ_range_z       =   [-1 ; 1].*20
 #The meaning of the variables is analogous to above
 probeXZ_option        =   ["YES" ; "NO"][1]
 probeXZ_y             =   0
-probeXZ_points_x      =   50
-probeXZ_points_z      =   100
-probeXZ_range_x       =   [-1 ; 1].*10
-probeXZ_range_z       =   [-1 ; 1].*20
+probeXZ_points_x      =   150
+probeXZ_points_z      =   150
+probeXZ_range_x       =   [-1 ; 1].*40
+probeXZ_range_z       =   [-1 ; 1].*10
 #
 #
 #Settings for the probe points in the plane perpendicular to a custom vector probePlane_v1_vec. 
@@ -213,7 +213,7 @@ probePlane_v3_value   =   0
 probePlane_points_v1  =   50
 probePlane_points_v2  =   50
 probePlane_range_v1   =   [-1 ; 1].*10
-probePlane_range_v2   =   [-1 ; 1].*10
+probePlane_range_v2   =   [-1 ; 1].*20
 #
 #
 #Settings for the probe points in a sphere or hemisphere surrounding the atomic cloud. If probeSPHERE_option = "NONE" then this probe is not computedd
@@ -358,7 +358,7 @@ if geometry_settings == "CHAIN"
     chain_xi = 0.1
     #
     #Size of the array
-    chain_size = [0.0;5.0]
+    chain_size = [0.0;30.0]
     #
     #Rotation angles. 
     #The direction is defined as 
@@ -454,5 +454,5 @@ end
 #
 #Definition of the strain settings in case strain_option == "CHAIN"
 strain_final_xi = 0.2
-strain_start_end = [20 ; 40]
+strain_start_end = [200 ; 300]
 strain_power_law = 2
