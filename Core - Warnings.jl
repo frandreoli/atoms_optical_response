@@ -170,3 +170,12 @@ if strain_option=="CHAIN" && geometry_settings!="CHAIN"
     @warn "The strain_option cannot be set to CHAIN when the geometry_settings is not set to CHAIN. \nSetting strain_option=NONE."
     strain_option = "NONE"
 end
+#
+#
+#Checking the normalize_target_option
+if geometry_settings == "METALENS"
+    if default_target_option=="YES"
+        @warn "Due to default_target_option=YES, the option normalize_target_option is changed to YES."
+        normalize_target_option = "YES"
+    end
+end
