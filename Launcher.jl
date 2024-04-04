@@ -47,6 +47,7 @@ if geometry_settings == "METALENS"
     #
     if default_target_option=="YES"
         (w0_target, z0_target) = ideal_beam(w0, k0, focal_length)
+        @warn "Due to default_target_option=YES, the option normalize_target_option is changed to YES."
         normalize_target_option = "YES"
     end
     #

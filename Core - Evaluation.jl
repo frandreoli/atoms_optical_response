@@ -31,18 +31,21 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#
 	#CALCULATES THE TRANSMISSION/REFLECTION INTO INPUT AND TARGET MODES:
 	#
-	#Calculates the projection onto the same Gaussian mode as the input
 	time_t_and_r = time()
-	t_in = Array{Complex{TN}}(undef,1,n_detunings)
-	r_in = Array{Complex{TN}}(undef,1,n_detunings)
-	for i in 1:n_detunings
-		(t_in[1,i], r_in[1,i]) = CD_t_r_func(E_field_in, w0, 0.0, state_coeff[i,:],atoms_mult, w0)
+	#
+	#Calculates the projection onto the same Gaussian mode as the input
+	if input_field_settings=="GAUSSIAN_BEAM"
+		t_in = Array{Complex{TN}}(undef,1,n_detunings)
+		r_in = Array{Complex{TN}}(undef,1,n_detunings)
+		for i in 1:n_detunings
+			(t_in[1,i], r_in[1,i]) = CD_t_r_func(E_field_in, w0, 0.0, state_coeff[i,:],atoms_mult, w0)
+		end
+		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_in, "t_in")
+		h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_in, "r_in")
 	end
-	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", t_in, "t_in")
-	h5write_complex_append(final_path_name*"/"*results_folder_name*"/"*"t_and_r", r_in, "r_in")
 	#
 	#Computes the transmission by projecting onto the target Gaussian beam
-	if target_beam_option == "YES"
+	if target_beam_option == "YES" && input_field_settings=="GAUSSIAN_BEAM"
 		#Calculates the target Gaussian mode at the atomic positions
 		E_field_target        = gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3].-z0_target,  w0_target, w0_target, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 		E_field_target      .*= conj_dot(dipoles_polarization,field_polarization)

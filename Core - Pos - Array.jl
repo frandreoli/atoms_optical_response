@@ -154,8 +154,8 @@ function arrays_creation(m_planes, xi_x,xi_y,xi_z,array_size_x,array_size_y)
     #Saving the positions
     r_atoms = Array{Float64}(undef, length(lattice_array), 3)
 	n_atoms = length(lattice_array)
-    central_pos_x = sum(l_system_x)/2.0
-    central_pos_y = sum(l_system_y)/2.0
+    central_pos_x = sum(array_size_x)/2.0
+    central_pos_y = sum(array_size_y)/2.0
 	for i in 1:n_atoms
 		r_atoms[i,:]= lattice_array[i] .+ [central_pos_x; central_pos_y; 0.0]
 	end
