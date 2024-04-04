@@ -95,7 +95,7 @@ end
 #
 #Consistency of w0
 if w0<1
-    @warn "For the paraxial approximation to be fully valid a regime of w0>=1 is preferable."
+    @warn "For the paraxial approximation to be fully valid, a regime of w0>=1 is preferable."
 end
 #
 #
@@ -178,4 +178,17 @@ if geometry_settings == "METALENS"
         @warn "Due to default_target_option=YES, the option normalize_target_option is changed to YES."
         normalize_target_option = "YES"
     end
+end
+#
+#  
+#
+#Fixing the options to constants
+const strain_option_const                 =  strain_option
+const mirror_symmetry_option_const        =  mirror_symmetry_option
+const target_beam_option_const            =  target_beam_option
+const normalize_target_option_const       =  normalize_target_option
+if geometry_settings == "METALENS"
+    const z_fixed_option_const            =  z_fixed_option
+    const z_fixed_buffer_option_const     =  z_fixed_buffer_option
+    const phase_center_ring_option_const  =  phase_center_ring_option
 end

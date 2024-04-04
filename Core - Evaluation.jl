@@ -19,8 +19,8 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	#
 	GC.safepoint()
 	#
-	#If mirror_symmetry_option=="YES" then each atoms counts as well for its mirrored positions. The variable atoms_mult accounts for that 
-	if mirror_symmetry_option=="YES"
+	#If mirror_symmetry_option_const=="YES" then each atoms counts as well for its mirrored positions. The variable atoms_mult accounts for that 
+	if mirror_symmetry_option_const=="YES"
 		atoms_mult = [2*Int(abs(r_atoms[i,1])>ZERO_THRESHOLD)+2*Int(abs(r_atoms[i,2])>ZERO_THRESHOLD) for i in 1:n_atoms]
 	else
 		atoms_mult = [1 for i in 1:n_atoms]
@@ -45,11 +45,11 @@ function CD_main(r_atoms, n_atoms, w0, k0, laser_direction, laser_detunings, dip
 	end
 	#
 	#Computes the transmission by projecting onto the target Gaussian beam
-	if target_beam_option == "YES" && input_field_settings=="GAUSSIAN_BEAM"
+	if target_beam_option_const == "YES" && input_field_settings=="GAUSSIAN_BEAM"
 		#Calculates the target Gaussian mode at the atomic positions
 		E_field_target        = gaussian_beam.(r_atoms[:,1],  r_atoms[:,2],  r_atoms[:,3].-z0_target,  w0_target, w0_target, k0, laser_direction[1], laser_direction[2], laser_direction[3])
 		E_field_target      .*= conj_dot(dipoles_polarization,field_polarization)
-		if normalize_target_option=="YES"
+		if normalize_target_option_const=="YES"
 			E_field_target  .*= (w0/w0_target)*exp(2.0im*pi*z0_target)
 		end
 		#Calculates the projection onto the target Gaussian mode
@@ -142,13 +142,13 @@ function CD_initialize!(CD_green_matrix, r_vecs, p, gamma_prime_array)
 	r_vecs_y = r_vecs[:,2].*k0
 	r_vecs_z = r_vecs[:,3].*k0
 	#Total number of steps
-	#If mirror_symmetry_option == "YES" then the matrix is not symmetric anymore for those atoms belonging to one of the axes
-	mirror_symmetry_option == "YES" ? n_steps = na^2 : n_steps =Int((na^2 + na)/2)
+	#If mirror_symmetry_option_const == "YES" then the matrix is not symmetric anymore for those atoms belonging to one of the axes
+	mirror_symmetry_option_const == "YES" ? n_steps = na^2 : n_steps =Int((na^2 + na)/2)
 	#The core part is constructed as a single cycle loop to make the parallelization in threads faster
 	#The code is structured not to require the loading of external functions, to boost the parallelization efficiency
 	Threads.@threads for index in  1:n_steps
 		#Constructing two indices from a single index
-		if mirror_symmetry_option == "YES"
+		if mirror_symmetry_option_const == "YES"
 			i = Int(floor(  (index-1)/na  )) + 1
 			j = Int( index-(i-1)*na)
 		else
@@ -175,8 +175,8 @@ function CD_initialize!(CD_green_matrix, r_vecs, p, gamma_prime_array)
 			to_add+=-(3*exp(im*r)/(4*r^3)*((r^2 + im*r - 1)*1+(3 - r^2 - 3im*r)*cos_theta_square/r^2))
 		end
 		#
-		#The following steps apply only if mirror_symmetry_option == "YES"
-		if mirror_symmetry_option == "YES"
+		#The following steps apply only if mirror_symmetry_option_const == "YES"
+		if mirror_symmetry_option_const == "YES"
 			#Second step
 			if abs(x_j)>ZERO_THRESHOLD
 				x = x_i+x_j
@@ -203,8 +203,8 @@ function CD_initialize!(CD_green_matrix, r_vecs, p, gamma_prime_array)
 			end
 		end
 		#
-		#If mirror_symmetry_option == "YES" then the matrix is not symmetric anymore, due to those atoms belonging to one of the axes
-		if mirror_symmetry_option == "YES"
+		#If mirror_symmetry_option_const == "YES" then the matrix is not symmetric anymore, due to those atoms belonging to one of the axes
+		if mirror_symmetry_option_const == "YES"
 			CD_green_matrix[i, j] = Complex{TN}(to_add) 
 		else
 			CD_green_matrix[i, j] = CD_green_matrix[j, i] = Complex{TN}(to_add)
@@ -315,8 +315,8 @@ function CD_initialize_probe!(CD_green_matrix_probe, r_vecs1, r_vecs2, p1,p2)
 		cos_theta_square=(p1[1]*x+p1[2]*y+p1[3]*z)*(p2[1]*x+p2[2]*y+p2[3]*z)
 		to_add+=(3*exp(im*r)/(4*r^3)*((r^2 + im*r - 1)*p_dot+(3 - r^2 - 3im*r)*cos_theta_square/r^2))
 		#
-		#The following steps apply only if mirror_symmetry_option == "YES"
-		if mirror_symmetry_option == "YES"
+		#The following steps apply only if mirror_symmetry_option_const == "YES"
+		if mirror_symmetry_option_const == "YES"
 			#Second step
 			if abs(x_j)>ZERO_THRESHOLD
 				x = x_i+x_j

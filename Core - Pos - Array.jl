@@ -146,7 +146,7 @@ function arrays_creation(m_planes, xi_x,xi_y,xi_z,array_size_x,array_size_y)
     #Lattice creation
 	lattice_array=[[(i + xOption/2)*xi_x; (j + yOption/2)*xi_y ; (k + zOption/2)*xi_z] for j in boundY[1]:boundY[2] for i in boundX[1]:boundX[2] for k in boundZ[1]:boundZ[2]]
 	#
-    if mirror_symmetry_option == "YES"
+    if mirror_symmetry_option_const == "YES"
         selected_positions = (x->(x[1]>=0.0 && x[2]>=0.0)).(lattice_array)
         lattice_array = lattice_array[selected_positions]
     end

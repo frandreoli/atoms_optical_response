@@ -105,7 +105,7 @@ n_repetitions = 1
 #INITIALIZATION PARAMETERS:
 #Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
 #If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
-name_simulation = "DEFAULT"
+const name_simulation = "DEFAULT"
 #Maximum RAM available for the computation (in GB)
 RAM_GB_max = 450
 #
@@ -143,7 +143,7 @@ field_polarization         =  [1.0 ; 0.0 ; 0.0]
 #
 #INPUT GAUSSIAN BEAM:
 #Beam waist of the input Gaussan beam
-w0                   =  4.0
+const w0                   =  2.0
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
 laser_direction            =  [0.0 ; 0.0 ; 1.0] 
 #
@@ -152,9 +152,9 @@ laser_direction            =  [0.0 ; 0.0 ; 1.0]
 #Spatial point that is selectively driven
 select_drive_pos           =  [0.0 ; 0.0 ; 0.0]
 #Radius around selective_drive_pos where the atoms are selectively driven
-select_drive_radius  =  [ZERO_THRESHOLD, 1.0][1]
+const select_drive_radius  =  [ZERO_THRESHOLD, 1.0][1]
 #Field value
-select_drive_E0      =  1.0
+const select_drive_E0      =  1.0
 #
 #
 #
@@ -225,7 +225,7 @@ probeSphere_points    =   10000
 #If target_beam_option=="YES" then the code calculates the projection of the output field onto a target Gaussian beam.
 #This has the same direction and polarization of the input Gaussian beam, but can 
 #have different waist w0_target and different focal point z0_target. 
-target_beam_option    =   ["YES" ; "NO"][1] 
+target_beam_option          =   ["YES" ; "NO"][1] 
 w0_target                   =   2*w0
 z0_target                   =   10
 #If norm_target_option == "YES" then this target beam is multiplied by (w0/w0_target)*exp(im*k0*z0_target), 
@@ -249,15 +249,15 @@ if geometry_settings == "METALENS"
     #
     #METALENS PARAMETERS:
     #Focal length f
-    focal_length              =    20
+    const focal_length              =    20
     #Total radius of the metalens
-    r_lens                	=    10.5
+    r_lens                      	=    10.5
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    disks_width               =    7.0/10.5
+    disks_width                     =    7.0/10.5
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
-    buffer_smooth     	    =    0.2
+    buffer_smooth     	            =    0.2
     #Value of the phase shift at the center of the metalens, i.e. phi_0
-    phase_shift               =    1.0775
+    const phase_shift               =    1.0775
     #
     #
     #METALENS OPTIONS:
@@ -370,7 +370,7 @@ if geometry_settings == "CHAIN"
     #CUSTOM: keeps the value of dipoles_polarization defined above
     #INLINE: the atoms are polarized along chain_direction
     #OUTLINE: the atoms are polarized perpendicular to chain_direction
-    chain_polarization = ["CUSTOM" ; "INLINE" ; "OUTLINE"][1]
+    const chain_polarization = ["CUSTOM" ; "INLINE" ; "OUTLINE"][1]
 end
 #
 #

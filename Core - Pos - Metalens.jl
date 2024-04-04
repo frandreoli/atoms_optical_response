@@ -48,7 +48,7 @@ function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_
 	#Calculates the widths of the buffer zones
 	buffer_range  = vcat(0.0,r_range[2:end-1].+(r_range[2]*buffer_zone))
 	#Decides if including the buffer zones or not in the evaluation of the average phase needed in the ring
-	if phase_center_ring_option=="NO"
+	if phase_center_ring_option_const=="NO"
 		phase_range = phi_func.(buffer_range, r_range[2:end])
 	else
 		phase_range = phi_func.(r_range[1:end-1], r_range[2:end])
@@ -123,7 +123,7 @@ function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_
 					(r_atoms_buffer_x_axis, r_atoms_buffer_y_axis) = (metalens_creation_buffer(up_nodes_1_to_axis, up_nodes_2_to_axis,up_nodes_1_to_axis, [-lattice_array[i,indices_order[2]]/2 for ii in 1:length(up_nodes_2_to_axis)],lattice_array[i,indices_order[2]],1))[indices_order]
 					#
 					#Decides if the z-component of the positions of the atoms in the buffer zone is fixed or smoothly varies
-					if z_fixed_buffer_option=="YES"
+					if z_fixed_buffer_option_const=="YES"
 						r_atoms_buffer = metalens_creation_buffer_z(r_atoms_buffer_x, r_atoms_buffer_y, lattice_array[i,3])
 					else
 						r_atoms_buffer = metalens_creation_buffer_z(r_atoms_buffer_x, r_atoms_buffer_y, 0.0)
@@ -133,7 +133,7 @@ function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_
 					#
 					#Decides if the z-component of the positions of the atoms in the buffer zone is fixed or smoothly varies. 
 					#This applies to those atoms connecting directly to the axes (black boxes of Fig.A4)
-					if z_fixed_buffer_option=="YES"
+					if z_fixed_buffer_option_const=="YES"
 						r_atoms_buffer_axis = metalens_creation_buffer_z(r_atoms_buffer_x_axis, r_atoms_buffer_y_axis, lattice_array[i,3])#!!!!!!!!!!!!!!!!!
 					else
 						r_atoms_buffer_axis = metalens_creation_buffer_z(r_atoms_buffer_x_axis, r_atoms_buffer_y_axis, 0.0)
@@ -154,8 +154,8 @@ function metalens_creation(r_lens, focal_length, disks_width, buffer_zone,phase_
 		end
     end
 	#
-	#Adds the atomic positions in the other radiants in case mirror_symmetry_option=="NO"
-	if mirror_symmetry_option=="NO"
+	#Adds the atomic positions in the other radiants in case mirror_symmetry_option_const=="NO"
+	if mirror_symmetry_option_const=="NO"
 		#
 		mirror_selection = r_atoms[:,1].>0.0
 		r_atoms_temp = r_atoms[mirror_selection,:]
@@ -215,7 +215,7 @@ function metalens_creation_core(r_lens, lattice_constants, r_max,r_min)
     n_points_selected=length(lattice_array_x)
 	#
 	#Same as metalens_creation_buffer_z() below, but for the whole ring, rather than just the buffer zones
-	if z_fixed_option=="YES"
+	if z_fixed_option_const=="YES"
 		return (hcat(repeat(lattice_array_x,3),repeat(lattice_array_y,3),[z*a_z for z in [-1 ; 0 ; 1 ].+0.0 for i in 1:n_points_selected ]), maximum(lattice_array_x),maximum(lattice_array_y) )
 	else
 		phi_func(rr) = mod(k0*(focal_length-sqrt(focal_length^2+rr^2))+phase_shift,2*pi)
@@ -332,7 +332,7 @@ end
 #
 #Function to create the z coordinate of the points inside the buffer zones
 #If a_z_sharp is different from zero, then the code assign the fixed value a_z_sharp to the z-coordinate of all the points
-#Otherwise it connects them in space by calculating xi_z(phi_lens(r)). This latter case applies only if z_fixed_buffer_option == "NO"
+#Otherwise it connects them in space by calculating xi_z(phi_lens(r)). This latter case applies only if z_fixed_buffer_option_const == "NO"
 function metalens_creation_buffer_z(r_atoms_buffer_x, r_atoms_buffer_y, a_z_sharp)
 	n_points_selected = length(r_atoms_buffer_x)
 	if a_z_sharp>0.0
