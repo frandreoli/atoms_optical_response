@@ -159,7 +159,14 @@ if mirror_symmetry_option=="YES" && geometry_settings=="ARRAYS"
     central_pos_x = sum(l_system_x)/2.0
     central_pos_y = sum(l_system_y)/2.0
     if abs(central_pos_x)>ZERO_THRESHOLD || abs(central_pos_y)>ZERO_THRESHOLD
-        @warn "The mirror_symmetry_option is incompatible with transversely shifted arrays. Setting mirror_symmetry_option=NO"
+        @warn "The mirror_symmetry_option is incompatible with transversely shifted arrays. \nSetting mirror_symmetry_option=NO."
         mirror_symmetry_option = "NO"
     end
+end
+#
+#
+#Consistency of strain option
+if strain_option=="CHAIN" && geometry_settings!="CHAIN"
+    @warn "The strain_option cannot be set to CHAIN when the geometry_settings is not set to CHAIN. \nSetting strain_option=NONE."
+    strain_option = "NONE"
 end

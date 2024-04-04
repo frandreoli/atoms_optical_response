@@ -414,3 +414,62 @@ function dis_cuboid_creation(x_dim,y_dim,z_dim,atomic_density)
   end
   return (r_atoms,n_atoms)
 end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## STRAIN FUNCTIONS  ########################################################################
+#############################################################################################################
+#
+#
+#Function to define strain in the atomic system
+function strain_function(pos_start)
+  #
+  if strain_option == "NONE"
+    return pos_start
+    #
+  elseif strain_option == "CUSTOM"
+    (x,y,z) = strain_function_custom(Tuple(pos_start)...)
+    return [x;y;z]
+    #
+  elseif strain_option == "CHAIN"
+    return strain_function_chain(pos_start, strain_final_xi, strain_start_end, strain_power_law, chain_xi,chain_theta,chain_phi)
+    #
+  else
+    error("The option strain_option is ill-defined to ",strain_option)
+    #
+  end
+  #
+end
+#
+#
+#Strain ona chain
+function strain_function_chain(position, final_xi , start_end ,power_law , start_xi, strain_theta, strain_phi)
+  #Settings
+  (start_atom, end_atom) = Tuple(start_end)
+  #
+  #
+  strain_direction = [cos(strain_theta) ; sin(strain_theta)*sin(strain_phi) ; sin(strain_theta)*cos(strain_phi)]
+  proj_on_chain   = dot(position,strain_direction)
+  value_on_chain  = proj_on_chain/start_xi
+  #
+  coeff = (final_xi - start_xi)/((power_law+1)*(end_atom - start_atom)^power_law)
+  #
+  if value_on_chain<=start_atom
+      final_value = start_xi*value_on_chain
+      #
+  elseif start_atom<value_on_chain<=end_atom
+      final_value = start_xi*value_on_chain + coeff*(value_on_chain - start_atom )^(power_law+1)
+      #
+  elseif value_on_chain>end_atom
+      final_value = start_xi*end_atom + coeff*(end_atom - start_atom )^(power_law+1)
+      final_value += final_xi*(value_on_chain-end_atom)
+  end
+  #
+  #
+  return strain_direction.*final_value
+end

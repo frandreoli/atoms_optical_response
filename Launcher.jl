@@ -103,9 +103,9 @@ if geometry_settings == "CHAIN"
     #
     chain_direction = [cos(chain_theta) ; sin(chain_theta)*sin(chain_phi) ; sin(chain_theta)*cos(chain_phi)]
     #
-    if chain_polarization == "IN-LINE"
+    if chain_polarization == "INLINE"
         dipoles_polarization = chain_direction
-    elseif chain_polarization == "OUT-LINE"
+    elseif chain_polarization == "OUTLINE"
         dipoles_polarization -= chain_direction.*(dot(chain_direction,dipoles_polarization))
         dipoles_polarization /= sqrt(sum(abs.(dipoles_polarization).^2))
     elseif chain_polarization != "CUSTOM"
@@ -232,6 +232,23 @@ if geometry_settings == "ARRAYS"
     end
 end
 #
+#Only if a chain is computed
+if geometry_settings == "CHAIN" 
+    file_name*="_xi"*dig_cut(chain_xi,3)
+    #
+    if chain_polarization!="CUSTOM"
+        file_name*="_"*chain_polarization
+    end
+    #
+    if chain_theta==0.0 && chain_phi==0.0
+        file_name*="_directX"
+    elseif chain_theta==pi/2 && chain_phi==0.0
+        file_name*="_directZ"
+    elseif chain_theta==pi/2 && chain_phi==pi/2
+        file_name*="_directY"
+    end
+end
+#
 mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
 file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
@@ -338,6 +355,15 @@ if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; p
     close(probe_field_h5)
 end
 #
+#
+#Adding strain if necessary
+if geometry_settings[1:3]!="DIS"
+    for i in 1:n_atoms
+        r_atoms[i,:] = strain_function(r_atoms[i,:])
+    end
+end
+#
+#
 GC.gc()
 #
 #Main computation
@@ -354,6 +380,11 @@ performance=@timed for index_repetition in 1:n_repetitions
         if geometry_settings=="DISORDERED_CUBOID" 
             (r_atoms_here, n_atoms_here) = dis_cuboid_creation(dis_x_dim,dis_y_dim,dis_z_dim,dis_atomic_density)
         end
+        #Adding strain if necessary
+        for i in 1:n_atoms_here
+            r_atoms_here[i,:] = strain_function(r_atoms_here[i,:])
+        end
+        #
     else
         (r_atoms_here, n_atoms_here) = (r_atoms[:,:] , n_atoms)
     end

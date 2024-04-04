@@ -51,15 +51,15 @@ const input_field_settings      =
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
-const pos_save_option           =      ["YES" ; "NO"][1]
+pos_save_option           =      ["YES" ; "NO"][1]
 #
 #
 #If YES then the code saves the steady-state, atomic coefficients in the file: "atomic_coeff.h5"
-const coeff_save_option         =      ["YES" ; "NO"][1]
+coeff_save_option         =      ["YES" ; "NO"][1]
 #
 #
 #If YES then the code assumes that gamma_prime is constant, otherwise it implements gamma_prime_function(x,y,z)
-const gamma_prime_const_option  =      ["YES" ; "NO"][1]
+gamma_prime_const_option  =      ["YES" ; "NO"][1]
 #
 #
 #Possibility of punching defects in the arrays/metalens 
@@ -73,11 +73,16 @@ defects_fraction = 0.0
 small_disorder_std = 0.0
 #
 #
+#Possibility of adding strain to the atomic positios, as defined in the function
+#strain_function_custom(x,y,z)
+strain_option              =      ["NONE" ; "CHAIN" ; "CUSTOM"][2]
+#
+#
 #SYMMETRY OPTION: 
 #Default: YES - If YES then the code calculates the atomic positions only in the positive (x>0, y>0) quadrant, 
 #and then assumes that the whole physical system (atoms+input light) is symmetric for x->-x and y->-y.
 #When applicable, this options allows to highly speed up the code, and consume less memory
-const mirror_symmetry_option    =      ["YES" ; "NO"][1]
+mirror_symmetry_option     =      ["YES" ; "NO"][1]
 #
 #
 #REPETITION NUMBER
@@ -100,7 +105,7 @@ n_repetitions = 1
 #INITIALIZATION PARAMETERS:
 #Adds a name to the simulation, if the Julia file is launched without passing through "Bash_Launcher.sh"
 #If the simulation is launched via "Bash_Launcher.sh" then the following name is ignored
-const name_simulation = "DEFAULT"
+name_simulation = "DEFAULT"
 #Maximum RAM available for the computation (in GB)
 RAM_GB_max = 450
 #
@@ -138,7 +143,7 @@ field_polarization         =  [1.0 ; 0.0 ; 0.0]
 #
 #INPUT GAUSSIAN BEAM:
 #Beam waist of the input Gaussan beam
-const w0                   =  4.0
+w0                   =  4.0
 #Direction of the input Gaussian beam. Default: [0.0 ; 0.0 ; 1.0] 
 laser_direction            =  [0.0 ; 0.0 ; 1.0] 
 #
@@ -147,9 +152,9 @@ laser_direction            =  [0.0 ; 0.0 ; 1.0]
 #Spatial point that is selectively driven
 select_drive_pos           =  [0.0 ; 0.0 ; 0.0]
 #Radius around selective_drive_pos where the atoms are selectively driven
-const select_drive_radius  =  [ZERO_THRESHOLD, 1.0][1]
+select_drive_radius  =  [ZERO_THRESHOLD, 1.0][1]
 #Field value
-const select_drive_E0      =  1.0
+select_drive_E0      =  1.0
 #
 #
 #
@@ -220,7 +225,7 @@ probeSphere_points    =   10000
 #If target_beam_option=="YES" then the code calculates the projection of the output field onto a target Gaussian beam.
 #This has the same direction and polarization of the input Gaussian beam, but can 
 #have different waist w0_target and different focal point z0_target. 
-const target_beam_option    =   ["YES" ; "NO"][1] 
+target_beam_option    =   ["YES" ; "NO"][1] 
 w0_target                   =   2*w0
 z0_target                   =   10
 #If norm_target_option == "YES" then this target beam is multiplied by (w0/w0_target)*exp(im*k0*z0_target), 
@@ -244,15 +249,15 @@ if geometry_settings == "METALENS"
     #
     #METALENS PARAMETERS:
     #Focal length f
-    const focal_length              =    20
+    focal_length              =    20
     #Total radius of the metalens
-    const r_lens                	=    10.5
+    r_lens                	=    10.5
     #Width of each disk composing the metalens, i.e. r_(j+1) - r_j
-    const disks_width               =    7.0/10.5
+    disks_width               =    7.0/10.5
     #Buffer zone parameter 0<=buffer_smooth<=0.5 (dimensionless fraction)
-    const buffer_smooth     	    =    0.2
+    buffer_smooth     	    =    0.2
     #Value of the phase shift at the center of the metalens, i.e. phi_0
-    const phase_shift               =    1.0775
+    phase_shift               =    1.0775
     #
     #
     #METALENS OPTIONS:
@@ -263,25 +268,25 @@ if geometry_settings == "METALENS"
     #probeYZ_x = probeXZ_y = 0.0
     #The default sizes of the probe rectangles are specified in "initialization.jl"
     #The number of probe points remains unchanged
-    const default_probe_option      =      ["YES" ; "NO"][1] 
+    default_probe_option      =      ["YES" ; "NO"][1] 
     #
     #Default: YES - If YES then (w0_target, z0_target) are overwritten by the default option.
     #It consists of an ideal Gaussian beam expected after a perfect lens with the given focal_length 
     #Similarly normalize_target_option are overwritten to YES
-    const default_target_option     =      ["YES" ; "NO"][1]       
+    default_target_option     =      ["YES" ; "NO"][1]       
     #
     #
     #
     #The following parameters allow to modify the algorithm by which the atomic metalens is constructed
     #
     #Default: YES - If NO  then xi_z will smoothly vary as function of r, inside any ring (including the buffer zone). If YES then xi_z = xi_z^j is kept fixed in any j-th ring
-    const z_fixed_option            =      ["YES" ; "NO"][1] 
+    z_fixed_option            =      ["YES" ; "NO"][1] 
     #
     #Default: YES - If NO  then xi_z will smoothly vary as function of r, but only inside the buffer zones
-    const z_fixed_buffer_option     =      ["YES" ; "NO"][1] 
+    z_fixed_buffer_option     =      ["YES" ; "NO"][1] 
     #
     #Default: YES - If YES then the average phase of the i-th ring is given by phi((r_{i-1}+r_{i})/2), otherwise it excludes the buffer zone
-    const phase_center_ring_option  =      ["YES" ; "NO"][1] 
+    phase_center_ring_option  =      ["YES" ; "NO"][1] 
     #
 end
 #
@@ -318,12 +323,12 @@ if geometry_settings == "ARRAYS"
     #Default: NO - If YES then the laser detunings (saved laser_detunings) are interpreted to be
     #in units of the cooperative decay rate Gamma_coop, rather than the natural linewidth Gamma0, i.e.
     #laser_detunings ./= Gamma_coop
-    const array_gamma_coop_option = ["YES" ; "NO"][2]
+    array_gamma_coop_option = ["YES" ; "NO"][2]
     #
     #Default: YES - If YES then the laser detunings (saved laser_detunings) are shifted so 
     #that the zero corresponds to the cooperative resonance frequency omega_coop of the array, i.e.
     #laser_detunings .= laser_detunings .- omega_coop 
-    const array_omega_coop_option = ["YES" ; "NO"][1]
+    array_omega_coop_option = ["YES" ; "NO"][1]
     #
     #Meaning of the detuning for values of (array_gamma_coop_option,array_omega_coop_option)
     #(NO,  NO ) -> Delta = (omega-omega_0)/Gamma0 (i.e. laser_detunings= 1 means 1*Gamma_0 shift from omega_0)
@@ -363,9 +368,9 @@ if geometry_settings == "CHAIN"
     #
     #Polarization of the atomic dipoles within the chain.
     #CUSTOM: keeps the value of dipoles_polarization defined above
-    #IN-LINE: the atoms are polarized along chain_direction
-    #OUT-LINE: the atoms are polarized perpendicular to chain_direction
-    chain_polarization = ["CUSTOM" ; "IN-LINE" ; "OUT-LINE"][1]
+    #INLINE: the atoms are polarized along chain_direction
+    #OUTLINE: the atoms are polarized perpendicular to chain_direction
+    chain_polarization = ["CUSTOM" ; "INLINE" ; "OUTLINE"][1]
 end
 #
 #
@@ -426,3 +431,28 @@ if geometry_settings=="CUSTOM_POSITIONS"
     custom_pos_file     = "custom_pos.h5"
     custom_pos_variable = "custom_pos"
 end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## STRAIN SETTINGS ##########################################################################
+#############################################################################################################
+#
+#
+#Definition of the strain function in case strain_option == "CUSTOM"
+function strain_function_custom(x,y,z)
+    #
+    #USER CUSTOM FUNCTION...
+    #
+    return (x,y,z)
+end
+#
+#
+#Definition of the strain settings in case strain_option == "CHAIN"
+strain_final_xi = 0.8
+strain_start_end = [5 ; 15]
+strain_power_law = 2
