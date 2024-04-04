@@ -183,7 +183,6 @@ end
 #  
 #
 #Fixing the options to constants
-const strain_option_const                 =  strain_option
 const mirror_symmetry_option_const        =  mirror_symmetry_option
 const target_beam_option_const            =  target_beam_option
 const normalize_target_option_const       =  normalize_target_option

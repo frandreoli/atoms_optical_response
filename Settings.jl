@@ -38,7 +38,7 @@ const geometry_settings         =
     "CHAIN"                         #7
     #
     #Choose here below the number wanted
-][5]
+][7]
 #
 #
 #INPUT FIELD SETTINGS:
@@ -47,7 +47,7 @@ const input_field_settings      =
 [
     "GAUSSIAN_BEAM" ;               #1
     "SELECTIVE_DRIVE" ;             #2
-][1]
+][2]
 #
 #
 #If YES then the code saves the atomic positions in the file: "atomic_positions.h5"
@@ -75,14 +75,14 @@ small_disorder_std = 0.0
 #
 #Possibility of adding strain to the atomic positios, as defined in the function
 #strain_function_custom(x,y,z)
-strain_option              =      ["NONE" ; "CHAIN" ; "CUSTOM"][2]
+strain_option              =      ["NONE" ; "CHAIN" ; "CUSTOM"][1]
 #
 #
 #SYMMETRY OPTION: 
 #Default: YES - If YES then the code calculates the atomic positions only in the positive (x>0, y>0) quadrant, 
 #and then assumes that the whole physical system (atoms+input light) is symmetric for x->-x and y->-y.
 #When applicable, this options allows to highly speed up the code, and consume less memory
-mirror_symmetry_option     =      ["YES" ; "NO"][1]
+mirror_symmetry_option     =      ["YES" ; "NO"][2]
 #
 #
 #REPETITION NUMBER
@@ -124,7 +124,7 @@ RAM_GB_max = 450
 #Spatial orientation of the atomic dipole-matrix elements
 dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
-const gamma_prime          =  5.75 
+const gamma_prime          =  0.0 
 #Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
 const inhom_broad_std      =  0.0
@@ -136,7 +136,7 @@ const inhom_broad_std      =  0.0
 #Many values can be set, e.g. [0.0 ; 1.0 ;2.0 ;-10]
 #Or as a range, by writing:
 #laser_detunings  = range(minimum_value,stop=maximum_value,length=number_of_points)
-laser_detunings            =  [0.0] 
+laser_detunings            =  [-2.18103] 
 #Polarization of the input light. Default: [1.0 ; 0.0 ; 0.0] 
 field_polarization         =  [1.0 ; 0.0 ; 0.0] 
 #
@@ -187,8 +187,8 @@ probeXY_range_y       =   [-1 ; 1].*10
 #The meaning of the variables is analogous to above
 probeYZ_option        =   ["YES" ; "NO"][1]
 probeYZ_x             =   0
-probeYZ_points_y      =   200
-probeYZ_points_z      =   500
+probeYZ_points_y      =   50
+probeYZ_points_z      =   100
 probeYZ_range_y       =   [-1 ; 1].*10
 probeYZ_range_z       =   [-1 ; 1].*20
 #
@@ -198,8 +198,8 @@ probeYZ_range_z       =   [-1 ; 1].*20
 #The meaning of the variables is analogous to above
 probeXZ_option        =   ["YES" ; "NO"][1]
 probeXZ_y             =   0
-probeXZ_points_x      =   200
-probeXZ_points_z      =   500
+probeXZ_points_x      =   50
+probeXZ_points_z      =   100
 probeXZ_range_x       =   [-1 ; 1].*10
 probeXZ_range_z       =   [-1 ; 1].*20
 #
@@ -225,7 +225,7 @@ probeSphere_points    =   10000
 #If target_beam_option=="YES" then the code calculates the projection of the output field onto a target Gaussian beam.
 #This has the same direction and polarization of the input Gaussian beam, but can 
 #have different waist w0_target and different focal point z0_target. 
-target_beam_option          =   ["YES" ; "NO"][1] 
+target_beam_option          =   ["YES" ; "NO"][2] 
 w0_target                   =   2*w0
 z0_target                   =   10
 #If norm_target_option == "YES" then this target beam is multiplied by (w0/w0_target)*exp(im*k0*z0_target), 
@@ -358,7 +358,7 @@ if geometry_settings == "CHAIN"
     chain_xi = 0.1
     #
     #Size of the array
-    chain_size = [-1.0;1.0]
+    chain_size = [0.0;5.0]
     #
     #Rotation angles. 
     #The direction is defined as 
@@ -453,6 +453,6 @@ end
 #
 #
 #Definition of the strain settings in case strain_option == "CHAIN"
-strain_final_xi = 0.8
-strain_start_end = [5 ; 15]
+strain_final_xi = 0.2
+strain_start_end = [20 ; 40]
 strain_power_law = 2

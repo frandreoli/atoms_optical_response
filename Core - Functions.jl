@@ -429,18 +429,18 @@ end
 #Function to define strain in the atomic system
 function strain_function(pos_start)
   #
-  if strain_option_const == "NONE"
+  if strain_option == "NONE"
     return pos_start
     #
-  elseif strain_option_const == "CUSTOM"
+  elseif strain_option == "CUSTOM"
     (x,y,z) = strain_function_custom(Tuple(pos_start)...)
     return [x;y;z]
     #
-  elseif strain_option_const == "CHAIN"
+  elseif strain_option == "CHAIN"
     return strain_function_chain(pos_start, strain_final_xi, strain_start_end, strain_power_law, chain_xi,chain_theta,chain_phi)
     #
   else
-    error("The option strain_option is ill-defined to ",strain_option_const)
+    error("The option strain_option is ill-defined to ",strain_option)
     #
   end
   #
