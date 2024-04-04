@@ -33,7 +33,9 @@ const geometry_settings         =
     #
     "METALENS" ;                    #5
     #
-    "CUSTOM_POSITIONS"              #6
+    "CUSTOM_POSITIONS" ;            #6
+    #
+    "CHAIN"                         #7
     #
     #Choose here below the number wanted
 ][5]
@@ -329,6 +331,41 @@ if geometry_settings == "ARRAYS"
     #(NO,  YES) -> Delta = (omega-omega_coop)/Gamma0
     #(YES, YES) -> Delta = (omega-omega_coop)/Gamma_coop (i.e. laser_detunings= 1 means 1*Gamma_coop shift from omega_coop)
     #
+end
+#
+#
+#
+#
+#
+#
+#
+#############################################################################################################
+################## CHAIN SETTINGS ###########################################################################
+#############################################################################################################
+#
+#
+#Settings that are relevant only if the geometry is set to CHAIN
+if geometry_settings == "CHAIN"
+    #
+    #PHYSICAL SETTINGS OF THE CHAIN:
+    #
+    #Lattice constants of the 1D chain
+    chain_xi = 0.1
+    #
+    #Size of the array
+    chain_size = [-1.0;1.0]
+    #
+    #Rotation angles. 
+    #The direction is defined as 
+    #chain_direction = [cos(chain_theta) ; sin(chain_theta)*sin(chain_phi) ; sin(chain_theta)*cos(chain_phi)]
+    chain_theta = 0.0
+    chain_phi = 0.0
+    #
+    #Polarization of the atomic dipoles within the chain.
+    #CUSTOM: keeps the value of dipoles_polarization defined above
+    #IN-LINE: the atoms are polarized along chain_direction
+    #OUT-LINE: the atoms are polarized perpendicular to chain_direction
+    chain_polarization = ["CUSTOM" ; "IN-LINE" ; "OUT-LINE"][1]
 end
 #
 #

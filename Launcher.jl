@@ -41,6 +41,7 @@ const k0 = 2.0*pi
 #
 time_start=time()
 #
+#
 #Defines the settings and the atomic positions for an atomic metalens
 if geometry_settings == "METALENS"
     (r_atoms, n_atoms, phase_array,lens_disks_r,phase_range_theo, lattice_array) = metalens_creation(r_lens, focal_length, disks_width,buffer_smooth,phase_shift)
@@ -73,6 +74,7 @@ if geometry_settings == "METALENS"
     end
 end
 #
+#
 #Defines the settings and the atomic positions for a series of atomic arrays
 if geometry_settings == "ARRAYS"
     #
@@ -92,6 +94,29 @@ if geometry_settings == "ARRAYS"
     #
     #Creation of the atomic positions
     (r_atoms, n_atoms) = arrays_creation(array_n_layers, array_xi_x,array_xi_y,array_xi_z,array_size_x,array_size_y)
+    #
+end
+#
+#
+#Defines the settings and the atomic positions for a 1D chain of atoms
+if geometry_settings == "CHAIN"
+    #
+    chain_direction = [cos(chain_theta) ; sin(chain_theta)*sin(chain_phi) ; sin(chain_theta)*cos(chain_phi)]
+    #
+    if chain_polarization == "IN-LINE"
+        dipoles_polarization = chain_direction
+    elseif chain_polarization == "OUT-LINE"
+        dipoles_polarization -= chain_direction.*(dot(chain_direction,dipoles_polarization))
+        dipoles_polarization /= sqrt(sum(abs.(dipoles_polarization).^2))
+    elseif chain_polarization != "CUSTOM"
+        @warn "The variable chain_polarization is ill-defined. Assuming chain_polarization=CUSTOM."
+    end
+    #
+    #Creation of the atomic positions
+    (r_atoms, n_atoms) = arrays_creation(1, chain_xi,1.0,1.0,chain_size,[0.0;0.0])
+    for i in 1:n_atoms
+        r_atoms[i,:] = r_atoms[i,1].*chain_direction
+    end
     #
 end
 #
