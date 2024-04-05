@@ -31,11 +31,11 @@ const geometry_settings         =
     #
     "ARRAYS" ;                      #4
     #
-    "METALENS" ;                    #5
+    "CHAIN"                         #5
     #
-    "CUSTOM_POSITIONS" ;            #6
+    "METALENS" ;                    #6
     #
-    "CHAIN"                         #7
+    "CUSTOM_POSITIONS" ;            #7
     #
     #Choose here below the number wanted
 ][1]
@@ -73,8 +73,7 @@ defects_fraction = 0.0
 small_disorder_std = 0.0
 #
 #
-#Possibility of adding strain to the atomic positios, as defined in the function
-#strain_function_custom(x,y,z)
+#Possibility of adding strain to the atomic positios
 strain_option              =      ["NONE" ; "CHAIN" ; "CUSTOM"][1]
 #
 #
@@ -444,11 +443,12 @@ end
 #
 #
 #Definition of the strain function in case strain_option == "CUSTOM"
-function strain_function_custom(x,y,z)
+function strain_function_custom(x_old,y_old,z_old)
     #
     #USER CUSTOM FUNCTION...
+    (x_new,y_new,z_new) = (x_old,y_old,z_old)
     #
-    return (x,y,z)
+    return (x_new,y_new,z_new)
 end
 #
 #

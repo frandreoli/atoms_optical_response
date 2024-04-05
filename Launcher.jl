@@ -239,11 +239,11 @@ if geometry_settings == "CHAIN"
     end
     #
     if chain_theta==0.0 && chain_phi==0.0
-        file_name*="_directX"
+        file_name*="_Xdirect"
     elseif chain_theta==pi/2 && chain_phi==0.0
-        file_name*="_directZ"
+        file_name*="_Zdirect"
     elseif chain_theta==pi/2 && chain_phi==pi/2
-        file_name*="_directY"
+        file_name*="_Ydirect"
     end
 end
 #
@@ -270,6 +270,13 @@ mkpath(final_path_name*"/"*results_folder_name)
 #
 if geometry_settings == "ARRAYS" 
     println("Cooperative frequency and rate computed in    ", dig_cut(time_coop)," seconds" )
+end
+#
+#Adding strain if necessary
+if no_randomness_option
+    for i in 1:n_atoms
+        r_atoms[i,:] = strain_function(r_atoms[i,:])
+    end
 end
 #
 #Saving the positions, but only if no disorder is present
@@ -351,14 +358,6 @@ if (true in (x->x=="YES").([probeXY_option ; probeYZ_option ; probeXZ_option ; p
     close(probe_pos_h5)
     probe_field_h5=h5open(final_path_name*"/"*results_folder_name*"/"*"probe_field.h5", "w")
     close(probe_field_h5)
-end
-#
-#
-#Adding strain if necessary
-if geometry_settings[1:3]!="DIS"
-    for i in 1:n_atoms
-        r_atoms[i,:] = strain_function(r_atoms[i,:])
-    end
 end
 #
 #
