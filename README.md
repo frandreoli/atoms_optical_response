@@ -87,6 +87,9 @@ Given an ordered geometry (array, metalens or custom) of the atomic positions, t
 - `small_disorder_std`\
 Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std == 0.0`, then no shift will be applied.
 
+- `strain_option`\
+When set to `CUSTOM`, this option provides the possibility of straining the atomic positions through an additional function `(x_new,y_new,z_new) = strain_function_custom(x_old,y_old,z_old)`, which can be arbitrarily defined by the user. The choice of `NONE` doesn't add any strain, while the value `CHAIN` introduce a pre-set form of strain which applies to 1D chains of atoms. This latter is defined as following: after the atom `strain_start_end[1]`, it slowly turns the lattice constant `chain_xi` of the chain to a new constant `strain_final_xi`, which is reached at the atom number `strain_start_end[2]`. The option `strain_power_law` defines the power-law at which this straining process is introduced.
+
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
 
