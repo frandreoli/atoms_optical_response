@@ -4,7 +4,7 @@ The code performs numerical simulations of the steady-state, optical response of
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
 The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. 
-Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\].
+Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\]. Further development have been added afterwards.
 
 ## 1.1 - Code specifications
 
