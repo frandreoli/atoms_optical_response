@@ -4,7 +4,7 @@ The code performs numerical simulations of the steady-state, optical response of
 Various options are provided on the density, geometry and physical properties of the light scatterers.
 
 The original code has been developed as a part of a PhD project by Francesco Andreoli, under the supervision of Prof. Dr. Darrick Chang. 
-Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\].
+Some parts of this code have been used in \[[1](#Andreoli2021)-[3](#Andreoli2023b)\]. Further development have been added afterwards.
 
 ## 1.1 - Code specifications
 
@@ -70,7 +70,7 @@ Here, we describe the generic settings that can be implemented in the code.
 
 
 - `geometry_settings` \
-The option defines the geometry of the positions of the quantum emitters. It can be set to three *disordered* geometries `"DISORDERED_SPHERE"`, `"DISORDERED_CYLINDER"` and `"DISORDERED_CUBOID"`, whose choice will randomly sample the positions from a uniform distribution inside the selected shape. When setting it to `"ARRAYS"` the emitters are arranged on a 3D lattice composed of many arrays in a row, whose number, size, lattice constants and distance can be later set. The choice of `"METALENS"` arranges the emitter position to form a three-layer atomic metalens (further information can be found in [[3](#Andreoli2023b)]). Finally, by selecting `"CUSTOM_POSITIONS"` the user can feed the simulation with its own set of emitter positions (in the 3D space), which must be formatted as a $N\times 3$ matrix and saved in a *.h5* file (HDF5 format) whose name can be later selected.
+The option defines the geometry of the positions of the quantum emitters. It can be set to three *disordered* geometries `"DISORDERED_SPHERE"`, `"DISORDERED_CYLINDER"` and `"DISORDERED_CUBOID"`, whose choice will randomly sample the positions from a uniform distribution inside the selected shape. When setting it to `"ARRAYS"` the emitters are arranged on a 3D lattice composed of many arrays in a row, whose number, size, lattice constants and distance can be later set. A similar resoning applies to the choice of "CHAIN", which arranges the atoms along a 1D chain with fixed lattice constant. The choice of `"METALENS"` arranges the emitter position to form a three-layer atomic metalens (further information can be found in [[3](#Andreoli2023b)]). Finally, by selecting `"CUSTOM_POSITIONS"` the user can feed the simulation with its own set of emitter positions (in the 3D space), which must be formatted as a $N\times 3$ matrix and saved in a *.h5* file (HDF5 format) whose name can be later selected.
 
 - `input_field_settings` \
 The option defines the type of input field that drives the atomic medium. The choice of `"GAUSSIAN_BEAM"` defines it as a Gaussian beam illuminating the system, whose properties can be set, as described below. Otherwise, the choice of `"SELECTIVE_DRIVE"` defines the input field as an hypothetical field that only illuminates atoms within a radius `select_drive_radius` from the position `select_drive_pos` (see below).
@@ -86,6 +86,9 @@ Given an ordered geometry (array, metalens or custom) of the atomic positions, t
 
 - `small_disorder_std`\
 Given an ordered geometry (array, metalens or custom), the user can shift the atomic positions from their standard value by randomly sampling (in each of the three dimensions) a shift from a Gaussian distribution with standard deviation `small_disorder_std`. If `small_disorder_std == 0.0`, then no shift will be applied.
+
+- `strain_option`\
+When set to `CUSTOM`, this option provides the possibility of straining the atomic positions through an additional function `(x_new,y_new,z_new) = strain_function_custom(x_old,y_old,z_old)`, which can be arbitrarily defined by the user. The choice of `NONE` doesn't add any strain, while the value `CHAIN` introduce a pre-set form of strain which applies to 1D chains of atoms. This latter is defined as following: after the atom `strain_start_end[1]`, it slowly turns the lattice constant `chain_xi` of the chain to a new constant `strain_final_xi`, which is reached at the atom number `strain_start_end[2]`. The option `strain_power_law` defines the power-law at which this straining process is introduced.
 
 - `mirror_symmetry_option`\
 When it is set to `YES`, the code will assume that the atomic positions are symmetric for $x\to -x$ and $y\to -y$, as described in [Sec. 1.3.1](#131---physical-simplifications). 
@@ -203,6 +206,26 @@ These two variables identify the extension of the finite 2D arrays in the $\hat{
 
 - `array_gamma_coop_option` and `array_omega_coop_option`\
 These two options allow the user to re-define the array `laser_detunings` with scales dictated by the cooperative properties of a single 2D array, which are more suitable in many computations. Specifically, we consider the cooperative resonance $\omega\_{\text{coop}}$ and decay rate $\Gamma\_{\text{coop}}$ associated to the excitation by the input laser of the 2D atomic spin wave with wavevector $\mathbf{k}\_{\rm in}^{xy}$ in the $(x,y)$-plane \[[6](#AsenjoGarcia2017ExponentialArrays), [19](#Shahmoon2017CooperativeArrays)\]. This process also accounts for the alignment of the atomic dipoles $\hat{\mathbf{d}}\_0$. When `array_gamma_coop_option="YES"`, then the values `laser_detunings` will be scaled by a factor $\Gamma\_{\text{coop}}$. Similarly, when `array_omega_coop_option == "YES"`, then `laser_detunings` will be shifted so that the zero corresponds to $\omega\_{\text{coop}}$.
+
+
+
+
+#### 2.1.4.2 - Chain settings
+When `geometry_settings == "CHAIN"`, the system arrange the atomic position to into a 1D chain, aligned along the direction `chain_direction = [cos(chain_theta) ; sin(chain_theta)*sin(chain_phi) ; sin(chain_theta)*cos(chain_phi)]`. More specific settings for this geometry are listed here below.
+
+- `chain_xi`\
+This variable identifies the constant spacing (in units of $\lambda\_0$) between the atoms.
+
+- `chain_size`\
+This variable identifies the extension of the finite 1D chain, in the `chain_direction` direction. It must be written in the following form: `chain_size = [value_min, value_max]`.
+
+- `chain_theta` and `chain_theta`\
+These variables identify the orientation of the 1D chain in the 3D space, as `chain_direction = [cos(chain_theta) ; sin(chain_theta)*sin(chain_phi) ; sin(chain_theta)*cos(chain_phi)]`.
+
+- `chain_polarization`\
+This option allows to easily define the orientation of the atomic dipoles with respect to the orientation of the chain. When it is set to `CUSTOM`, then the dipole orientation is kept to the value already defined in `dipoles_polarization`. If it is set to `INLINE`, then the polarization of the atomic dipoles aligns with the orientation of the chain, i.e. `dipoles_polarization = chain_direction`. Finally, when setting it to `OUTLINE`, then the atomic dipoles get aligned perpendicularly to the chain direction, by overwriting the value of `dipoles_polarization` with its projection onto the plane perpendicular to `chain_direction`.
+
+
 
 
 #### 2.1.4.3 - Atomic metalens settings
