@@ -247,6 +247,10 @@ if geometry_settings == "CHAIN"
     end
 end
 #
+if strain_option!="NONE"
+    file_name*="_strain"*strain_option
+end
+#
 mirror_symmetry_option=="YES" ? file_name*="_MIRROR" : nothing
 file_name=geometry_settings*file_name*"_"*args_checked[1]
 #
