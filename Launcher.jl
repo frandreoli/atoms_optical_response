@@ -287,10 +287,11 @@ if pos_save_option=="YES" && no_randomness_option
 end
 #
 #Saving data files with the settings of the simulation
-h5write_multiple(final_path_name*"options", ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
-h5write_multiple(final_path_name*"options", ("input_field_settings", input_field_settings) , ("coeff_save_option", coeff_save_option))
-h5write_multiple(final_path_name*"options", ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
-h5write_multiple(final_path_name*"options", ("mirror_symmetry_option",mirror_symmetry_option))
+h5write_multiple(final_path_name*"options",  ("pos_save_option", pos_save_option) , ("geometry_settings", geometry_settings) ,("target_beam_option",target_beam_option) ; open_option="w")
+h5write_multiple(final_path_name*"options",  ("input_field_settings", input_field_settings) , ("coeff_save_option", coeff_save_option))
+h5write_multiple(final_path_name*"options",  ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
+h5write_multiple(final_path_name*"options",  ("mirror_symmetry_option",mirror_symmetry_option))
+h5write_multiple(final_path_name*"options",  ("strain_option",strain_option), ("input_field_settings",input_field_settings))
 h5write_multiple(final_path_name*"settings", ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
 h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions),("probePlane_vec",probePlane_v3_vec))
@@ -299,7 +300,7 @@ h5write_multiple(final_path_name*"settings", ("select_drive_pos", select_drive_p
 #
 if target_beam_option=="YES"
     h5write_multiple(final_path_name*"settings", ("w0_target",w0_target),("z0_target",z0_target) )
-    h5write_multiple(final_path_name*"options", ("normalize_target_option", normalize_target_option) )
+    h5write_multiple(final_path_name*"options",  ("normalize_target_option", normalize_target_option) )
 end
 #
 #Saving data files with the settings specific of the atomic metalens
@@ -319,6 +320,16 @@ if geometry_settings == "ARRAYS"
     h5write_multiple(final_path_name*"coop_arrays",     ("omega_coop", omega_coop), ("Gamma_coop", Gamma_coop)  ; open_option="w")    
     h5write_multiple(final_path_name*"options_arrays",  ("array_gamma_coop_option", array_gamma_coop_option) , ("array_omega_coop_option",array_omega_coop_option) ; open_option="w")
 end
+#
+#Saving data files with the settings specific of the atomic chain
+if geometry_settings == "CHAIN"
+    h5write_multiple(final_path_name*"settings_chain", ("chain_xi", chain_xi), ("chain_size",chain_size) ; open_option="w")
+    h5write_multiple(final_path_name*"settings_chain", ("chain_theta",chain_theta), ("chain_phi",chain_phi), ("chain_polarization",chain_polarization))
+    if strain_option == "STRAIN"
+        h5write_multiple(final_path_name*"strain_chain", ("strain_final_xi", strain_final_xi) ; open_option="w")
+        h5write_multiple(final_path_name*"strain_chain", ("strain_start_end", strain_start_end), ("strain_power_law",strain_power_law))
+    end
+end 
 #
 #Saving data files with the settings specific of the atomic arrays
 if geometry_settings[1:3]== "DIS" 
