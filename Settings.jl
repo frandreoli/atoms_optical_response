@@ -58,8 +58,11 @@ pos_save_option           =      ["YES" ; "NO"][1]
 coeff_save_option         =      ["YES" ; "NO"][1]
 #
 #
-#If YES then the code assumes that gamma_prime is constant, otherwise it implements gamma_prime_function(x,y,z)
-gamma_prime_const_option  =      ["YES" ; "NO"][1]
+#If CONST then the code assumes that the gamma prime is constant to gamma_prime_const.
+#Otherwise, if "DISK" it implements gamma_prime_func_sphere(x,y,z), which keeps gamma_prime=0 
+#within a disk around a fixed position and increments it progressively outside.
+#Finally, if set to "CUSTOM", it implements the function gamma_prime_func_custom(x,y,z)
+gamma_prime_option        =      ["CONST" ; "DISK" ; "CUSTOM"][1]
 #
 #
 #Possibility of punching defects in the arrays/metalens 
@@ -123,7 +126,16 @@ RAM_GB_max = 450
 #Spatial orientation of the atomic dipole-matrix elements
 dipoles_polarization       =  [1.0 ; 0.0 ; 0.0] 
 #Inelastic decay rate Gamma' of the atoms, in units of Gamma0
-const gamma_prime          =  0.0 
+const gamma_prime_const    =  0.0 
+#Definition of the gamma prime function in case gamma_prime_option == "CUSTOM"
+function gamma_prime_func_custom(x,y,z)
+    #
+    #USER CUSTOM FUNCTION...
+    gamma_new = gamma_prime_const
+    #
+    return gamma_new
+end
+#
 #Standard deviation of the Gaussian distribution of inhomogeneous broadening of the atomic resonance frequencies (in units of Gamma0). 
 #If =0.0 then no inhomogeneous broadening is added.
 const inhom_broad_std      =  0.0

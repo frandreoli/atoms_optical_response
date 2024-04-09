@@ -203,7 +203,7 @@ else
     file_name*="_SelectDriven"
 end
 #
-gamma_prime>0 && gamma_prime_const_option=="YES"   ?  file_name*="_gPr"*string(gamma_prime)[1:min(5,length(string(gamma_prime)))] : nothing
+gamma_prime_const>0 && gamma_prime_option=="CONST"       ?  file_name*="_gPr"*string(gamma_prime_const)[1:min(5,length(string(gamma_prime_const)))] : nothing
 inhom_broad_std>0                                  ?  file_name*="_inhom"*string(inhom_broad_std)                                 : nothing
 #
 #Only if a metalens is computed
@@ -219,20 +219,20 @@ end
 if geometry_settings == "ARRAYS" 
     file_name*="_nArrays"*string(array_n_layers)
     if array_xi_x==array_xi_y
-        file_name*="_xi"*dig_cut(array_xi_x,3)
+        file_name*="_xi"*dig_cut(array_xi_x,4)
     else
-        file_name*="_xi_x"*dig_cut(array_xi_x,3)
-        file_name*="_xi_y"*dig_cut(array_xi_y,3)
+        file_name*="_xi_x"*dig_cut(array_xi_x,4)
+        file_name*="_xi_y"*dig_cut(array_xi_y,4)
     end
     #
     if array_n_layers>1
-        file_name*="_xi_z"*dig_cut(array_xi_z,3)
+        file_name*="_xi_z"*dig_cut(array_xi_z,4)
     end
 end
 #
 #Only if a chain is computed
 if geometry_settings == "CHAIN" 
-    file_name*="_xi"*dig_cut(chain_xi,3)
+    file_name*="_xi"*dig_cut(chain_xi,4)
     #
     if chain_polarization!="CUSTOM"
         file_name*="_"*chain_polarization
@@ -296,7 +296,7 @@ h5write_multiple(final_path_name*"options",  ("input_field_settings", input_fiel
 h5write_multiple(final_path_name*"options",  ("probeXY_option", probeXY_option) , ("probeYZ_option", probeYZ_option) , ("probeXZ_option", probeXZ_option) , ("probePLANE_option", probePLANE_option) , ("probeSPHERE_option", probeSPHERE_option))
 h5write_multiple(final_path_name*"options",  ("mirror_symmetry_option",mirror_symmetry_option))
 h5write_multiple(final_path_name*"options",  ("strain_option",strain_option), ("input_field_settings",input_field_settings))
-h5write_multiple(final_path_name*"settings", ("w0", w0) , ("gamma_prime", gamma_prime) , ("inhom_broad_std", inhom_broad_std); open_option="w")
+h5write_multiple(final_path_name*"settings", ("w0", w0) , ("gamma_prime_const", gamma_prime_const) , ("inhom_broad_std", inhom_broad_std); open_option="w")
 h5write_multiple(final_path_name*"settings", ("laser_detunings",laser_detunings), ("laser_direction",laser_direction), ("field_polarization",field_polarization) ,("defects_fraction",defects_fraction))
 h5write_multiple(final_path_name*"settings", ("n_repetitions",n_repetitions),("probePlane_vec",probePlane_v3_vec))
 h5write_multiple(final_path_name*"settings", ("dipoles_polarization",dipoles_polarization))
@@ -329,7 +329,7 @@ end
 if geometry_settings == "CHAIN"
     h5write_multiple(final_path_name*"settings_chain", ("chain_xi", chain_xi), ("chain_size",chain_size) ; open_option="w")
     h5write_multiple(final_path_name*"settings_chain", ("chain_theta",chain_theta), ("chain_phi",chain_phi), ("chain_polarization",chain_polarization))
-    if strain_option == "STRAIN"
+    if strain_option == "CHAIN"
         h5write_multiple(final_path_name*"strain_chain", ("strain_final_xi", strain_final_xi) ; open_option="w")
         h5write_multiple(final_path_name*"strain_chain", ("strain_start_end", strain_start_end), ("strain_power_law",strain_power_law))
     end
@@ -430,14 +430,14 @@ performance=@timed for index_repetition in 1:n_repetitions
         error("The input field function is not well defined.")
     end
     #
-    #Defining the value of gamma_prime
-    if gamma_prime_const_option == "YES"
-        gamma_prime_func = (x,y,z) -> gamma_prime
-    else
+    #Defining the value of Gamma Prime
+    if gamma_prime_option == "CONST"
+        gamma_prime_func = (x,y,z) -> gamma_prime_const
+    elseif gamma_prime_option == "DISK"
         if geometry_settings == "ARRAYS"
-            scale_gamma_prime = Gamma_coop
+            gamma_prime_scale = Gamma_coop
         else
-            scale_gamma_prime = 1.0
+            gamma_prime_scale = 1.0
         end
         if input_field_settings == "SELECTIVE_DRIVE"
             gamma_P_R_center = select_drive_pos
@@ -445,7 +445,11 @@ performance=@timed for index_repetition in 1:n_repetitions
             gamma_P_R_center = [0.0;0.0;0.0]
         end
         gamma_P_R_cutoff = (2/3)*maximum(vcat(array_size_x,array_size_y))
-        gamma_prime_func = (x,y,z) -> scale_gamma_prime*gamma_prime_disk(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0,2)
+        gamma_prime_func = (x,y,z) -> gamma_prime_func_sphere(x,y,z,gamma_P_R_center,gamma_P_R_cutoff,3.0*gamma_prime_scale,2)
+    elseif gamma_prime_option == "CUSTOM"
+        gamma_prime_func = (x,y,z) -> gamma_prime_func_custom(x,y,z)
+    else
+        error("Wrongly formatted option gamma_prime_option = ", gamma_prime_option)
     end
     #
     #
