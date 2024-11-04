@@ -342,7 +342,7 @@ Andreoli F, Windt B, Grava S, Andolina GM, Gullans MJ, High AA, Chang DE,
 <a id="Andreoli2023b">[3]</a> 
 Andreoli F, Mann CR, High AA, Chang DE, 
 *Metalens formed by structured arrays of atomic emitters*, 
-paper in preparation (2024)
+[arXiv:2410.22469](https://arxiv.org/abs/2410.22469) (2024)
 
 <a id="Dicke1954CoherenceProcesses">[4]</a>
 Dicke R H,
